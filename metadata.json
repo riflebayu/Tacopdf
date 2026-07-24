@@ -1,0 +1,6 @@
+{
+  "name": "TacoPDF",
+  "description": "Free & Private local browser-based PDF tools with zero file uploads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
