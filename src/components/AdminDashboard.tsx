@@ -74,7 +74,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return;
       }
 
-      setPublishStatus({ type: '', message: 'Generating article using Gemini AI...' });
+      setPublishStatus({ type: '', message: 'Generating article using Groq AI (Llama 3)...' });
       
       // Fetch to Vercel Serverless Function
       const response = await fetch('/api/generate', {
@@ -271,12 +271,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               <div>
                 <label className="block text-sm font-bold text-on-surface mb-2 flex justify-between items-center">
                   <span>Raw Content (Markdown)</span>
-                  <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">Sent to Gemini AI</span>
+                  <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">Sent to Groq AI</span>
                 </label>
                 <textarea 
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="Write your raw article draft here. Gemini will expand and translate it into 7 languages..."
+                  placeholder="Write your raw article draft here. Groq AI (Llama 3) will expand and translate it into 7 languages..."
                   className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[200px] resize-y"
                   required
                 />
@@ -323,7 +323,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 {isPublishing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-5 h-5 border-2 border-on-surface-variant border-t-transparent rounded-full animate-spin" />
-                    Processing with Gemini API...
+                    Processing with Groq AI (Llama 3)...
                   </span>
                 ) : (
                   <>

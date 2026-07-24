@@ -1,15 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
 
-// Inisialisasi SDK Google Gen AI
-// Pastikan GEMINI_API_KEY sudah diset di Vercel Environment Variables
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+// Initialize Groq SDK
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // CORS Headers for local development and API access
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -18,13 +17,11 @@ export default async function handler(
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle OPTIONS request for CORS preflight
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -36,8 +33,8 @@ export default async function handler(
       return res.status(400).json({ error: 'Missing required fields: title, keyword, or content' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not defined in the environment variables.");
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("GROQ_API_KEY is not defined in the environment variables. Please add it in Vercel.");
     }
 
     const systemInstruction = `PERAN: Kamu adalah Pakar SEO Internasional, Evaluator E-E-A-T Google, dan Copywriter Senior.
@@ -48,7 +45,7 @@ ATURAN GAYA BAHASA: Tingkatkan burstiness dan perplexity. HINDARI MUTLAK kata-ka
 
 LOKALISASI (7 BAHASA): Buat konten orisinal dan terjemahkan ke dalam 7 kode bahasa ini: id (Indonesia), en (Inggris), es (Spanyol), fr (Prancis), de (Jerman), ja (Jepang), dan pt (Portugis).
 
-STRUKTUR OUTPUT (WAJIB JSON MURNI): Kembalikan respons HANYA dalam bentuk objek JSON murni (tanpa bungkus backticks markdown seperti \`\`\`json ). Struktur harus seperti ini:
+STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur harus seperti ini:
 {
   "id": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
   "en": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
@@ -58,43 +55,47 @@ STRUKTUR OUTPUT (WAJIB JSON MURNI): Kembalikan respons HANYA dalam bentuk objek 
   "ja": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
   "pt": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." }
 }
-Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.
-`;
+Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
-    const prompt = `Title: ${title}
+    const userPrompt = `Title: ${title}
 Target Keyword: ${keyword}
 Raw Content: ${content}
 
-Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem.`;
+Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
-    // Panggil model gemini-2.0-flash yang gratis dan cepat
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: prompt,
-      config: {
-        systemInstruction: systemInstruction,
-        temperature: 0.7,
-        responseMimeType: "application/json",
-      }
+    // Call Groq API with llama-3.3-70b-versatile (very fast and supports JSON mode)
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: systemInstruction
+        },
+        {
+          role: "user",
+          content: userPrompt
+        }
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.5,
+      response_format: { type: "json_object" }
     });
 
-    const responseText = response.text;
+    const responseText = chatCompletion.choices[0]?.message?.content;
     
     if (!responseText) {
-      throw new Error("Empty response from Gemini API.");
+      throw new Error("Empty response from Groq API.");
     }
 
-    // Karena menggunakan responseMimeType: "application/json", response.text dijamin berupa string JSON.
     const generatedJSON = JSON.parse(responseText);
 
     return res.status(200).json({
       message: "AI Generation successful",
       generatedData: generatedJSON,
-      imageUrl: imageUrl // passing image URL if any
+      imageUrl: imageUrl
     });
 
   } catch (error: any) {
-    console.error('Error generating article via Gemini API:', error);
+    console.error('Error generating article via Groq API:', error);
     return res.status(500).json({ 
       error: 'Internal Server Error', 
       details: error.message || String(error)
