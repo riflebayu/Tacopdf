@@ -102,14 +102,15 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
         {/* Canonical and Hreflang logic for the specific article */}
         <link rel="canonical" href={`${BASE_URL}${lang === 'en' ? '' : `/${lang}`}/blog/${translation.slug}`} />
         
-        {LANGUAGES.map((l) => {
-          const lTranslation = article.translations[l.code] || article.translations['en'];
+        {Object.keys(article.translations).map((code) => {
+          const lTranslation = article.translations[code];
+          if (!lTranslation) return null;
           return (
             <link 
-              key={l.code} 
+              key={code} 
               rel="alternate" 
-              hrefLang={l.code} 
-              href={`${BASE_URL}${l.code === 'en' ? '' : `/${l.code}`}/blog/${lTranslation.slug}`} 
+              hrefLang={code} 
+              href={`${BASE_URL}${code === 'en' ? '' : `/${code}`}/blog/${lTranslation.slug}`} 
             />
           );
         })}

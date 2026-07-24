@@ -42,10 +42,8 @@ export default function BlogIndex() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {BLOG_ARTICLES.map((article) => {
-          const availableLangs = Object.keys(article.translations);
-          const fallbackLang = availableLangs.length > 0 ? availableLangs[0] : null;
-          const translation = article.translations[lang] || article.translations['en'] || (fallbackLang ? article.translations[fallbackLang] : null);
-
+          // Strict SEO Isolation: Only show the article if it is translated in the current active language
+          const translation = article.translations[lang];
           if (!translation) return null;
 
           const dateObj = new Date(article.lastUpdated);
