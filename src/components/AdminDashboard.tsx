@@ -3,8 +3,7 @@ import { motion } from 'motion/react';
 import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send } from 'lucide-react';
 import { auth } from '../firebaseAuth';
 import { signOut } from 'firebase/auth';
-import { db, storage } from '../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { RealAnalytics } from './RealAnalytics';
 
@@ -19,7 +18,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [title, setTitle] = useState('');
   const [keyword, setKeyword] = useState('');
   const [content, setContent] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<{ type: 'success' | 'error' | '', message: string }>({ type: '', message: '' });
 
@@ -34,12 +33,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     setPublishStatus({ type: '', message: '' });
 
     try {
-      let imageUrl = '';
-      if (image) {
-        setPublishStatus({ type: '', message: 'Uploading image to Firebase Storage...' });
-        const storageRef = ref(storage, `images/blog/${Date.now()}_${image.name}`);
-        await uploadBytes(storageRef, image);
-        imageUrl = await getDownloadURL(storageRef);
+      if (!imageUrl.trim()) {
+        setPublishStatus({ type: 'error', message: 'Featured Image URL is required.' });
+        setIsPublishing(false);
+        return;
       }
 
       setPublishStatus({ type: '', message: 'Generating article using Gemini AI...' });
@@ -85,7 +82,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       setTitle('');
       setKeyword('');
       setContent('');
-      setImage(null);
+      setImageUrl('');
 
     } catch (error: any) {
       console.error('Publish error:', error);
@@ -186,24 +183,32 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-on-surface mb-2">Featured Image</label>
+                <label className="block text-sm font-bold text-on-surface mb-2">Featured Image URL</label>
                 <div className="flex items-center gap-4">
-                  <label className="flex-grow flex items-center justify-center gap-2 p-4 border-2 border-dashed border-outline-variant rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-on-surface-variant hover:text-primary">
-                    <ImageIcon size={20} />
-                    <span className="text-sm font-medium">{image ? image.name : 'Upload Image File'}</span>
+                  <div className="flex-grow relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
+                      <ImageIcon size={20} />
+                    </div>
                     <input 
-                      type="file" 
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => setImage(e.target.files?.[0] || null)}
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://images.unsplash.com/photo-..."
+                      className="w-full pl-12 p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      required
                     />
-                  </label>
-                  {image && (
-                    <button type="button" onClick={() => setImage(null)} className="p-4 text-error bg-error/10 rounded-xl hover:bg-error/20 transition-colors">
+                  </div>
+                  {imageUrl && (
+                    <button type="button" onClick={() => setImageUrl('')} className="p-4 text-error bg-error/10 rounded-xl hover:bg-error/20 transition-colors">
                       Clear
                     </button>
                   )}
                 </div>
+                {imageUrl && (
+                  <div className="mt-4 rounded-xl overflow-hidden border border-outline-variant/30 h-48 w-full relative bg-surface-variant/50 flex items-center justify-center">
+                    <img src={imageUrl} alt="Preview" className="object-cover w-full h-full" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                  </div>
+                )}
               </div>
 
               <button 
