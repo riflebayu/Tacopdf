@@ -113,7 +113,6 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
             />
           );
         })}
-        })}
         {fallbackLang && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}/blog/${article.translations[fallbackLang].slug}`} />}
       </Helmet>
 

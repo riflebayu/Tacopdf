@@ -450,8 +450,7 @@ export const TRANSLATIONS = {
     "workspace.sign.placed": "Signatures Placed",
     "workspace.sign.clear": "Clear All",
     "workspace.sign.page": "Pg",
-    "tool.page_num.placeholder": "e.g. Page {n} of {total}",
-    "tool.page_num.hint": "💡 Hint: {n} changes to the page number (1, 2, 3), and {total} shows total pages (e.g., Page 1 of 5).",
+
     "nav.tools": "Tools",
     "nav.blog": "Blog",
     "nav.faq": "FAQ",
@@ -1062,8 +1061,7 @@ export const TRANSLATIONS = {
     "workspace.sign.clear": "Hapus Semua",
     "workspace.sign.page": "Hal",
     "tool.rotate.tip": "💡 Petunjuk: Anda bisa melihat pratinjau halaman di bawah dan klik ikon Putar secara langsung!",
-    "tool.page_num.placeholder": "misal Halaman {n} dari {total}",
-    "tool.page_num.hint": "💡 Petunjuk: {n} berubah menjadi nomor halaman (1, 2, 3), dan {total} menunjukkan total halaman (misal, Halaman 1 dari 5).",
+
     "tool.ocr.title": "🔍 Ekstrak Teks (OCR)",
     "tool.ocr.desc": "Unggah dokumen hasil scan atau gambar, dan kami akan mengekstrak teksnya untuk Anda.",
     "tool.ocr.tip": "💡 Tesseract OCR berjalan 100% di browser Anda. Harap tunggu beberapa detik saat proses membaca teks.",
@@ -1675,8 +1673,7 @@ export const TRANSLATIONS = {
     "workspace.sign.placed": "Assinaturas Colocadas",
     "workspace.sign.clear": "Limpar Tudo",
     "workspace.sign.page": "Pág",
-    "tool.page_num.placeholder": "ex. Página {n} de {total}",
-    "tool.page_num.hint": "💡 Dica: {n} muda para o número da página, e {total} mostra o total de páginas.",
+
     "nav.tools": "Ferramentas",
     "nav.blog": "Blog",
     "nav.faq": "Perguntas Frequentes",
@@ -4161,8 +4158,7 @@ export const TRANSLATIONS = {
     "workspace.sign.placed": "Signatures Placées",
     "workspace.sign.clear": "Tout Effacer",
     "workspace.sign.page": "Pg",
-    "tool.page_num.placeholder": "ex. Page {n} sur {total}",
-    "tool.page_num.hint": "💡 Astuce : {n} indique le numéro de la page, et {total} affiche le total des pages.",
+
     "nav.tools": "Outils",
     "nav.blog": "Blog",
     "nav.faq": "FAQ",
