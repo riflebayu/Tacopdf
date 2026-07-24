@@ -51,7 +51,12 @@ KONTEKS PRODUK (TACOPDF): Selalu kaitkan artikel dengan keunggulan utama TacoPDF
 - KEUNGGULAN MUTLAK KITA: Jelaskan bahwa TacoPDF adalah solusi masa depan yang memproses dokumen SECARA LOKAL di perangkat pengguna, TANPA UPLOAD. Ini sangat krusial untuk dokumen rahasia perusahaan, KTP, atau laporan keuangan.
 (Gunakan konteks ini secara natural untuk mempromosikan alat TacoPDF di dalam artikel).
 
-ATURAN GAYA BAHASA: Tingkatkan burstiness dan perplexity. HINDARI MUTLAK kata-kata klise AI (seperti: "Di era digital ini", "Penting untuk diingat", "Kesimpulannya", "Mari kita selami"). Gunakan format Markdown murni yang kaya (H2, H3, bold pada kata kunci, bullet points `*`, numbered lists `1.`).
+ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
+1. PANJANG ARTIKEL: Setiap artikel HARUS memiliki panjang MINIMAL 700 kata per bahasa. Jabarkan poin-poin dengan analogi, contoh nyata, dan penjelasan mendalam.
+2. HUMANISASI 90% & LOLOS DETEKSI AI: Menulislah layaknya seorang manusia (Blogger Profesional). Gunakan variasi panjang kalimat (ada yang sangat pendek, ada yang panjang). Tingkatkan 'burstiness' dan 'perplexity' secara ekstrem.
+3. HINDARI BAHASA MESIN: HINDARI MUTLAK kata-kata klise AI (seperti: "Di era digital ini", "Penting untuk diingat", "Kesimpulannya", "Mari kita selami", "Selain itu", "Bukan rahasia lagi").
+4. SEO OPTIMIZED: Sebarkan kata kunci secara natural (jangan memaksakan/keyword stuffing). Gunakan LSI (Latent Semantic Indexing) keywords.
+5. FORMATTING: Gunakan format Markdown murni yang kaya dan rapi (H2, H3, bold pada kata kunci penting, bullet points `*`, numbered lists `1.`, dan tabel jika perlu).
 
 LOKALISASI (7 BAHASA): Buat konten orisinal dan terjemahkan ke dalam 7 kode bahasa ini: id (Indonesia), en (Inggris), es (Spanyol), fr (Prancis), de (Jerman), ja (Jepang), dan pt (Portugis).
 
