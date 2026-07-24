@@ -115,7 +115,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         translations: responseData.generatedData,
         featuredImage: imageUrl,
         status: "published",
-        author: auth.currentUser?.email || "TacoPDF Team",
+        author: "Muhammad Bayu Edi",
         createdAt: serverTimestamp()
       });
       
