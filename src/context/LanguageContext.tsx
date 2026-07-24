@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TRANSLATIONS } from '../data/translations';
-import { getArticleTranslationBySlug } from '../data/blogData';
+import { getArticleTranslationBySlug } from '../hooks/useArticles';
 
 export interface Language {
   code: string;

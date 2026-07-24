@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
-import { getArticleByAnySlug } from '../data/blogData';
+import { useArticles } from '../hooks/useArticles';
 import LocalizedLink from './LocalizedLink';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
@@ -96,9 +96,19 @@ const renderMarkdown = (content: string) => {
 
 export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
   const { lang, t } = useLanguage();
-  const article = getArticleByAnySlug(slug, lang);
+  const { getArticleByAnySlug, loading, error } = useArticles();
+  
+  const article = getArticleByAnySlug(slug);
 
-  if (!article) {
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error || !article) {
     // Redirect to the blog index of the current language if the slug does not match
     return <Navigate replace to="/blog" />;
   }

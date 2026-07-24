@@ -1,12 +1,13 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../context/LanguageContext';
-import { BLOG_ARTICLES } from '../data/blogData';
+import { useArticles } from '../hooks/useArticles';
 import LocalizedLink from './LocalizedLink';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 
 export default function BlogIndex() {
   const { lang, t } = useLanguage();
+  const { articles: BLOG_ARTICLES, loading, error } = useArticles();
   const BASE_URL = 'https://tacopdf.com';
 
   return (
@@ -26,8 +27,21 @@ export default function BlogIndex() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {BLOG_ARTICLES.map((article) => {
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20 text-error font-medium bg-error/10 rounded-3xl">
+          {error}
+        </div>
+      ) : BLOG_ARTICLES.length === 0 ? (
+        <div className="text-center py-20 text-on-surface-variant bg-surface-variant/30 rounded-3xl">
+          No articles published yet. Check back soon!
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {BLOG_ARTICLES.map((article) => {
           const translation = article.translations[lang] || article.translations['en'];
           const dateObj = new Date(article.lastUpdated);
           const formattedDate = dateObj.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
@@ -77,7 +91,8 @@ export default function BlogIndex() {
             </article>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
