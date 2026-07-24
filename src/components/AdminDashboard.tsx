@@ -19,6 +19,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [title, setTitle] = useState('');
   const [keyword, setKeyword] = useState('');
   const [content, setContent] = useState('');
+  const [customPrompt, setCustomPrompt] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<{ type: 'success' | 'error' | '', message: string }>({ type: '', message: '' });
@@ -86,6 +87,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           title,
           keyword,
           content,
+          customPrompt,
           imageUrl,
         }),
       });
@@ -125,6 +127,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       setTitle('');
       setKeyword('');
       setContent('');
+      setCustomPrompt('');
       setImageUrl('');
 
       // Invalidate cache so it fetches the new article when the user visits the blog or reloads
@@ -279,6 +282,19 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   placeholder="Write your raw article draft here. Groq AI (Llama 3) will expand and translate it into 7 languages..."
                   className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[200px] resize-y"
                   required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-on-surface mb-2 flex justify-between items-center">
+                  <span>Custom Prompt (Opsional)</span>
+                  <span className="text-xs font-normal text-primary bg-primary/10 px-2 py-1 rounded-md">AI Command</span>
+                </label>
+                <textarea 
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  placeholder="Instruksi khusus. Contoh: 'Gunakan gaya bahasa santai ala Gen-Z dan tekankan bahwa iLovePDF itu menyimpan file di server sedangkan kita 100% lokal.'"
+                  className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[100px] resize-y"
                 />
               </div>
 

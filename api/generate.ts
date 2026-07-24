@@ -27,7 +27,7 @@ export default async function handler(
   }
 
   try {
-    const { title, keyword, content, imageUrl } = req.body;
+    const { title, keyword, content, customPrompt, imageUrl } = req.body;
 
     if (!title || !keyword || !content) {
       return res.status(400).json({ error: 'Missing required fields: title, keyword, or content' });
@@ -41,7 +41,17 @@ export default async function handler(
 
 TUGAS: Kembangkan input title, keyword, dan content mentah menjadi artikel blog SEO yang komprehensif, informatif, dan mengalir natural.
 
-ATURAN GAYA BAHASA: Tingkatkan burstiness dan perplexity. HINDARI MUTLAK kata-kata klise AI (seperti: "Di era digital ini", "Penting untuk diingat", "Kesimpulannya", "Mari kita selami"). Gunakan format Markdown (H2, H3, bold pada kata kunci, bullet points).
+KONTEKS PRODUK (TACOPDF): Selalu kaitkan artikel dengan keunggulan utama TacoPDF:
+- TacoPDF adalah aplikasi utilitas PDF berbasis web (Browser-based).
+- 100% AMAN & PRIVASI TERJAGA: Semua pemrosesan file dilakukan LOKAL di komputer pengguna. File PDF tidak pernah diunggah ke server mana pun.
+- TEKNOLOGI: Menggunakan WebAssembly (WASM) super cepat yang bekerja langsung di browser.
+- 100% GRATIS dan dapat digunakan secara OFFLINE setelah halaman dimuat.
+- FITUR: Merge PDF (menggabungkan), Split (memisahkan), Compress, dll.
+- KOMPETITOR: Sangat sadar bahwa pesaing seperti iLovePDF, Smallpdf, atau Adobe mengharuskan pengguna MENGUNGGAH dokumen mereka ke server jarak jauh (boros waktu, boros kuota, dan rentan pencurian data/bocor).
+- KEUNGGULAN MUTLAK KITA: Jelaskan bahwa TacoPDF adalah solusi masa depan yang memproses dokumen SECARA LOKAL di perangkat pengguna, TANPA UPLOAD. Ini sangat krusial untuk dokumen rahasia perusahaan, KTP, atau laporan keuangan.
+(Gunakan konteks ini secara natural untuk mempromosikan alat TacoPDF di dalam artikel).
+
+ATURAN GAYA BAHASA: Tingkatkan burstiness dan perplexity. HINDARI MUTLAK kata-kata klise AI (seperti: "Di era digital ini", "Penting untuk diingat", "Kesimpulannya", "Mari kita selami"). Gunakan format Markdown murni yang kaya (H2, H3, bold pada kata kunci, bullet points `*`, numbered lists `1.`).
 
 LOKALISASI (7 BAHASA): Buat konten orisinal dan terjemahkan ke dalam 7 kode bahasa ini: id (Indonesia), en (Inggris), es (Spanyol), fr (Prancis), de (Jerman), ja (Jepang), dan pt (Portugis).
 
@@ -61,7 +71,7 @@ Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 Target Keyword: ${keyword}
 Raw Content: ${content}
 
-Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
+${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
     // Call Groq API with llama-3.3-70b-versatile (very fast and supports JSON mode)
     const chatCompletion = await groq.chat.completions.create({

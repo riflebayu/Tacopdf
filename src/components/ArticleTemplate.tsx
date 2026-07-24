@@ -5,94 +5,14 @@ import { useArticles } from '../hooks/useArticles';
 import LocalizedLink from './LocalizedLink';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ArticleTemplateProps {
   slug: string;
 }
 
-// Simple Markdown Parser to convert string content to React nodes
-const renderMarkdown = (content: string) => {
-  const blocks = content.split('\n\n');
-  
-  return blocks.map((block, index) => {
-    // Handle h3
-    if (block.startsWith('### ')) {
-      return (
-        <h3 key={index} className="text-xl font-bold text-on-surface mt-8 mb-4">
-          {block.replace('### ', '')}
-        </h3>
-      );
-    }
-    // Handle h2
-    if (block.startsWith('## ')) {
-      return (
-        <h2 key={index} className="text-2xl font-bold text-primary mt-10 mb-5 border-b border-outline-variant/30 pb-2">
-          {block.replace('## ', '')}
-        </h2>
-      );
-    }
-    // Handle Images ![alt](url)
-    const imgMatch = block.match(/^!\[(.*?)\]\((.*?)\)$/);
-    if (imgMatch) {
-      return (
-        <figure key={index} className="my-8">
-          <img 
-            src={imgMatch[2]} 
-            alt={imgMatch[1]} 
-            loading="lazy" 
-            className="w-full h-auto rounded-2xl shadow-md border border-outline-variant/30"
-          />
-          {imgMatch[1] && (
-            <figcaption className="text-center text-sm text-on-surface-variant mt-3 italic">
-              {imgMatch[1]}
-            </figcaption>
-          )}
-        </figure>
-      );
-    }
-    
-    // Parse inline bold (**text**) and links ([text](url)) within paragraphs
-    const parseInline = (text: string, pIndex: number) => {
-      // Very basic regex tokenization for inline elements
-      const parts = text.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g);
-      
-      return parts.map((part, i) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={i} className="font-bold text-on-surface">{part.slice(2, -2)}</strong>;
-        }
-        
-        const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
-        if (linkMatch) {
-          const linkText = linkMatch[1];
-          const linkUrl = linkMatch[2];
-          // Use LocalizedLink for internal tools routing
-          if (linkUrl.startsWith('/')) {
-            return (
-              <LocalizedLink key={i} to={linkUrl} className="text-primary hover:text-primary-container underline font-medium transition-colors">
-                {linkText}
-              </LocalizedLink>
-            );
-          }
-          // External links
-          return (
-            <a key={i} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary-container underline font-medium transition-colors">
-              {linkText}
-            </a>
-          );
-        }
-        
-        return <React.Fragment key={i}>{part}</React.Fragment>;
-      });
-    };
 
-    // Default to paragraph
-    return (
-      <p key={index} className="text-on-surface-variant leading-relaxed mb-6 text-lg">
-        {parseInline(block, index)}
-      </p>
-    );
-  });
-};
 
 export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
   const { lang, t } = useLanguage();
@@ -228,8 +148,13 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
       </figure>
 
       {/* Article Content */}
-      <div className="prose prose-lg max-w-none">
-        {renderMarkdown(translation.content)}
+      <div className="prose prose-lg prose-invert max-w-none text-on-surface-variant 
+                      prose-headings:text-on-surface prose-h2:text-primary prose-h2:border-b prose-h2:border-outline-variant/30 prose-h2:pb-2
+                      prose-a:text-primary hover:prose-a:text-primary-container
+                      prose-strong:text-on-surface prose-img:rounded-2xl prose-img:border prose-img:border-outline-variant/30">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {translation.content}
+        </ReactMarkdown>
       </div>
 
       {/* Author Bio (E-E-A-T Enhancement) */}
