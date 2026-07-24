@@ -33,9 +33,14 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
     return <Navigate replace to="/blog" />;
   }
 
-  // Fallback to English if translation is missing
-  const translation = article.translations[lang] || article.translations['en'];
+  // Fallback to the first available language if current lang and English are missing
+  const availableLangs = Object.keys(article.translations);
+  const fallbackLang = availableLangs.length > 0 ? availableLangs[0] : null;
+  const translation = article.translations[lang] || article.translations['en'] || (fallbackLang ? article.translations[fallbackLang] : null);
   
+  if (!translation) {
+    return <Navigate replace to="/blog" />;
+  }
   const BASE_URL = 'https://tacopdf.com';
   
   // Format Date for Display and JSON-LD
@@ -108,7 +113,8 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
             />
           );
         })}
-        <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}/blog/${article.translations['en'].slug}`} />
+        })}
+        {fallbackLang && <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}/blog/${article.translations[fallbackLang].slug}`} />}
       </Helmet>
 
       {/* Back Link */}

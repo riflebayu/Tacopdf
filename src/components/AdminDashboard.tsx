@@ -211,7 +211,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                       <li key={article.id} className="p-4 hover:bg-surface-variant/20 transition-colors flex items-center justify-between gap-4">
                         <div className="flex-grow min-w-0">
                           <h3 className="font-bold text-on-surface truncate">
-                            {article.translations['en']?.title || 'Untitled Article'}
+                            {article.translations['en']?.title || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]]?.title : 'Untitled Article')}
                           </h3>
                           <div className="text-xs text-on-surface-variant flex gap-3 mt-1">
                             <span>{new Date(article.lastUpdated).toLocaleDateString()}</span>
@@ -228,7 +228,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             <PenTool size={18} />
                           </button>
                           <button
-                            onClick={() => handleDelete(article.id, article.translations['en']?.title || 'Article')}
+                            onClick={() => handleDelete(article.id, article.translations['en']?.title || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]]?.title : 'Article'))}
                             disabled={deletingId === article.id}
                             className={`p-2 rounded-xl transition-all ${
                               deletingId === article.id 

@@ -42,7 +42,12 @@ export default function BlogIndex() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {BLOG_ARTICLES.map((article) => {
-          const translation = article.translations[lang] || article.translations['en'];
+          const availableLangs = Object.keys(article.translations);
+          const fallbackLang = availableLangs.length > 0 ? availableLangs[0] : null;
+          const translation = article.translations[lang] || article.translations['en'] || (fallbackLang ? article.translations[fallbackLang] : null);
+
+          if (!translation) return null;
+
           const dateObj = new Date(article.lastUpdated);
           const formattedDate = dateObj.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
             year: 'numeric',
