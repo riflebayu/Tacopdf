@@ -67,9 +67,9 @@ Raw Content: ${content}
 
 Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem.`;
 
-    // Panggil model gemini-2.0-flash yang gratis dan cepat
+    // Panggil model gemini-1.5-flash yang memiliki jatah gratis paling luas
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         systemInstruction: systemInstruction,
