@@ -128,7 +128,9 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
         <div className="flex flex-wrap items-center gap-6 text-on-surface-variant text-sm font-medium border-b border-outline-variant/30 pb-6">
           <div className="flex items-center gap-2">
             <User size={18} className="text-primary" />
-            <span>{article.author}</span>
+            <LocalizedLink to="/about" className="hover:text-primary transition-colors hover:underline">
+              {article.author}
+            </LocalizedLink>
           </div>
           <div className="flex items-center gap-2">
             <Calendar size={18} className="text-primary" />
@@ -164,7 +166,12 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
             <User size={32} />
           </div>
           <div>
-            <h4 className="text-lg font-bold text-on-surface mb-2">Written by {article.author}</h4>
+            <h4 className="text-lg font-bold text-on-surface mb-2">
+              Written by{' '}
+              <LocalizedLink to="/about" className="text-primary hover:text-primary-container transition-colors hover:underline">
+                {article.author}
+              </LocalizedLink>
+            </h4>
             <p className="text-sm text-on-surface-variant leading-relaxed">
               TacoPDF is dedicated to providing privacy-first, ultra-fast WebAssembly utilities directly inside your browser. Our engineering team shares insights on web technologies, client-side computing, and data privacy.
             </p>

@@ -27,7 +27,7 @@ export default async function handler(
   }
 
   try {
-    const { title, keyword, content, customPrompt, imageUrl } = req.body;
+    const { title, keyword, content, customPrompt, imageUrl, targetLanguages } = req.body;
 
     if (!title || !keyword || !content) {
       return res.status(400).json({ error: 'Missing required fields: title, keyword, or content' });
@@ -36,6 +36,17 @@ export default async function handler(
     if (!process.env.GROQ_API_KEY) {
       throw new Error("GROQ_API_KEY is not defined in the environment variables. Please add it in Vercel.");
     }
+
+    const langNames: Record<string, string> = {
+      'id': 'Indonesia', 'en': 'Inggris', 'es': 'Spanyol', 'fr': 'Prancis', 'de': 'Jerman', 'ja': 'Jepang', 'pt': 'Portugis'
+    };
+    const targets = Array.isArray(targetLanguages) && targetLanguages.length > 0 ? targetLanguages : Object.keys(langNames);
+    const langListStr = targets.map(code => `${code} (${langNames[code]})`).join(', ');
+
+    const jsonStructure = targets.reduce((acc: any, code: string) => {
+      acc[code] = { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." };
+      return acc;
+    }, {});
 
     const systemInstruction = `PERAN: Kamu adalah Pakar SEO Internasional, Evaluator E-E-A-T Google, dan Copywriter Senior.
 
@@ -58,18 +69,10 @@ ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
 4. SEO OPTIMIZED: Sebarkan kata kunci secara natural (jangan memaksakan/keyword stuffing). Gunakan LSI (Latent Semantic Indexing) keywords.
 5. FORMATTING: Gunakan format Markdown murni yang kaya dan rapi (H2, H3, bold pada kata kunci penting, bullet points \`*\`, numbered lists \`1.\`, dan tabel jika perlu).
 
-LOKALISASI (7 BAHASA): Buat konten orisinal dan terjemahkan ke dalam 7 kode bahasa ini: id (Indonesia), en (Inggris), es (Spanyol), fr (Prancis), de (Jerman), ja (Jepang), dan pt (Portugis).
+LOKALISASI: Buat konten orisinal dan terjemahkan HANYA ke dalam kode bahasa ini: ${langListStr}.
 
 STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur harus seperti ini:
-{
-  "id": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "en": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "es": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "fr": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "de": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "ja": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." },
-  "pt": { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." }
-}
+${JSON.stringify(jsonStructure, null, 2)}
 Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
     const userPrompt = `Title: ${title}

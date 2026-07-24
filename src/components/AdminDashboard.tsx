@@ -7,6 +7,8 @@ import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { RealAnalytics } from './RealAnalytics';
 import { useArticles, cachedArticles } from '../hooks/useArticles';
+import { LANGUAGES } from '../context/LanguageContext';
+import RevisionModal from './RevisionModal';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -23,10 +25,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [imageUrl, setImageUrl] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<{ type: 'success' | 'error' | '', message: string }>({ type: '', message: '' });
+  const [targetLanguages, setTargetLanguages] = useState<string[]>(LANGUAGES.map(l => l.code));
 
   // Article Management State
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingArticle, setEditingArticle] = useState<any>(null);
   // We use this local state to instantly hide deleted articles without full refetch
   const [localArticles, setLocalArticles] = useState(articles);
 
@@ -64,6 +68,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       setPublishStatus({ type: 'error', message: 'Title, Keyword, and Content are required.' });
       return;
     }
+    if (targetLanguages.length === 0) {
+      setPublishStatus({ type: 'error', message: 'Please select at least one target language.' });
+      return;
+    }
 
     setIsPublishing(true);
     setPublishStatus({ type: '', message: '' });
@@ -89,6 +97,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           content,
           customPrompt,
           imageUrl,
+          targetLanguages,
         }),
       });
 
@@ -210,22 +219,31 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             <span>{Object.keys(article.translations).length} Bahasa</span>
                           </div>
                         </div>
-                        <button
-                          onClick={() => handleDelete(article.id, article.translations['en']?.title || 'Article')}
-                          disabled={deletingId === article.id}
-                          className={`p-2 rounded-xl transition-all ${
-                            deletingId === article.id 
-                              ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed' 
-                              : 'bg-error/10 text-error hover:bg-error hover:text-white'
-                          }`}
-                          title="Hapus Artikel"
-                        >
-                          {deletingId === article.id ? (
-                            <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                          ) : (
-                            <Trash2 size={18} />
-                          )}
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setEditingArticle(article)}
+                            className="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all"
+                            title="Revisi Artikel"
+                          >
+                            <PenTool size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(article.id, article.translations['en']?.title || 'Article')}
+                            disabled={deletingId === article.id}
+                            className={`p-2 rounded-xl transition-all ${
+                              deletingId === article.id 
+                                ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed' 
+                                : 'bg-error/10 text-error hover:bg-error hover:text-white'
+                            }`}
+                            title="Hapus Artikel"
+                          >
+                            {deletingId === article.id ? (
+                              <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Trash2 size={18} />
+                            )}
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -327,6 +345,32 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 )}
               </div>
 
+              <div>
+                <label className="block text-sm font-bold text-on-surface mb-3 flex justify-between items-center">
+                  <span>Target Bahasa terjemahan</span>
+                  <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">{targetLanguages.length} dipilih</span>
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl">
+                  {LANGUAGES.map((lang) => (
+                    <label key={lang.code} className="flex items-center gap-3 cursor-pointer p-2 hover:bg-surface-variant/30 rounded-lg transition-colors">
+                      <input 
+                        type="checkbox"
+                        checked={targetLanguages.includes(lang.code)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setTargetLanguages([...targetLanguages, lang.code]);
+                          } else {
+                            setTargetLanguages(targetLanguages.filter(code => code !== lang.code));
+                          }
+                        }}
+                        className="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2"
+                      />
+                      <span className="text-sm font-medium text-on-surface">{lang.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               <button 
                 type="submit" 
                 disabled={isPublishing}
@@ -352,6 +396,17 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           </aside>
         </div>
       </div>
+      
+      {editingArticle && (
+        <RevisionModal 
+          article={editingArticle}
+          onClose={() => setEditingArticle(null)}
+          onSuccess={() => {
+            setEditingArticle(null);
+            window.location.reload();
+          }}
+        />
+      )}
     </div>
   );
 }
