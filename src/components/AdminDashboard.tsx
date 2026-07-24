@@ -91,7 +91,15 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`API returned ${response.status}: ${response.statusText}`);
+        let errorMsg = `API returned ${response.status}: ${response.statusText}`;
+        try {
+          const errData = await response.json();
+          if (errData.details) errorMsg = errData.details;
+          else if (errData.error) errorMsg = errData.error;
+        } catch (e) {
+          // ignore json parse error
+        }
+        throw new Error(errorMsg);
       }
 
       const responseData = await response.json();
