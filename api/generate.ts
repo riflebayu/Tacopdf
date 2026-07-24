@@ -67,9 +67,9 @@ Raw Content: ${content}
 
 Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem.`;
 
-    // Panggil model gemini-2.5-pro dengan strict JSON output
+    // Panggil model gemini-2.0-flash yang gratis dan cepat
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-pro',
+      model: 'gemini-2.0-flash',
       contents: prompt,
       config: {
         systemInstruction: systemInstruction,
