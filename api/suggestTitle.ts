@@ -63,7 +63,8 @@ DILARANG memberikan teks apa pun di luar JSON tersebut.`;
     
     if (!responseText) throw new Error("Empty response");
 
-    const json = JSON.parse(responseText);
+    const cleanText = responseText.replace(/```(?:json)?\n?/g, '').replace(/```/g, '').trim();
+    const json = JSON.parse(cleanText);
     return res.status(200).json(json);
   } catch (error: any) {
     console.error('Error suggesting title:', error);
