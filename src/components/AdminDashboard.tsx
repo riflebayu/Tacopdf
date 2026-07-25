@@ -67,6 +67,32 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
+  const handleSuggestTitle = async () => {
+    if (!title) {
+      alert("Please type a rough topic in the Title field first.");
+      return;
+    }
+    setIsSuggesting(true);
+    setAiSuggestions([]);
+    try {
+      const response = await fetch('/api/suggestTitle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: title })
+      });
+      if (!response.ok) throw new Error("Failed to suggest title");
+      const data = await response.json();
+      if (data.suggestions) {
+        setAiSuggestions(data.suggestions);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to get AI suggestions.");
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
+
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !keyword || (useRawContent && !content)) {
