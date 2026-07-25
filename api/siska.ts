@@ -42,13 +42,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const recentMessages = messages.slice(-10);
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 1024,
       },
       systemInstruction: SYSTEM_PROMPT,
-    });
+    }, { apiVersion: "v1" });
 
     const geminiMessages = recentMessages.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
