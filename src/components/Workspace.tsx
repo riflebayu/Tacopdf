@@ -1547,8 +1547,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         });
         
         let qpdfArgs = compressLevel === 'extreme' 
-            ? ['--linearize', '--stream-data=compress', '--object-streams=generate', '--recompress-flate', '--compression-level=9', 'input.pdf', 'output.pdf']
-            : ['--linearize', '--object-streams=generate', 'input.pdf', 'output.pdf'];
+            ? ['--linearize', '--stream-data=compress', '--object-streams=generate', 'input.pdf', 'output.pdf']
+            : ['--linearize', 'input.pdf', 'output.pdf'];
             
         let outputData;
         try {
