@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { motion } from 'motion/react';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -60,53 +61,54 @@ export default function SiskaChat() {
   };
 
   return (
-    <>
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 p-4 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
-      >
-        <Sparkles size={24} className="animate-pulse" />
-      </button>
-
+    <motion.div 
+      drag 
+      dragMomentum={false}
+      className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end justify-end"
+      style={{ touchAction: 'none' }}
+    >
       {/* Chat Window */}
       <div 
-        className={`fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[550px] max-h-[calc(100vh-4rem)] bg-surface border border-outline-variant rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}
+        className={`w-[380px] max-w-[calc(100vw-2rem)] h-[550px] max-h-[calc(100vh-4rem)] bg-white border border-gray-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right mb-4 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 hidden'}`}
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-primary-container p-4 flex items-center justify-between shadow-md relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-inner overflow-hidden border-2 border-surface">
+        {/* Header - Drag Handle */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-4 flex items-center justify-between shadow-md relative z-10 cursor-move">
+          <div className="flex items-center gap-3 pointer-events-none">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-inner overflow-hidden border-2 border-white">
               <img src="/siska-avatar.png" alt="Siska" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h3 className="font-bold text-on-primary text-sm flex items-center gap-1">
+              <h3 className="font-bold text-white text-sm flex items-center gap-1">
                 Dek Siska <Sparkles size={12} className="text-yellow-300" />
               </h3>
-              <p className="text-[10px] text-on-primary/80 font-medium">SEO & AdSense Expert</p>
+              <p className="text-[10px] text-blue-100 font-medium">SEO & AdSense Expert</p>
             </div>
           </div>
           <button 
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={() => setIsOpen(false)}
-            className="p-2 text-on-primary/80 hover:text-on-primary hover:bg-on-primary/10 rounded-full transition-colors"
+            className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-full transition-colors cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-variant">
+        {/* Messages - Not draggable */}
+        <div 
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 cursor-auto"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
                 msg.role === 'user' 
-                  ? 'bg-primary text-on-primary rounded-tr-sm shadow-md' 
-                  : 'bg-surface border border-outline-variant text-on-surface rounded-tl-sm shadow-md'
+                  ? 'bg-blue-600 text-white rounded-tr-sm shadow-md' 
+                  : 'bg-white border border-gray-200 text-gray-900 rounded-tl-sm shadow-md'
               }`}>
                 {msg.role === 'user' ? (
                   msg.content
                 ) : (
-                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-surface-variant/50 prose-pre:text-on-surface">
+                  <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-gray-100 prose-pre:text-gray-900">
                     <ReactMarkdown>{msg.content}</ReactMarkdown>
                   </div>
                 )}
@@ -115,19 +117,23 @@ export default function SiskaChat() {
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-surface border border-outline-variant rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex gap-1 items-center h-[44px]">
-                <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex gap-1 items-center h-[44px]">
+                <div className="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 bg-blue-500/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSend} className="p-3 bg-surface border-t border-outline-variant flex gap-2 items-end z-10">
-          <div className="flex-1 bg-surface-variant/30 border border-outline-variant/50 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all flex items-center">
+        {/* Input - Not draggable */}
+        <form 
+          onSubmit={handleSend} 
+          className="p-3 bg-white border-t border-gray-200 flex gap-2 items-end z-10 cursor-auto"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <div className="flex-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all flex items-center">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -138,19 +144,27 @@ export default function SiskaChat() {
                 }
               }}
               placeholder="Tanya Siska soal ide artikel..."
-              className="w-full bg-transparent text-sm text-on-surface focus:outline-none resize-none max-h-32 min-h-[40px] py-2 custom-scrollbar"
+              className="w-full bg-transparent text-sm text-gray-900 focus:outline-none resize-none max-h-32 min-h-[40px] py-2 custom-scrollbar"
               rows={1}
             />
           </div>
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="p-3 bg-primary text-on-primary rounded-xl hover:bg-primary/90 disabled:bg-surface-variant disabled:text-on-surface-variant transition-colors shrink-0 shadow-md h-[44px] flex items-center justify-center mb-0.5"
+            className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 transition-colors shrink-0 shadow-md h-[44px] flex items-center justify-center mb-0.5 cursor-pointer"
           >
             <Send size={18} className={input.trim() && !isLoading ? 'translate-x-0.5 -translate-y-0.5 transition-transform' : ''} />
           </button>
         </form>
       </div>
-    </>
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className={`p-4 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-move ${isOpen ? 'scale-0 opacity-0 hidden' : 'scale-100 opacity-100'}`}
+      >
+        <Sparkles size={24} className="animate-pulse pointer-events-none" />
+      </button>
+    </motion.div>
   );
 }
