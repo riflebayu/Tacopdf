@@ -499,7 +499,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 </div>
               </div>
 
-              <div className="p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl">
+              <div className="p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl transition-all">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input 
                     type="checkbox"
@@ -511,15 +511,60 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 </label>
                 
                 {isScheduled && (
-                  <div className="mt-4">
-                    <label className="block text-xs font-medium text-on-surface-variant mb-2">Tanggal & Waktu Publish</label>
-                    <input 
-                      type="datetime-local"
-                      value={scheduledDate}
-                      onChange={(e) => setScheduledDate(e.target.value)}
-                      className="w-full p-3 bg-surface border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
-                      required={isScheduled}
-                    />
+                  <div className="mt-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="flex flex-col gap-1">
+                      <label className="block text-xs font-bold text-on-surface-variant">Tanggal & Waktu Publish (WIB - Jakarta)</label>
+                      <p className="text-[11px] text-on-surface-variant/70 italic mb-2">
+                        Rujukan waktu saat ini: {new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' })} WIB
+                      </p>
+                      <input 
+                        type="datetime-local"
+                        value={scheduledDate}
+                        onChange={(e) => setScheduledDate(e.target.value)}
+                        className="w-full p-3 bg-surface border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-medium"
+                        required={isScheduled}
+                      />
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date();
+                          d.setHours(d.getHours() + 1);
+                          d.setMinutes(0);
+                          // Format to YYYY-MM-DDTHH:mm
+                          setScheduledDate(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+                        }}
+                        className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors font-medium"
+                      >
+                        +1 Jam
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date();
+                          d.setDate(d.getDate() + 1);
+                          d.setHours(8, 0, 0, 0);
+                          setScheduledDate(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+                        }}
+                        className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors font-medium"
+                      >
+                        Besok Pagi (08:00)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date();
+                          d.setDate(d.getDate() + 1);
+                          d.setHours(19, 0, 0, 0);
+                          setScheduledDate(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+                        }}
+                        className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors font-medium"
+                      >
+                        Besok Malam (19:00)
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
