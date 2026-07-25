@@ -2981,15 +2981,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           </div>
         </div>
 
-        {/* AdSense Ready Slot */}
-        <div className="pt-6 border-t border-outline-variant/40 flex justify-center">
-          <div className="w-full bg-surface-container-low py-4 flex justify-center rounded-lg border border-outline-variant/35">
-            <div className="w-[728px] max-w-[90vw] h-[90px] bg-surface-container-highest border border-outline-variant flex flex-col items-center justify-center text-on-surface-variant font-sans rounded-md select-none transition-all hover:border-primary/20">
-              <span className="text-xs uppercase tracking-widest font-semibold text-primary/60">Sponsor</span>
-              <span className="text-sm font-medium animate-pulse">AdSense Placeholder (728x90)</span>
-            </div>
-          </div>
-        </div>
+
       </div>
 
       {/* PDF Preview Modal */}
