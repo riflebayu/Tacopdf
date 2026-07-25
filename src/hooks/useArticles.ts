@@ -40,12 +40,29 @@ export const useArticles = () => {
             lastUpdatedStr = data.createdAt.toDate().toISOString();
           }
 
+          const status = data.status || 'published';
+          let scheduledAtStr: string | undefined = undefined;
+          if (data.scheduledAt) {
+            // Check if it's a Firestore timestamp or a string
+            scheduledAtStr = typeof data.scheduledAt.toDate === 'function' 
+              ? data.scheduledAt.toDate().toISOString() 
+              : new Date(data.scheduledAt).toISOString();
+          }
+          
+          let isPublic = true;
+          if (status === 'scheduled' && scheduledAtStr) {
+            isPublic = new Date(scheduledAtStr) <= new Date();
+          }
+
           fetchedArticles.push({
             id: doc.id,
             author: data.author || 'TacoPDF Team',
             lastUpdated: lastUpdatedStr,
             featuredImage: data.featuredImage || '',
             translations: data.translations || {},
+            status,
+            scheduledAt: scheduledAtStr,
+            isPublic
           });
         });
 

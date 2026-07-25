@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2 } from 'lucide-react';
+import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2, Calendar } from 'lucide-react';
 import { auth } from '../firebaseAuth';
 import { signOut } from 'firebase/auth';
 import { db } from '../firebase';
@@ -31,6 +31,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<{ type: 'success' | 'error' | '', message: string }>({ type: '', message: '' });
   const [targetLanguages, setTargetLanguages] = useState<string[]>(LANGUAGES.map(l => l.code));
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [scheduledDate, setScheduledDate] = useState('');
 
   // Article Management State
   const { articles, loading: loadingArticles } = useArticles();
@@ -277,10 +279,18 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                           <h3 className="font-bold text-on-surface truncate">
                             {article.translations['en']?.title || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]]?.title : 'Untitled Article')}
                           </h3>
-                          <div className="text-xs text-on-surface-variant flex gap-3 mt-1">
+                          <div className="text-xs text-on-surface-variant flex items-center gap-3 mt-1">
                             <span>{new Date(article.lastUpdated).toLocaleDateString()} {new Date(article.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             <span>•</span>
                             <span>{Object.keys(article.translations).length} Bahasa</span>
+                            {article.status === 'scheduled' && (
+                              <>
+                                <span>•</span>
+                                <span className="flex items-center gap-1 text-primary bg-primary/10 px-2 py-0.5 rounded-full font-semibold">
+                                  <Calendar size={12} /> Scheduled
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -487,6 +497,31 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     </label>
                   ))}
                 </div>
+              </div>
+
+              <div className="p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox"
+                    checked={isScheduled}
+                    onChange={(e) => setIsScheduled(e.target.checked)}
+                    className="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2"
+                  />
+                  <span className="text-sm font-bold text-on-surface flex items-center gap-2"><Calendar size={16} /> Jadwalkan Posting (Schedule)</span>
+                </label>
+                
+                {isScheduled && (
+                  <div className="mt-4">
+                    <label className="block text-xs font-medium text-on-surface-variant mb-2">Tanggal & Waktu Publish</label>
+                    <input 
+                      type="datetime-local"
+                      value={scheduledDate}
+                      onChange={(e) => setScheduledDate(e.target.value)}
+                      className="w-full p-3 bg-surface border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                      required={isScheduled}
+                    />
+                  </div>
+                )}
               </div>
 
               <button 

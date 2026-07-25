@@ -35,13 +35,13 @@ export default function BlogIndex() {
         <div className="text-center py-20 text-error font-medium bg-error/10 rounded-3xl">
           {error}
         </div>
-      ) : BLOG_ARTICLES.length === 0 ? (
+      ) : BLOG_ARTICLES.filter(a => a.isPublic).length === 0 ? (
         <div className="text-center py-20 text-on-surface-variant bg-surface-variant/30 rounded-3xl">
           No articles published yet. Check back soon!
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {BLOG_ARTICLES.map((article) => {
+          {BLOG_ARTICLES.filter(a => a.isPublic).map((article) => {
           // Strict SEO Isolation: Only show the article if it is translated in the current active language
           const translation = article.translations[lang];
           if (!translation) return null;

@@ -28,8 +28,8 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
     );
   }
 
-  if (error || !article) {
-    // Redirect to the blog index of the current language if the slug does not match
+  if (error || !article || !article.isPublic) {
+    // Redirect to the blog index of the current language if the slug does not match or article is not public yet
     return <Navigate replace to="/blog" />;
   }
 

@@ -13,4 +13,7 @@ export interface ArticleData {
   translations: {
     [key: string]: ArticleTranslation; // 'en', 'id', 'es', 'ja', 'pt', 'de', 'fr'
   };
+  status?: string; // 'published' | 'scheduled'
+  scheduledAt?: string; // ISO string representing scheduled publish time
+  isPublic?: boolean; // Derived field: true if published or (scheduled and time has passed)
 }
