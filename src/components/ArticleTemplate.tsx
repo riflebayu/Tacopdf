@@ -142,6 +142,13 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
             <Calendar size={18} className="text-primary" />
             <time dateTime={article.lastUpdated}>{formattedDate}</time>
           </div>
+          {translation.category && (
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full">
+                {translation.category}
+              </span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -164,6 +171,17 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
           {translation.content}
         </ReactMarkdown>
       </div>
+
+      {/* Tags Section */}
+      {translation.tags && translation.tags.length > 0 && (
+        <div className="mt-12 flex flex-wrap gap-2">
+          {translation.tags.map(tag => (
+            <span key={tag} className="px-3 py-1.5 bg-surface-variant/30 text-on-surface-variant text-sm font-medium rounded-lg border border-outline-variant/50">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Author Bio (E-E-A-T Enhancement) */}
       <footer className="mt-20 pt-10 border-t border-outline-variant/30">

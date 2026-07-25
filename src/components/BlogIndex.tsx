@@ -77,6 +77,14 @@ export default function BlogIndex() {
                   </div>
                 </div>
 
+                {translation.category && (
+                  <div className="mb-3">
+                    <span className="inline-block px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full">
+                      {translation.category}
+                    </span>
+                  </div>
+                )}
+
                 <LocalizedLink to={`/blog/${translation.slug}`} className="block mb-4">
                   <h2 className="text-xl font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2">
                     {translation.title}
