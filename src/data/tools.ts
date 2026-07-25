@@ -7,6 +7,7 @@ export const TOOLS: PDFTool[] = [
   { id: 'rotate', name: 'Rotate PDF', description: 'Rotate specific pages or all pages in your PDF by 90, 180, or 270 degrees.', category: 'manipulation', icon: 'rotate', active: true },
   { id: 'delete-pages', name: 'Delete Pages', description: 'Remove unwanted pages from your PDF file and shrink document size.', category: 'manipulation', icon: 'delete-pages', active: true },
   { id: 'extract-pages', name: 'Extract Pages', description: 'Select and save only the pages you need as a separate new PDF.', category: 'manipulation', icon: 'extract-pages', active: true },
+  { id: 'compress-pdf', name: 'Compress PDF', description: 'Reduce PDF file size while maintaining maximum visual quality locally.', category: 'manipulation', icon: 'compress-pdf', active: true },
   
   // Security
   { id: 'protect', name: 'Protect PDF', description: 'Encrypt and secure your PDF document with a strong password locally.', category: 'security', icon: 'protect', active: true },

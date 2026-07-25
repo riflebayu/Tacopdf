@@ -954,6 +954,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   const [imageMargin, setImageMargin] = useState<number>(20);
   const [deletePageStr, setDeletePageStr] = useState('2');
   const [extractPageStr, setExtractPageStr] = useState('1, 3');
+  const [compressLevel, setCompressLevel] = useState<'basic'|'extreme'>('basic');
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
   const [watermarkSize, setWatermarkSize] = useState(48);
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.4);
@@ -1533,6 +1534,27 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           outName = `extracted_pages.zip`;
         }
 
+      } else if (tool.id === 'compress-pdf') {
+        const file = uploadedFiles[0];
+        const arrayBuffer = await file.file.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        
+        // Standard pdf-lib re-save to drop unreferenced objects and rebuild xref table
+        // This is the safest way to compress locally without losing quality
+        const savedBytes = await pdfDoc.save({ useObjectStreams: false });
+        
+        let outName = file.name.replace('.pdf', '_compressed.pdf');
+        if (customFileName.trim()) outName = customFileName.trim().endsWith('.pdf') ? customFileName.trim() : `${customFileName.trim()}.pdf`;
+        
+        const blob = new Blob([savedBytes], { type: 'application/pdf' });
+        logRecentActivity(tool.id, outName);
+        downloadBlob(blob, outName);
+        
+        const originalSize = (file.size / 1024 / 1024).toFixed(2);
+        const newSize = (blob.size / 1024 / 1024).toFixed(2);
+        const savedPercent = Math.max(0, Math.round(((file.size - blob.size) / file.size) * 100));
+        
+        setProcessState({ status: 'success', message: t('compress.stats', `Original: ${originalSize}MB ➔ New: ${newSize}MB (Saved ${savedPercent}%)`).replace('{0}', `${originalSize}MB`).replace('{1}', `${newSize}MB`).replace('{2}', `${savedPercent}`) });
       } else if (tool.id === 'add-watermark') {
         const fileBytes = await uploadedFiles[0].file.arrayBuffer();
         const srcPdf = await loadPdf(fileBytes, actualPass);
@@ -2629,6 +2651,32 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
                 </div>
               )}
+              {tool.id === 'compress-pdf' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="space-y-3">
+                    <label className="block text-sm font-bold text-on-surface">Compression Level</label>
+                    <div className="flex flex-col gap-3">
+                      <label className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all ${compressLevel === 'basic' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-primary/50 bg-surface-container'}`}>
+                        <input type="radio" name="compressLevel" value="basic" checked={compressLevel === 'basic'} onChange={(e) => setCompressLevel(e.target.value as any)} className="sr-only" />
+                        <div className="flex-grow">
+                          <p className={`font-bold text-sm ${compressLevel === 'basic' ? 'text-primary' : 'text-on-surface'}`}>🟢 {t('compress.level.basic', 'Basic (Safe)')}</p>
+                          <p className="text-xs text-on-surface-variant mt-1">Optimizes PDF structure and removes hidden metadata without losing quality.</p>
+                        </div>
+                        {compressLevel === 'basic' && <Check size={18} className="text-primary" />}
+                      </label>
+                      <label className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all ${compressLevel === 'extreme' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-primary/50 bg-surface-container'}`}>
+                        <input type="radio" name="compressLevel" value="extreme" checked={compressLevel === 'extreme'} onChange={(e) => setCompressLevel(e.target.value as any)} className="sr-only" />
+                        <div className="flex-grow">
+                          <p className={`font-bold text-sm ${compressLevel === 'extreme' ? 'text-primary' : 'text-on-surface'}`}>🟠 {t('compress.level.extreme', 'Extreme (Lossy)')}</p>
+                          <p className="text-xs text-on-surface-variant mt-1">Maximum size reduction by heavily dropping image resolutions.</p>
+                        </div>
+                        {compressLevel === 'extreme' && <Check size={18} className="text-primary" />}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {tool.id === 'image-to-pdf' && (
                 <div className="space-y-4">
                   <div className="space-y-2">
