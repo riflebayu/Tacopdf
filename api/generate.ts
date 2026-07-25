@@ -108,7 +108,7 @@ ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}
         responseMimeType: "application/json",
       },
       systemInstruction: systemInstruction,
-    }, { apiVersion: "v1" });
+    });
 
     const result = await model.generateContent(userPrompt);
     const responseText = result.response.text();

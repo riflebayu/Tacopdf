@@ -48,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         maxOutputTokens: 1024,
       },
       systemInstruction: SYSTEM_PROMPT,
-    }, { apiVersion: "v1" });
+    });
 
     const geminiMessages = recentMessages.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
