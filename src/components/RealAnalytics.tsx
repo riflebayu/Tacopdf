@@ -53,6 +53,9 @@ export function RealAnalytics() {
     };
 
     fetchAnalytics();
+    const intervalId = setInterval(fetchAnalytics, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loading) {
