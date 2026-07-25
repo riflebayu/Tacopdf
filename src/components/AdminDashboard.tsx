@@ -114,47 +114,64 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return;
       }
 
-      setPublishStatus({ type: '', message: 'Generating article using Groq AI (Llama 3)...' });
-      
-      // Fetch to Vercel Serverless Function
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          keyword,
-          content: useRawContent ? content : '',
-          customPrompt: useCustomPrompt ? customPrompt : '',
-          imageUrl,
-          targetLanguages,
-        }),
-      });
-
-      if (!response.ok) {
-        let errorMsg = `API returned ${response.status}: ${response.statusText}`;
-        try {
-          const errData = await response.json();
-          if (errData.details) errorMsg = errData.details;
-          else if (errData.error) errorMsg = errData.error;
-        } catch (e) {
-          // ignore json parse error
+      // Chunk languages into groups of 2 to avoid hitting the 8192 token output limit per API request
+      const chunkArray = (arr: string[], size: number) => {
+        const result = [];
+        for (let i = 0; i < arr.length; i += size) {
+          result.push(arr.slice(i, i + size));
         }
-        throw new Error(errorMsg);
-      }
-
-      const responseData = await response.json();
+        return result;
+      };
       
-      if (responseData.error) {
-        throw new Error(responseData.error);
+      const targetChunks = chunkArray(targetLanguages, 2);
+      let finalGeneratedData: any = {};
+      
+      for (let i = 0; i < targetChunks.length; i++) {
+        const chunk = targetChunks[i];
+        setPublishStatus({ type: '', message: `Generating translations (Batch ${i + 1} of ${targetChunks.length}): ${chunk.join(', ')}...` });
+        
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title,
+            keyword,
+            content: useRawContent ? content : '',
+            customPrompt: useCustomPrompt ? customPrompt : '',
+            imageUrl,
+            targetLanguages: chunk,
+          }),
+        });
+
+        if (!response.ok) {
+          let errorMsg = `API returned ${response.status}: ${response.statusText}`;
+          try {
+            const errData = await response.json();
+            if (errData.details) errorMsg = errData.details;
+            else if (errData.error) errorMsg = errData.error;
+          } catch (e) {
+            console.error(e);
+          }
+          throw new Error(errorMsg);
+        }
+
+        const responseData = await response.json();
+        
+        if (responseData.error) {
+          throw new Error(responseData.error);
+        }
+
+        // Merge this chunk's generated data into the final object
+        finalGeneratedData = { ...finalGeneratedData, ...responseData.generatedData };
       }
 
-      setPublishStatus({ type: '', message: 'Saving generated article to Firestore...' });
+      setPublishStatus({ type: '', message: 'Saving complete article to Firestore...' });
 
-      // Save complete article data to Firestore
+      // Save to Firestore
       await addDoc(collection(db, "articles"), {
-        translations: responseData.generatedData,
+        translations: finalGeneratedData,
         featuredImage: imageUrl,
         status: "published",
         author: "Muhammad Bayu Edi",
@@ -176,7 +193,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
       const newArticle = {
         id: Math.random().toString(), // temp ID
-        translations: responseData.generatedData,
+        translations: finalGeneratedData,
         featuredImage: imageUrl,
         status: "published",
         author: "Muhammad Bayu Edi",
