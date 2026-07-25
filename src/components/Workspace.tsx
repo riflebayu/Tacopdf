@@ -1541,11 +1541,48 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         
         let savedBytes;
         try {
-          const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-          savedBytes = await pdfDoc.save(); // useObjectStreams is true by default
+          if (compressLevel === 'extreme') {
+             const fileBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
+             const fileBlobUrl = URL.createObjectURL(fileBlob);
+             const loadingTask = pdfjsLib.getDocument(fileBlobUrl);
+             const srcPdf = await loadingTask.promise;
+             const newPdf = await PDFDocument.create();
+             
+             for (let i = 1; i <= srcPdf.numPages; i++) {
+                setProcessingState({
+                  status: 'processing',
+                  progress: Math.floor(10 + ((i / srcPdf.numPages) * 70)),
+                  message: t('progress.compressing_page', `Compressing page ${i} of ${srcPdf.numPages}`)
+                });
+                
+                const page = await srcPdf.getPage(i);
+                const viewport = page.getViewport({ scale: 1.5 }); // Good balance of size/quality
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                
+                if (context) {
+                    context.fillStyle = 'white';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                
+                await page.render({ canvasContext: context!, viewport: viewport }).promise;
+                const imgDataUrl = canvas.toDataURL('image/jpeg', 0.65); // Aggressive lossy compression
+                const imgImage = await newPdf.embedJpg(imgDataUrl);
+                
+                const newPage = newPdf.addPage([viewport.width, viewport.height]);
+                newPage.drawImage(imgImage, { x: 0, y: 0, width: viewport.width, height: viewport.height });
+             }
+             URL.revokeObjectURL(fileBlobUrl);
+             savedBytes = await newPdf.save();
+          } else {
+             const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+             savedBytes = await pdfDoc.save(); 
+          }
         } catch (e) {
-          console.error("PDF-lib compression error:", e);
-          throw new Error(t('error.general_processing'));
+          console.error("PDF compression error:", e);
+          throw new Error(t('error.general_processing') || 'Compression failed');
         }
         
         if (savedBytes && savedBytes.length < file.size) {
