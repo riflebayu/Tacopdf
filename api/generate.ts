@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Groq from 'groq-sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize Groq SDK
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
+// Initialize Gemini SDK
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export default async function handler(
   req: VercelRequest,
@@ -33,8 +33,8 @@ export default async function handler(
       return res.status(400).json({ error: 'Missing required fields: title or keyword' });
     }
 
-    if (!process.env.GROQ_API_KEY) {
-      throw new Error("GROQ_API_KEY is not defined in the environment variables. Please add it in Vercel.");
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not defined in the environment variables. Please add it in Vercel.");
     }
 
     const langNames: Record<string, string> = {
@@ -101,19 +101,20 @@ ${content ? `Raw Content: ${content}` : 'Instruksi: Buat artikel dari nol berdas
 
 ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        { role: "system", content: systemInstruction },
-        { role: "user", content: userPrompt }
-      ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.5,
-      response_format: { type: "json_object" }
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        temperature: 0.5,
+        responseMimeType: "application/json",
+      },
+      systemInstruction: systemInstruction,
     });
 
-    const responseText = chatCompletion.choices[0]?.message?.content;
+    const result = await model.generateContent(userPrompt);
+    const responseText = result.response.text();
+    
     if (!responseText) {
-      throw new Error("Empty response from Groq API.");
+      throw new Error("Empty response from Gemini API.");
     }
 
     let generatedJSON = JSON.parse(responseText);
@@ -140,7 +141,7 @@ ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}
     });
 
   } catch (error: any) {
-    console.error('Error generating article via Groq API:', error);
+    console.error('Error generating article via Gemini API:', error);
     return res.status(500).json({ 
       error: 'Internal Server Error', 
       details: error.message || String(error)
