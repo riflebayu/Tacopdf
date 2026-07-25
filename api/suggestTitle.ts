@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Groq from 'groq-sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export default async function handler(
   req: VercelRequest,
@@ -25,8 +25,8 @@ export default async function handler(
     if (!topic) {
       return res.status(400).json({ error: 'Missing topic' });
     }
-    if (!process.env.GROQ_API_KEY) {
-      throw new Error("GROQ_API_KEY is not defined");
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not defined");
     }
 
     const systemInstruction = `Kamu adalah Pakar SEO dan Copywriter Senior.
@@ -49,17 +49,18 @@ Output HARUS berupa JSON object dengan key "suggestions" yang berisi array of ob
 }
 DILARANG memberikan teks apa pun di luar JSON tersebut.`;
 
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        { role: "system", content: systemInstruction },
-        { role: "user", content: `Topik kasar: ${topic}` }
-      ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.7,
-      response_format: { type: "json_object" }
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        temperature: 0.7,
+        responseMimeType: "application/json",
+      },
+      systemInstruction: systemInstruction,
     });
 
-    const responseText = chatCompletion.choices[0]?.message?.content;
+    const result = await model.generateContent(`Topik kasar: ${topic}`);
+    const responseText = result.response.text();
+    
     if (!responseText) throw new Error("Empty response");
 
     const json = JSON.parse(responseText);

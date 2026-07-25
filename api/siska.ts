@@ -1,9 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import Groq from 'groq-sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 const SYSTEM_PROMPT = `Kamu adalah "Dek Siska", asisten AI virtual pintar yang bekerja khusus untuk platform TacoPDF.com.
 Karakter dan Gaya Bicara:
@@ -43,22 +41,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Hanya ambil 10 pesan terakhir untuk konteks agar hemat token
     const recentMessages = messages.slice(-10);
 
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...recentMessages.map(msg => ({
-          role: msg.role,
-          content: msg.content
-        }))
-      ],
-      model: 'llama-3.3-70b-versatile',
-      temperature: 0.7,
-      max_completion_tokens: 1024,
-      top_p: 1,
-      stream: false,
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 1024,
+      },
+      systemInstruction: SYSTEM_PROMPT,
     });
 
-    const reply = chatCompletion.choices[0]?.message?.content || 'Maaf kak, Siska lagi blank nih. Coba tanya lagi ya!';
+    const geminiMessages = recentMessages.map(msg => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+    const result = await model.generateContent({ contents: geminiMessages });
+    const reply = result.response.text() || 'Maaf kak, Siska lagi blank nih. Coba tanya lagi ya!';
 
     return res.status(200).json({ reply });
   } catch (error: any) {
