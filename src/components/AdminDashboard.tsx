@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2, Calendar, CheckCircle } from 'lucide-react';
+import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2, Calendar, CheckCircle, Leaf } from 'lucide-react';
 import { auth } from '../firebaseAuth';
 import { signOut } from 'firebase/auth';
 import { db } from '../firebase';
@@ -332,7 +332,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   className={`p-1.5 rounded-lg shadow-sm transition-colors ${natureEnabled ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant'}`}
                   title="Toggle Nature Zen Mode"
                 >
-                  <LucideIcon name="Leaf" size={16} />
+                  <Leaf size={16} />
                 </button>
               </div>
             </div>
