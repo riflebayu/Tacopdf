@@ -1537,32 +1537,22 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
       } else if (tool.id === 'compress-pdf') {
         const file = uploadedFiles[0];
-        const fileBytes = await file.file.arrayBuffer();
+        const arrayBuffer = await file.file.arrayBuffer();
         
-        // Use QPDF for genuine structural compression (Flate recompression, object streams)
-        const qpdf = await createBrowserQpdfRunner({
-          workerUrl: qpdfWorkerUrl,
-          wasmUrl: qpdfWasmUrl,
-          qpdfJsUrl: qpdfJsUrl
-        });
-        
-        let qpdfArgs = compressLevel === 'extreme' 
-            ? ['--linearize', '--stream-data=compress', '--object-streams=generate', 'input.pdf', 'output.pdf']
-            : ['--linearize', 'input.pdf', 'output.pdf'];
-            
-        let outputData;
+        let savedBytes;
         try {
-            outputData = await qpdf.runOne({ args: qpdfArgs, input: new Uint8Array(fileBytes) });
+          const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+          savedBytes = await pdfDoc.save(); // useObjectStreams is true by default
         } catch (e) {
-            console.error("QPDF Compression Error:", e);
-            throw new Error(t('error.general_processing') || 'Compression failed.');
+          console.error("PDF-lib compression error:", e);
+          throw new Error(t('error.general_processing'));
         }
         
-        if (outputData && outputData.length < file.size) {
-            outputBytes = outputData;
+        if (savedBytes && savedBytes.length < file.size) {
+            outputBytes = savedBytes;
         } else {
-            // If QPDF couldn't compress it further, keep the original to prevent size bloat
-            outputBytes = new Uint8Array(fileBytes);
+            // If pdf-lib couldn't compress it further, keep the original to prevent size bloat
+            outputBytes = new Uint8Array(arrayBuffer);
         }
         
         outName = file.name.replace('.pdf', '_compressed.pdf');
