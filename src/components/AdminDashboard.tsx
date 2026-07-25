@@ -99,6 +99,29 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
+  const handleAutoViralResearch = async () => {
+    setIsSuggesting(true);
+    setAiSuggestions([]);
+    setTitle(''); // Clear the title field if user wants a brand new suggestion
+    try {
+      const response = await fetch('/api/suggestTitle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: '' })
+      });
+      if (!response.ok) throw new Error("Failed to auto-generate viral topics");
+      const data = await response.json();
+      if (data.suggestions) {
+        setAiSuggestions(data.suggestions);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to get viral topics from Gemini.");
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
+
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !keyword || (useRawContent && !content)) {
@@ -392,15 +415,28 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label className="block text-sm font-bold text-on-surface">Title</label>
-                  <button 
-                    type="button" 
-                    onClick={handleSuggestTitle}
-                    disabled={isSuggesting}
-                    className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-container bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    {isSuggesting ? <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Wand2 size={14} />}
-                    {isSuggesting ? 'Mencari...' : 'Saran Judul AI'}
-                  </button>
+                  <div className="flex gap-2">
+                    <button 
+                      type="button" 
+                      onClick={handleAutoViralResearch}
+                      disabled={isSuggesting}
+                      className="flex items-center gap-1.5 text-xs font-bold text-secondary hover:text-secondary-container bg-secondary/10 hover:bg-secondary/20 px-3 py-1.5 rounded-lg transition-colors"
+                      title="AI akan melakukan riset otomatis untuk mencari 3 topik paling berpotensi viral"
+                    >
+                      {isSuggesting ? <span className="w-3 h-3 border-2 border-secondary border-t-transparent rounded-full animate-spin" /> : <span className="text-sm">✨</span>}
+                      {isSuggesting ? 'Meriset...' : 'Riset Topik Viral (Auto)'}
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={handleSuggestTitle}
+                      disabled={isSuggesting}
+                      className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-container bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors"
+                      title="AI akan memberikan saran judul berdasarkan topik yang Anda ketik"
+                    >
+                      {isSuggesting ? <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Wand2 size={14} />}
+                      Saran Judul
+                    </button>
+                  </div>
                 </div>
                 <input 
                   type="text"
@@ -455,7 +491,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     Raw Content (Markdown)
                     <input type="checkbox" checked={useRawContent} onChange={(e) => setUseRawContent(e.target.checked)} className="rounded text-primary focus:ring-primary w-4 h-4" title="Aktifkan form ini" />
                   </span>
-                  <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">Sent to Groq AI</span>
+                  <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">Sent to Gemini AI</span>
                 </label>
                 {useRawContent ? (
                   <textarea 

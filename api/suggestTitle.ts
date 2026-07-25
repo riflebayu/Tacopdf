@@ -21,18 +21,16 @@ export default async function handler(
   }
 
   try {
-    const { topic } = req.body;
-    if (!topic) {
-      return res.status(400).json({ error: 'Missing topic' });
-    }
+    const { topic } = req.body || {};
+    
     if (!process.env.GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY is not defined");
     }
 
-    const systemInstruction = `Kamu adalah Pakar SEO dan Copywriter Senior.
-Tugas: Berikan 3 ide judul artikel blog yang sangat SEO-friendly, Clickbait elegan, dan Marketing-oriented tentang topik yang diberikan.
-Topik yang diberikan akan berkaitan dengan TacoPDF (sebuah aplikasi web untuk mengelola file PDF secara lokal tanpa upload, aman 100%, menggunakan WebAssembly).
-Setiap ide judul harus disertai 1 "Target Keyword" terbaik untuk SEO.
+    const systemInstruction = `Kamu adalah Pakar SEO dan Content Strategist Senior.
+Tugas: Berikan 3 ide judul artikel blog yang sangat SEO-friendly, berpotensi viral, berpeluang masuk Halaman 1 Google, dan mengundang banyak klik (CTR tinggi).
+Fokus utama adalah tentang TacoPDF (aplikasi web pengelola file PDF lokal tanpa upload, aman 100%, gratis, tanpa batasan, berbasis WebAssembly).
+Setiap ide judul harus disertai 1 "Target Keyword" terbaik untuk SEO. Saran harus relevan dengan produktivitas, manajemen dokumen, atau fitur PDF spesifik.
 
 Output HARUS berupa JSON object dengan key "suggestions" yang berisi array of objects:
 {
@@ -58,7 +56,11 @@ DILARANG memberikan teks apa pun di luar JSON tersebut.`;
       systemInstruction: systemInstruction,
     });
 
-    const result = await model.generateContent(`Topik kasar: ${topic}`);
+    const userPrompt = topic 
+      ? `Topik kasar dari admin: "${topic}". Buat 3 ide judul brilian dan viral berdasarkan topik ini.` 
+      : `Lakukan riset mandiri: Berikan 3 ide judul paling viral, banyak dicari, dan low-competition seputar tips PDF, keamanan dokumen, atau produktivitas digital. Pastikan judulnya sangat menarik untuk diklik.`;
+
+    const result = await model.generateContent(userPrompt);
     const responseText = result.response.text();
     
     if (!responseText) throw new Error("Empty response");
