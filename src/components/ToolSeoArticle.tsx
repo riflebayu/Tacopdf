@@ -1,18 +1,26 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import toolSeoData from '../data/toolSeoData.json';
-import { useLanguage } from '../context/LanguageContext';
 
 interface ToolSeoArticleProps {
   toolId: string;
 }
 
 export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId }) => {
-  const { language } = useLanguage();
+  const location = useLocation();
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const supportedLanguages = ['en', 'id', 'es', 'ja', 'de', 'fr', 'ar'];
+  
+  let currentLang = 'en';
+  if (pathSegments.length > 0 && supportedLanguages.includes(pathSegments[0])) {
+    currentLang = pathSegments[0];
+  }
+
   const toolData = (toolSeoData as Record<string, Record<string, string>>)[toolId];
 
   if (!toolData) return null;
 
-  const content = toolData[language] || toolData['en'];
+  const content = toolData[currentLang] || toolData['en'];
 
   if (!content) return null;
 
