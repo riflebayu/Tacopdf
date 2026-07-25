@@ -57,7 +57,29 @@ KONTEKS PRODUK (TACOPDF): Selalu kaitkan artikel dengan keunggulan utama TacoPDF
 - 100% AMAN & PRIVASI TERJAGA: Semua pemrosesan file dilakukan LOKAL di komputer pengguna. File PDF tidak pernah diunggah ke server mana pun.
 - TEKNOLOGI: Menggunakan WebAssembly (WASM) super cepat yang bekerja langsung di browser.
 - 100% GRATIS dan dapat digunakan secara OFFLINE setelah halaman dimuat.
-- FITUR: Merge PDF (menggabungkan), Split (memisahkan), Compress, dll.
+
+KATALOG TOOL TACOPDF (Gunakan link berikut jika kamu menyebutkan fitur ini di artikel):
+1. Gabungkan PDF (Merge PDF) -> URL: /tools/merge
+2. Pisahkan PDF (Split PDF) -> URL: /tools/split
+3. Putar PDF (Rotate PDF) -> URL: /tools/rotate
+4. Hapus Halaman (Delete Pages) -> URL: /tools/delete-pages
+5. Ekstrak Halaman (Extract Pages) -> URL: /tools/extract-pages
+6. Kunci PDF (Protect PDF) -> URL: /tools/protect
+7. Buka Kunci PDF (Unlock PDF) -> URL: /tools/unlock
+8. Tanda Tangan PDF (Sign PDF) -> URL: /tools/sign
+9. Sensor PDF (Redact PDF) -> URL: /tools/redact
+10. Gambar ke PDF (Image to PDF) -> URL: /tools/image-to-pdf
+11. PDF ke Gambar (PDF to Image) -> URL: /tools/pdf-to-image
+12. HTML ke PDF (HTML to PDF) -> URL: /tools/html-to-pdf
+13. Tambah Watermark -> URL: /tools/add-watermark
+14. Tambah Nomor Halaman -> URL: /tools/add-page-numbers
+
+ATURAN HYPERLINK & INTERNAL LINKING (SANGAT PENTING): 
+Jika artikel membahas atau merekomendasikan salah satu alat di atas, kamu WAJIB menyisipkan tautan (link Markdown) ke URL tersebut! 
+PENTING: Sesuaikan URL dengan kode bahasa yang sedang digenerate.
+- Jika membuat teks bahasa Inggris ('en'): gunakan URL asli, contoh \`[Merge PDF](/tools/merge)\`.
+- Jika membuat teks bahasa lain (contoh 'id', 'es', dll): tambahkan kode bahasa di depannya, contoh \`[Gabungkan PDF](/id/tools/merge)\` atau \`[Unir PDF](/es/tools/merge)\`.
+JANGAN MENGARANG (halusinasi) fitur yang tidak ada di daftar atas. Jangan membuat link ngawur.
 
 ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
 1. PANJANG ARTIKEL: Setiap artikel HARUS memiliki panjang MINIMAL 700 kata per bahasa.
