@@ -1127,6 +1127,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
     try {
       let outputBytes: Uint8Array;
       let outName = '';
+      let customSuccessMessage = '';
 
       if (tool.id === 'merge') {
         const mergedPdf = await PDFDocument.create();
@@ -1541,20 +1542,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         
         // Standard pdf-lib re-save to drop unreferenced objects and rebuild xref table
         // This is the safest way to compress locally without losing quality
-        const savedBytes = await pdfDoc.save({ useObjectStreams: false });
+        outputBytes = await pdfDoc.save({ useObjectStreams: false });
         
-        let outName = file.name.replace('.pdf', '_compressed.pdf');
-        if (customFileName.trim()) outName = customFileName.trim().endsWith('.pdf') ? customFileName.trim() : `${customFileName.trim()}.pdf`;
-        
-        const blob = new Blob([savedBytes], { type: 'application/pdf' });
-        logRecentActivity(tool.id, outName);
-        downloadBlob(blob, outName);
+        outName = file.name.replace('.pdf', '_compressed.pdf');
         
         const originalSize = (file.size / 1024 / 1024).toFixed(2);
-        const newSize = (blob.size / 1024 / 1024).toFixed(2);
-        const savedPercent = Math.max(0, Math.round(((file.size - blob.size) / file.size) * 100));
+        const newSize = (outputBytes.length / 1024 / 1024).toFixed(2);
+        const savedPercent = Math.max(0, Math.round(((file.size - outputBytes.length) / file.size) * 100));
         
-        setProcessState({ status: 'success', message: t('compress.stats', `Original: ${originalSize}MB ➔ New: ${newSize}MB (Saved ${savedPercent}%)`).replace('{0}', `${originalSize}MB`).replace('{1}', `${newSize}MB`).replace('{2}', `${savedPercent}`) });
+        customSuccessMessage = t('compress.stats', `Original: ${originalSize}MB ➔ New: ${newSize}MB (Saved ${savedPercent}%)`).replace('{0}', `${originalSize}MB`).replace('{1}', `${newSize}MB`).replace('{2}', `${savedPercent}`);
       } else if (tool.id === 'add-watermark') {
         const fileBytes = await uploadedFiles[0].file.arrayBuffer();
         const srcPdf = await loadPdf(fileBytes, actualPass);
@@ -1775,7 +1771,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       setProcessingState({
         status: 'success',
         progress: 100,
-        message: t(`progress.success.${tool.id}`) || t('progress.success'),
+        message: customSuccessMessage || (t(`progress.success.${tool.id}`) || t('progress.success')),
         downloadUrl: dlUrl,
         outputFileName: outName,
       });
