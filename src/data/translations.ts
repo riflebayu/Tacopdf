@@ -1,6 +1,11 @@
 export const TRANSLATIONS = {
   "en": {
-        "tool_name.compress_pdf": "Compress PDF",
+            "tool.compress-pdf.tip.title": "COMPRESSION INFO",
+    "tool.compress-pdf.tip.desc": "Choose Basic for a safe optimization without quality loss, or Extreme for maximum size reduction.",
+    "compress.level.title": "Compression Level",
+    "compress.level.basic.desc": "Optimizes PDF structure and removes hidden metadata without losing quality.",
+    "compress.level.extreme.desc": "Maximum size reduction by heavily dropping image resolutions.",
+"tool_name.compress_pdf": "Compress PDF",
     "seo.features.compress_pdf": "Reduce PDF file size locally without losing quality.",
     "tool.compress_pdf.howto.1": "Upload the PDF file you want to compress.",
     "tool.compress_pdf.howto.2": "Select your desired compression level (Basic or Extreme).",
@@ -638,7 +643,12 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Delete Signature"
   },
   "id": {
-        "tool_name.compress_pdf": "Kompres PDF",
+            "tool.compress-pdf.tip.title": "INFO KOMPRESI",
+    "tool.compress-pdf.tip.desc": "Pilih Dasar untuk optimasi aman tanpa merusak kualitas, atau Ekstrem untuk ukuran sekecil mungkin.",
+    "compress.level.title": "Tingkat Kompresi",
+    "compress.level.basic.desc": "Mengoptimalkan struktur PDF dan membuang metadata tanpa merusak gambar.",
+    "compress.level.extreme.desc": "Ukuran terkecil dengan menurunkan resolusi gambar secara agresif.",
+"tool_name.compress_pdf": "Kompres PDF",
     "seo.features.compress_pdf": "Kecilkan ukuran file PDF secara lokal tanpa menurunkan kualitas gambar.",
     "tool.compress_pdf.howto.1": "Unggah file PDF yang ingin Anda kompresi.",
     "tool.compress_pdf.howto.2": "Pilih tingkat kompresi yang diinginkan (Dasar atau Ekstrem).",
@@ -1266,7 +1276,12 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Hapus Tanda Tangan"
   },
   "es": {
-        "tool_name.compress_pdf": "Comprimir PDF",
+            "tool.compress-pdf.tip.title": "INFO COMPRESIÓN",
+    "tool.compress-pdf.tip.desc": "Elige Básico para optimización segura sin pérdida de calidad, o Extremo para máxima reducción.",
+    "compress.level.title": "Nivel de Compresión",
+    "compress.level.basic.desc": "Optimiza la estructura del PDF y elimina metadatos ocultos sin perder calidad.",
+    "compress.level.extreme.desc": "Reducción máxima de tamaño reduciendo drásticamente la resolución de imágenes.",
+"tool_name.compress_pdf": "Comprimir PDF",
     "seo.features.compress_pdf": "Reduce el tamaño del archivo PDF localmente sin perder calidad.",
     "tool.compress_pdf.howto.1": "Sube el archivo PDF que deseas comprimir.",
     "tool.compress_pdf.howto.2": "Selecciona el nivel de compresión deseado (Básico o Extremo).",
@@ -1880,7 +1895,12 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Excluir"
   },
   "ja": {
-        "tool_name.compress_pdf": "PDF圧縮",
+            "tool.compress-pdf.tip.title": "圧縮情報",
+    "tool.compress-pdf.tip.desc": "品質を落とさずに安全に最適化するには「基本」を、最大限縮小するには「極端」を選択します。",
+    "compress.level.title": "圧縮レベル",
+    "compress.level.basic.desc": "品質を維持しながらPDF構造を最適化し、隠しメタデータを削除します。",
+    "compress.level.extreme.desc": "画像の解像度を大幅に下げることでサイズを最小化します。",
+"tool_name.compress_pdf": "PDF圧縮",
     "seo.features.compress_pdf": "品質を落とさずにローカルでPDFファイルサイズを縮小します。",
     "tool.compress_pdf.howto.1": "圧縮したいPDFファイルをアップロードします。",
     "tool.compress_pdf.howto.2": "希望の圧縮レベル（基本または極端）を選択します。",
@@ -2516,7 +2536,12 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "署名の削除",
   },
   "pt": {
-        "tool_name.compress_pdf": "Comprimir PDF",
+            "tool.compress-pdf.tip.title": "INFO COMPRESSÃO",
+    "tool.compress-pdf.tip.desc": "Escolha Básico para otimização segura sem perda de qualidade, ou Extremo para redução máxima.",
+    "compress.level.title": "Nível de Compressão",
+    "compress.level.basic.desc": "Otimiza a estrutura do PDF e remove metadados ocultos sem perder qualidade.",
+    "compress.level.extreme.desc": "Redução máxima de tamanho diminuindo a resolução das imagens.",
+"tool_name.compress_pdf": "Comprimir PDF",
     "seo.features.compress_pdf": "Reduza o tamanho do arquivo PDF localmente sem perder a qualidade.",
     "tool.compress_pdf.howto.1": "Faça upload do arquivo PDF que você deseja comprimir.",
     "tool.compress_pdf.howto.2": "Selecione o nível de compressão desejado (Básico ou Extremo).",
@@ -3153,7 +3178,12 @@ export const TRANSLATIONS = {
   },
 
   "de": {
-        "tool_name.compress_pdf": "PDF Komprimieren",
+            "tool.compress-pdf.tip.title": "KOMPRESSIONS-INFO",
+    "tool.compress-pdf.tip.desc": "Wählen Sie Basis für sichere Optimierung ohne Qualitätsverlust oder Extrem für maximale Reduzierung.",
+    "compress.level.title": "Kompressionsstufe",
+    "compress.level.basic.desc": "Optimiert die PDF-Struktur und entfernt versteckte Metadaten ohne Qualitätsverlust.",
+    "compress.level.extreme.desc": "Maximale Größenreduzierung durch starkes Verringern der Bildauflösung.",
+"tool_name.compress_pdf": "PDF Komprimieren",
     "seo.features.compress_pdf": "PDF-Dateigröße lokal reduzieren, ohne an Qualität zu verlieren.",
     "tool.compress_pdf.howto.1": "Laden Sie die PDF-Datei hoch, die Sie komprimieren möchten.",
     "tool.compress_pdf.howto.2": "Wählen Sie die gewünschte Kompressionsstufe (Basis oder Extrem).",
@@ -3792,7 +3822,12 @@ export const TRANSLATIONS = {
     "history.privacy": "Der Verlauf wird nur lokal auf Ihrem Gerät gespeichert."
   },
   "fr": {
-        "tool_name.compress_pdf": "Compresser PDF",
+            "tool.compress-pdf.tip.title": "INFO COMPRESSION",
+    "tool.compress-pdf.tip.desc": "Choisissez Basique pour une optimisation sans perte, ou Extrême pour une réduction maximale.",
+    "compress.level.title": "Niveau de Compression",
+    "compress.level.basic.desc": "Optimise la structure du PDF et supprime les métadonnées sans perte de qualité.",
+    "compress.level.extreme.desc": "Réduction maximale de la taille en abaissant fortement la résolution des images.",
+"tool_name.compress_pdf": "Compresser PDF",
     "seo.features.compress_pdf": "Réduisez la taille du fichier PDF localement sans perte de qualité.",
     "tool.compress_pdf.howto.1": "Téléchargez le fichier PDF que vous souhaitez compresser.",
     "tool.compress_pdf.howto.2": "Sélectionnez le niveau de compression souhaité (Basique ou Extrême).",

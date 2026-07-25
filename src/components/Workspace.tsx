@@ -2654,13 +2654,13 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               {tool.id === 'compress-pdf' && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="space-y-3">
-                    <label className="block text-sm font-bold text-on-surface">Compression Level</label>
+                    <label className="block text-sm font-bold text-on-surface">{t('compress.level.title', 'Compression Level')}</label>
                     <div className="flex flex-col gap-3">
                       <label className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all ${compressLevel === 'basic' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-primary/50 bg-surface-container'}`}>
                         <input type="radio" name="compressLevel" value="basic" checked={compressLevel === 'basic'} onChange={(e) => setCompressLevel(e.target.value as any)} className="sr-only" />
                         <div className="flex-grow">
                           <p className={`font-bold text-sm ${compressLevel === 'basic' ? 'text-primary' : 'text-on-surface'}`}>🟢 {t('compress.level.basic', 'Basic (Safe)')}</p>
-                          <p className="text-xs text-on-surface-variant mt-1">Optimizes PDF structure and removes hidden metadata without losing quality.</p>
+                          <p className="text-xs text-on-surface-variant mt-1">{t('compress.level.basic.desc', 'Optimizes PDF structure and removes hidden metadata without losing quality.')}</p>
                         </div>
                         {compressLevel === 'basic' && <Check size={18} className="text-primary" />}
                       </label>
@@ -2668,7 +2668,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         <input type="radio" name="compressLevel" value="extreme" checked={compressLevel === 'extreme'} onChange={(e) => setCompressLevel(e.target.value as any)} className="sr-only" />
                         <div className="flex-grow">
                           <p className={`font-bold text-sm ${compressLevel === 'extreme' ? 'text-primary' : 'text-on-surface'}`}>🟠 {t('compress.level.extreme', 'Extreme (Lossy)')}</p>
-                          <p className="text-xs text-on-surface-variant mt-1">Maximum size reduction by heavily dropping image resolutions.</p>
+                          <p className="text-xs text-on-surface-variant mt-1">{t('compress.level.extreme.desc', 'Maximum size reduction by heavily dropping image resolutions.')}</p>
                         </div>
                         {compressLevel === 'extreme' && <Check size={18} className="text-primary" />}
                       </label>
