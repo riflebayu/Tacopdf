@@ -8,6 +8,7 @@ import { collection, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/fi
 import { RealAnalytics } from './RealAnalytics';
 import { useArticles, cachedArticles } from '../hooks/useArticles';
 import { LANGUAGES } from '../context/LanguageContext';
+import { InteractiveNature } from './InteractiveNature';
 import confetti from 'canvas-confetti';
 import RevisionModal from './RevisionModal';
 import DateTimePicker from './DateTimePicker';
@@ -42,6 +43,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [geminiStatus, setGeminiStatus] = useState<'green' | 'red'>('green');
+  const [natureEnabled, setNatureEnabled] = useState(true);
+  const [timeOverride, setTimeOverride] = useState<'auto' | 'day' | 'night'>('auto');
   const [editingArticle, setEditingArticle] = useState<any>(null);
   // We use this local state to instantly hide deleted articles without full refetch
   const [localArticles, setLocalArticles] = useState(articles);
@@ -279,8 +282,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 selection:bg-primary/30">
-      <div className="max-w-[1400px] mx-auto">
+    <div className="min-h-screen bg-surface p-4 md:p-8 font-sans relative">
+      {natureEnabled && <InteractiveNature timeOverride={timeOverride} />}
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-surface-container/80 backdrop-blur-md border border-outline-variant p-6 rounded-3xl shadow-sm">
           <div className="flex items-center gap-4">
@@ -310,15 +314,39 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               </div>
             </div>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-6 py-3 bg-error/10 hover:bg-error/20 text-error border border-error/20 rounded-xl font-bold transition-all shadow-sm cursor-pointer"
-          >
-            <LogOut size={16} /> Keluar (Logout)
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Nature Toggles */}
+            <div className="flex flex-col items-center gap-1 bg-surface-container-high p-1 rounded-xl border border-outline-variant shadow-sm z-50">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setTimeOverride(prev => prev === 'auto' ? 'day' : prev === 'day' ? 'night' : 'auto')}
+                  className="px-2 py-1 bg-surface rounded-lg shadow-sm text-xs font-bold transition-colors hover:bg-surface-variant flex items-center gap-1"
+                  title="Toggle Day/Night Mode"
+                >
+                  {timeOverride === 'auto' && '🔄 Auto'}
+                  {timeOverride === 'day' && '☀️ Day'}
+                  {timeOverride === 'night' && '🌙 Night'}
+                </button>
+                <button
+                  onClick={() => setNatureEnabled(!natureEnabled)}
+                  className={`p-1.5 rounded-lg shadow-sm transition-colors ${natureEnabled ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant'}`}
+                  title="Toggle Nature Zen Mode"
+                >
+                  <LucideIcon name="Leaf" size={16} />
+                </button>
+              </div>
+            </div>
+
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-6 py-3 bg-error/10 hover:bg-error/20 text-error border border-error/20 rounded-xl font-bold transition-all shadow-sm cursor-pointer z-50"
+            >
+              <LogOut size={16} /> Keluar (Logout)
+            </button>
+          </div>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 relative z-10">
           <main className="w-full lg:w-1/2 space-y-8">
             <section>
               <h2 className="text-xl font-bold text-on-surface border-b border-outline-variant pb-2 mb-4">Statistik Penggunaan Real-time</h2>
