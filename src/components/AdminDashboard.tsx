@@ -11,6 +11,7 @@ import { LANGUAGES } from '../context/LanguageContext';
 import confetti from 'canvas-confetti';
 import RevisionModal from './RevisionModal';
 import DateTimePicker from './DateTimePicker';
+import SiskaChat from './SiskaChat';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -603,6 +604,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           }}
         />
       )}
+
+      {/* Siska AI Assistant Widget */}
+      <SiskaChat />
     </div>
   );
 }
