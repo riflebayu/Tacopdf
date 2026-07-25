@@ -10,6 +10,7 @@ import { useArticles, cachedArticles } from '../hooks/useArticles';
 import { LANGUAGES } from '../context/LanguageContext';
 import confetti from 'canvas-confetti';
 import RevisionModal from './RevisionModal';
+import DateTimePicker from './DateTimePicker';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -517,12 +518,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                       <p className="text-[11px] text-on-surface-variant/70 italic mb-2">
                         Rujukan waktu saat ini: {new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' })} WIB
                       </p>
-                      <input 
-                        type="datetime-local"
+                      <DateTimePicker 
                         value={scheduledDate}
-                        onChange={(e) => setScheduledDate(e.target.value)}
-                        className="w-full p-3 bg-surface border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary font-medium"
-                        required={isScheduled}
+                        onChange={(val) => setScheduledDate(val)}
                       />
                     </div>
                     
