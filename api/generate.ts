@@ -69,9 +69,10 @@ ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
 4. SEO OPTIMIZED: Sebarkan kata kunci secara natural (jangan memaksakan/keyword stuffing). Gunakan LSI (Latent Semantic Indexing) keywords.
 5. FORMATTING: Gunakan format Markdown murni yang kaya dan rapi (H2, H3, bold pada kata kunci penting, bullet points \`*\`, numbered lists \`1.\`, dan tabel jika perlu).
 
-LOKALISASI: Buat konten orisinal dan terjemahkan HANYA ke dalam kode bahasa ini: ${langListStr}.
+LOKALISASI SANGAT PENTING: Buat konten orisinal dan terjemahkan ke SEMUA kode bahasa berikut tanpa ada yang terlewat: ${langListStr}.
+DILARANG KERAS MALAS. Kamu WAJIB menghasilkan konten untuk SETIAP bahasa yang diminta. JANGAN LEWATKAN BAHASA APAPUN (terutama pt, fr, dan de).
 
-STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur harus seperti ini:
+STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur JSON HARUS persis seperti ini dan mencakup SEMUA bahasa:
 ${JSON.stringify(jsonStructure, null, 2)}
 Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
@@ -95,7 +96,8 @@ ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}
       ],
       model: "llama-3.3-70b-versatile",
       temperature: 0.5,
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
+      max_tokens: 15000,
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content;
