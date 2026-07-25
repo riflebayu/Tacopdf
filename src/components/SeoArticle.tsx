@@ -16,8 +16,7 @@ export default function SeoArticle() {
       
       <p className="mb-6"><strong>Split PDFs:</strong> Extract specific pages or separate a large document into smaller, more manageable pieces. You can split by page ranges or extract all pages into individual files instantly.</p>
       
-      <p className="mb-6"><strong>Compress PDFs:</strong> Large PDF files can be a nightmare to share or upload. Our compression tool intelligently reduces file sizes while maintaining optimal document quality, making sharing seamless and fast.</p>
-      
+
       <p className="mb-6"><strong>Extract Text (OCR):</strong> Turn scanned documents or images into selectable, searchable, and editable text. By utilizing Optical Character Recognition directly in your browser, you can extract data without relying on external APIs.</p>
       
       <p className="mb-6"><strong>Protect and Unlock:</strong> Secure your sensitive files by adding robust password encryption. Conversely, if you have a password-protected file (and you know the password), you can permanently unlock it for easier future access.</p>
