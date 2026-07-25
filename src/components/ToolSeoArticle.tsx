@@ -9,7 +9,7 @@ interface ToolSeoArticleProps {
 export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId }) => {
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(Boolean);
-  const supportedLanguages = ['en', 'id', 'es', 'ja', 'de', 'fr', 'ar', 'pt'];
+  const supportedLanguages = ['en', 'id', 'es', 'ja', 'de', 'fr', 'pt'];
   
   let currentLang = 'en';
   if (pathSegments.length > 0 && supportedLanguages.includes(pathSegments[0])) {
