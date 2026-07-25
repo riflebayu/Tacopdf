@@ -1537,12 +1537,33 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
       } else if (tool.id === 'compress-pdf') {
         const file = uploadedFiles[0];
-        const arrayBuffer = await file.file.arrayBuffer();
-        const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        const fileBytes = await file.file.arrayBuffer();
         
-        // Standard pdf-lib re-save to drop unreferenced objects and rebuild xref table
-        // This is the safest way to compress locally without losing quality
-        outputBytes = await pdfDoc.save({ useObjectStreams: false });
+        // Use QPDF for genuine structural compression (Flate recompression, object streams)
+        const qpdf = await createBrowserQpdfRunner({
+          workerUrl: qpdfWorkerUrl,
+          wasmUrl: qpdfWasmUrl,
+          qpdfJsUrl: qpdfJsUrl
+        });
+        
+        let qpdfArgs = compressLevel === 'extreme' 
+            ? ['--linearize', '--stream-data=compress', '--object-streams=generate', '--recompress-flate', '--compression-level=9', 'input.pdf', 'output.pdf']
+            : ['--linearize', '--object-streams=generate', 'input.pdf', 'output.pdf'];
+            
+        let outputData;
+        try {
+            outputData = await qpdf.runOne({ args: qpdfArgs, input: new Uint8Array(fileBytes) });
+        } catch (e) {
+            console.error("QPDF Compression Error:", e);
+            throw new Error(t('error.general_processing') || 'Compression failed.');
+        }
+        
+        if (outputData && outputData.length < file.size) {
+            outputBytes = outputData;
+        } else {
+            // If QPDF couldn't compress it further, keep the original to prevent size bloat
+            outputBytes = new Uint8Array(fileBytes);
+        }
         
         outName = file.name.replace('.pdf', '_compressed.pdf');
         
@@ -1550,7 +1571,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const newSize = (outputBytes.length / 1024 / 1024).toFixed(2);
         const savedPercent = Math.max(0, Math.round(((file.size - outputBytes.length) / file.size) * 100));
         
-        customSuccessMessage = t('compress.stats', `Original: ${originalSize}MB ➔ New: ${newSize}MB (Saved ${savedPercent}%)`).replace('{0}', `${originalSize}MB`).replace('{1}', `${newSize}MB`).replace('{2}', `${savedPercent}`);
+        if (savedPercent === 0) {
+            customSuccessMessage = `✨ Optimal: ${originalSize}MB (File is already highly optimized)`;
+        } else {
+            customSuccessMessage = t('compress.stats', `Original: {0}MB ➔ New: {1}MB (Saved {2}%)`).replace('{0}', `${originalSize}`).replace('{1}', `${newSize}`).replace('{2}', `${savedPercent}`);
+        }
       } else if (tool.id === 'add-watermark') {
         const fileBytes = await uploadedFiles[0].file.arrayBuffer();
         const srcPdf = await loadPdf(fileBytes, actualPass);
