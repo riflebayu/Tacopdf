@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2 } from 'lucide-react';
+import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2 } from 'lucide-react';
 import { auth } from '../firebaseAuth';
 import { signOut } from 'firebase/auth';
 import { db } from '../firebase';
@@ -8,6 +8,7 @@ import { collection, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/fi
 import { RealAnalytics } from './RealAnalytics';
 import { useArticles, cachedArticles } from '../hooks/useArticles';
 import { LANGUAGES } from '../context/LanguageContext';
+import confetti from 'canvas-confetti';
 import RevisionModal from './RevisionModal';
 
 interface AdminDashboardProps {
@@ -18,6 +19,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState('workspace');
   
   // AI Auto-Blogging State
+  const [useRawContent, setUseRawContent] = useState(true);
+  const [useCustomPrompt, setUseCustomPrompt] = useState(true);
+  const [aiSuggestions, setAiSuggestions] = useState<{title: string, keyword: string}[]>([]);
+  const [isSuggesting, setIsSuggesting] = useState(false);
   const [title, setTitle] = useState('');
   const [keyword, setKeyword] = useState('');
   const [content, setContent] = useState('');
@@ -64,8 +69,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !keyword || !content) {
-      setPublishStatus({ type: 'error', message: 'Title, Keyword, and Content are required.' });
+    if (!title || !keyword || (useRawContent && !content)) {
+      setPublishStatus({ type: 'error', message: 'Title, Keyword, and (if enabled) Content are required.' });
       return;
     }
     if (targetLanguages.length === 0) {
@@ -94,8 +99,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         body: JSON.stringify({
           title,
           keyword,
-          content,
-          customPrompt,
+          content: useRawContent ? content : '',
+          customPrompt: useCustomPrompt ? customPrompt : '',
           imageUrl,
           targetLanguages,
         }),
@@ -132,18 +137,34 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       
       setPublishStatus({ type: 'success', message: 'Article successfully generated and published via AI!' });
       
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+      });
+      try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+        audio.play().catch(e => console.log('Audio play blocked:', e));
+      } catch (e) { console.log(e); }
+
+      const newArticle = {
+        id: Math.random().toString(), // temp ID
+        translations: responseData.generatedData,
+        featuredImage: imageUrl,
+        status: "published",
+        author: "Muhammad Bayu Edi",
+        lastUpdated: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      };
+      setLocalArticles(prev => [newArticle, ...prev]);
+      
       // Reset form
       setTitle('');
       setKeyword('');
       setContent('');
       setCustomPrompt('');
       setImageUrl('');
-
-      // Invalidate cache so it fetches the new article when the user visits the blog or reloads
-      // We can also force a reload of the page to refresh everything cleanly
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
 
     } catch (error: any) {
       console.error('Publish error:', error);
@@ -214,7 +235,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             {article.translations['en']?.title || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]]?.title : 'Untitled Article')}
                           </h3>
                           <div className="text-xs text-on-surface-variant flex gap-3 mt-1">
-                            <span>{new Date(article.lastUpdated).toLocaleDateString()}</span>
+                            <span>{new Date(article.lastUpdated).toLocaleDateString()} {new Date(article.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             <span>•</span>
                             <span>{Object.keys(article.translations).length} Bahasa</span>
                           </div>
@@ -266,7 +287,18 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               )}
 
               <div>
-                <label className="block text-sm font-bold text-on-surface mb-2">Title</label>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-bold text-on-surface">Title</label>
+                  <button 
+                    type="button" 
+                    onClick={handleSuggestTitle}
+                    disabled={isSuggesting}
+                    className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-container bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    {isSuggesting ? <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Wand2 size={14} />}
+                    {isSuggesting ? 'Mencari...' : 'Saran Judul AI'}
+                  </button>
+                </div>
                 <input 
                   type="text"
                   value={title}
@@ -275,6 +307,31 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   required
                 />
+                {aiSuggestions.length > 0 && (
+                  <div className="mt-2 bg-surface-variant/20 border border-primary/30 rounded-xl overflow-hidden shadow-sm animate-fade-in">
+                    <div className="bg-primary/10 px-3 py-2 text-xs font-bold text-primary border-b border-primary/20">
+                      Pilih Saran Judul Terbaik:
+                    </div>
+                    <ul className="divide-y divide-outline-variant/30">
+                      {aiSuggestions.map((s, idx) => (
+                        <li key={idx}>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              setTitle(s.title);
+                              setKeyword(s.keyword);
+                              setAiSuggestions([]);
+                            }}
+                            className="w-full text-left p-3 hover:bg-primary/5 transition-colors group"
+                          >
+                            <p className="font-bold text-sm text-on-surface group-hover:text-primary">{s.title}</p>
+                            <p className="text-xs text-on-surface-variant mt-1 flex gap-1"><span className="text-primary font-semibold">Keyword:</span> {s.keyword}</p>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -291,29 +348,47 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
               <div>
                 <label className="block text-sm font-bold text-on-surface mb-2 flex justify-between items-center">
-                  <span>Raw Content (Markdown)</span>
+                  <span className="flex items-center gap-2">
+                    Raw Content (Markdown)
+                    <input type="checkbox" checked={useRawContent} onChange={(e) => setUseRawContent(e.target.checked)} className="rounded text-primary focus:ring-primary w-4 h-4" title="Aktifkan form ini" />
+                  </span>
                   <span className="text-xs font-normal text-on-surface-variant bg-surface-variant px-2 py-1 rounded-md">Sent to Groq AI</span>
                 </label>
-                <textarea 
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Write your raw article draft here. Groq AI (Llama 3) will expand and translate it into 7 languages..."
-                  className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[200px] resize-y"
-                  required
-                />
+                {useRawContent ? (
+                  <textarea 
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Write your raw article draft here. Groq AI (Llama 3) will expand and translate it into 7 languages..."
+                    className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[200px] resize-y"
+                    required
+                  />
+                ) : (
+                  <div className="w-full p-4 bg-surface-variant/10 border border-outline-variant/30 rounded-xl text-on-surface-variant/50 text-sm italic text-center">
+                    Raw Content dinonaktifkan. AI akan membuat artikel 100% dari Judul & Keyword secara otomatis.
+                  </div>
+                )}
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-on-surface mb-2 flex justify-between items-center">
-                  <span>Custom Prompt (Opsional)</span>
+                  <span className="flex items-center gap-2">
+                    Custom Prompt (Opsional)
+                    <input type="checkbox" checked={useCustomPrompt} onChange={(e) => setUseCustomPrompt(e.target.checked)} className="rounded text-primary focus:ring-primary w-4 h-4" title="Aktifkan form ini" />
+                  </span>
                   <span className="text-xs font-normal text-primary bg-primary/10 px-2 py-1 rounded-md">AI Command</span>
                 </label>
-                <textarea 
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="Instruksi khusus. Contoh: 'Gunakan gaya bahasa santai ala Gen-Z dan tekankan bahwa iLovePDF itu menyimpan file di server sedangkan kita 100% lokal.'"
-                  className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[100px] resize-y"
-                />
+                {useCustomPrompt ? (
+                  <textarea 
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    placeholder="Instruksi khusus. Contoh: 'Gunakan gaya bahasa santai ala Gen-Z dan tekankan bahwa iLovePDF itu menyimpan file di server sedangkan kita 100% lokal.'"
+                    className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all min-h-[100px] resize-y"
+                  />
+                ) : (
+                  <div className="w-full p-4 bg-surface-variant/10 border border-outline-variant/30 rounded-xl text-on-surface-variant/50 text-sm italic text-center">
+                    Custom Prompt dinonaktifkan.
+                  </div>
+                )}
               </div>
 
               <div>

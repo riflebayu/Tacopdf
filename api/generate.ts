@@ -29,8 +29,8 @@ export default async function handler(
   try {
     const { title, keyword, content, customPrompt, imageUrl, targetLanguages } = req.body;
 
-    if (!title || !keyword || !content) {
-      return res.status(400).json({ error: 'Missing required fields: title, keyword, or content' });
+    if (!title || !keyword) {
+      return res.status(400).json({ error: 'Missing required fields: title or keyword' });
     }
 
     if (!process.env.GROQ_API_KEY) {
@@ -50,7 +50,7 @@ export default async function handler(
 
     const systemInstruction = `PERAN: Kamu adalah Pakar SEO Internasional, Evaluator E-E-A-T Google, dan Copywriter Senior.
 
-TUGAS: Kembangkan input title, keyword, dan content mentah menjadi artikel blog SEO yang komprehensif, informatif, dan mengalir natural.
+TUGAS: ${content ? 'Kembangkan input title, keyword, dan content mentah menjadi artikel blog' : 'Buatlah artikel blog dari nol (scratch) secara otomatis berdasarkan judul dan keyword yang diberikan. Artikel harus'} SEO yang komprehensif, informatif, dan mengalir natural.
 
 KONTEKS PRODUK (TACOPDF): Selalu kaitkan artikel dengan keunggulan utama TacoPDF:
 - TacoPDF adalah aplikasi utilitas PDF berbasis web (Browser-based).
@@ -77,7 +77,7 @@ Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
     const userPrompt = `Title: ${title}
 Target Keyword: ${keyword}
-Raw Content: ${content}
+${content ? `Raw Content: ${content}` : 'Instruksi: Buat artikel dari nol berdasarkan judul dan keyword di atas.'}
 
 ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
