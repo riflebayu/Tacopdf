@@ -177,7 +177,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       await addDoc(collection(db, "articles"), {
         translations: finalGeneratedData,
         featuredImage: imageUrl,
-        status: "published",
+        status: isScheduled && scheduledDate ? "scheduled" : "published",
+        scheduledAt: isScheduled && scheduledDate ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
         createdAt: serverTimestamp()
       });
@@ -199,7 +200,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         id: Math.random().toString(), // temp ID
         translations: finalGeneratedData,
         featuredImage: imageUrl,
-        status: "published",
+        status: isScheduled && scheduledDate ? "scheduled" : "published",
+        scheduledAt: isScheduled && scheduledDate ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
         lastUpdated: new Date().toISOString(),
         createdAt: new Date().toISOString()

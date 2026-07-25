@@ -12,7 +12,7 @@ export default function SiskaChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
-      content: 'Halo kak! Aku Siska, Asisten AI TacoPDF. Aku jago banget soal SEO, AdSense, dan *marketing* PDF! Ada yang bisa Siska bantu hari ini buat ngalahin kompetitor kita? 😉'
+      content: 'Halo Mas! Aku Siska, Asisten AI TacoPDF. Aku jago banget soal SEO, AdSense, dan *marketing* PDF! Ada yang bisa Siska bantu hari ini buat ngalahin kompetitor kita? 😉'
     }
   ]);
   const [input, setInput] = useState('');
@@ -53,7 +53,7 @@ export default function SiskaChat() {
       const data = await response.json();
       setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
     } catch (error) {
-      setMessages((prev) => [...prev, { role: 'assistant', content: 'Waduh kak, maaf banget sistem Siska lagi gangguan nih. Boleh coba sebentar lagi ya! 🙏' }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: 'Waduh Mas, maaf banget sistem Siska lagi gangguan nih. Boleh coba sebentar lagi ya! 🙏' }]);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +77,7 @@ export default function SiskaChat() {
         <div className="bg-gradient-to-r from-primary to-primary-container p-4 flex items-center justify-between shadow-md relative z-10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-surface rounded-full flex items-center justify-center shadow-inner overflow-hidden border-2 border-surface">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Siska&backgroundColor=transparent" alt="Siska" className="w-full h-full object-cover" />
+              <img src="/siska-avatar.png" alt="Siska" className="w-full h-full object-cover" />
             </div>
             <div>
               <h3 className="font-bold text-on-primary text-sm flex items-center gap-1">
@@ -95,13 +95,13 @@ export default function SiskaChat() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-variant/10">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-variant">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
                 msg.role === 'user' 
                   ? 'bg-primary text-on-primary rounded-tr-sm shadow-md' 
-                  : 'bg-surface border border-outline-variant text-on-surface rounded-tl-sm shadow-sm'
+                  : 'bg-surface border border-outline-variant text-on-surface rounded-tl-sm shadow-md'
               }`}>
                 {msg.role === 'user' ? (
                   msg.content
