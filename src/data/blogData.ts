@@ -2,6 +2,8 @@ export interface ArticleTranslation {
   title: string;
   metaDescription: string;
   slug: string;
+  category?: string;
+  tags?: string[];
   content: string;
 }
 

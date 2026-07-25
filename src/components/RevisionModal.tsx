@@ -112,6 +112,39 @@ export default function RevisionModal({ article, onClose, onSuccess }: RevisionM
               />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-bold text-on-surface mb-2">URL Slug ({activeLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  value={currentTranslation.slug || ''}
+                  onChange={(e) => handleChange('slug', e.target.value)}
+                  className="w-full p-3 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-on-surface mb-2">Kategori ({activeLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  value={currentTranslation.category || ''}
+                  onChange={(e) => handleChange('category', e.target.value)}
+                  placeholder="Misal: Tutorial PDF"
+                  className="w-full p-3 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-on-surface mb-2">Tags ({activeLang.toUpperCase()})</label>
+              <input
+                type="text"
+                value={(currentTranslation.tags || []).join(', ')}
+                onChange={(e) => handleChange('tags', e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t))}
+                placeholder="Misal: pdf, konversi, gratis (pisahkan dengan koma)"
+                className="w-full p-3 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
             <div className="flex-1 flex flex-col min-h-[400px]">
               <label className="block text-sm font-bold text-on-surface mb-2">Konten Markdown ({activeLang.toUpperCase()})</label>
               <div className="flex-1 border border-outline-variant rounded-xl overflow-hidden">

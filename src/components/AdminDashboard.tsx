@@ -35,6 +35,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [targetLanguages, setTargetLanguages] = useState<string[]>(LANGUAGES.map(l => l.code));
   const [isScheduled, setIsScheduled] = useState(false);
   const [scheduledDate, setScheduledDate] = useState('');
+  const [isDraft, setIsDraft] = useState(false);
+  const [listTab, setListTab] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
 
   // Article Management State
   const { articles, loading: loadingArticles } = useArticles();
@@ -173,12 +175,16 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
       setPublishStatus({ type: '', message: 'Saving complete article to Firestore...' });
 
+      let finalStatus = "published";
+      if (isDraft) finalStatus = "draft";
+      else if (isScheduled && scheduledDate) finalStatus = "scheduled";
+
       // Save to Firestore
       await addDoc(collection(db, "articles"), {
         translations: finalGeneratedData,
         featuredImage: imageUrl,
-        status: isScheduled && scheduledDate ? "scheduled" : "published",
-        scheduledAt: isScheduled && scheduledDate ? new Date(scheduledDate).toISOString() : null,
+        status: finalStatus,
+        scheduledAt: finalStatus === "scheduled" ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
         createdAt: serverTimestamp()
       });
@@ -200,8 +206,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         id: Math.random().toString(), // temp ID
         translations: finalGeneratedData,
         featuredImage: imageUrl,
-        status: isScheduled && scheduledDate ? "scheduled" : "published",
-        scheduledAt: isScheduled && scheduledDate ? new Date(scheduledDate).toISOString() : null,
+        status: finalStatus,
+        scheduledAt: finalStatus === "scheduled" ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
         lastUpdated: new Date().toISOString(),
         createdAt: new Date().toISOString()
@@ -264,7 +270,20 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-on-surface border-b border-outline-variant pb-2 mb-4">Manajemen Artikel</h2>
+              <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-outline-variant pb-2 mb-4 gap-2">
+                <h2 className="text-xl font-bold text-on-surface">Manajemen Artikel</h2>
+                <div className="flex gap-1 bg-surface-variant/30 p-1 rounded-lg">
+                  {['all', 'published', 'scheduled', 'draft'].map(tab => (
+                    <button 
+                      key={tab} 
+                      onClick={() => setListTab(tab as any)}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer ${listTab === tab ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50'}`}
+                    >
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="bg-surface rounded-3xl border border-outline-variant/30 shadow-sm overflow-hidden">
                 {loadingArticles ? (
                   <div className="p-8 text-center text-on-surface-variant flex items-center justify-center gap-3">
@@ -277,21 +296,40 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   </div>
                 ) : (
                   <ul className="divide-y divide-outline-variant/30">
-                    {localArticles.map((article) => (
+                    {localArticles.filter(a => listTab === 'all' || a.status === listTab).length === 0 ? (
+                       <div className="p-8 text-center text-on-surface-variant">Belum ada artikel di tab ini.</div>
+                    ) : localArticles.filter(a => listTab === 'all' || a.status === listTab).map((article) => {
+                      const t = article.translations['en'] || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]] : null);
+                      return (
                       <li key={article.id} className="p-4 hover:bg-surface-variant/20 transition-colors flex items-center justify-between gap-4">
                         <div className="flex-grow min-w-0">
                           <h3 className="font-bold text-on-surface truncate">
-                            {article.translations['en']?.title || (Object.keys(article.translations).length > 0 ? article.translations[Object.keys(article.translations)[0]]?.title : 'Untitled Article')}
+                            {t?.title || 'Untitled Article'}
                           </h3>
-                          <div className="text-xs text-on-surface-variant flex items-center gap-3 mt-1">
+                          <div className="text-xs text-on-surface-variant flex flex-wrap items-center gap-3 mt-1">
                             <span>{new Date(article.lastUpdated).toLocaleDateString()} {new Date(article.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             <span>•</span>
                             <span>{Object.keys(article.translations).length} Bahasa</span>
+                            
+                            {t?.category && (
+                              <>
+                                <span>•</span>
+                                <span className="bg-secondary/10 text-secondary px-2 py-0.5 rounded-full font-bold">{t.category}</span>
+                              </>
+                            )}
+
                             {article.status === 'scheduled' && (!article.scheduledAt || new Date(article.scheduledAt) > new Date()) ? (
                               <>
                                 <span>•</span>
                                 <span className="flex items-center gap-1 text-primary bg-primary/10 px-2 py-0.5 rounded-full font-semibold">
                                   <Calendar size={12} /> Scheduled
+                                </span>
+                              </>
+                            ) : article.status === 'draft' ? (
+                              <>
+                                <span>•</span>
+                                <span className="flex items-center gap-1 text-orange-600 bg-orange-500/10 px-2 py-0.5 rounded-full font-semibold">
+                                  Draft
                                 </span>
                               </>
                             ) : (
@@ -330,7 +368,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                           </button>
                         </div>
                       </li>
-                    ))}
+                    );
+                  })}
                   </ul>
                 )}
               </div>
@@ -510,18 +549,23 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 </div>
               </div>
 
-              <div className="p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl transition-all">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input 
-                    type="checkbox"
-                    checked={isScheduled}
-                    onChange={(e) => setIsScheduled(e.target.checked)}
-                    className="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2"
-                  />
-                  <span className="text-sm font-bold text-on-surface flex items-center gap-2"><Calendar size={16} /> Jadwalkan Posting (Schedule)</span>
-                </label>
+              <div className="p-4 bg-surface-variant/20 border border-outline-variant/50 rounded-xl transition-all space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="publishMode" checked={!isScheduled && !isDraft} onChange={() => { setIsScheduled(false); setIsDraft(false); }} className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold text-on-surface">Publish</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="publishMode" checked={isScheduled && !isDraft} onChange={() => { setIsScheduled(true); setIsDraft(false); }} className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold text-on-surface flex items-center gap-1"><Calendar size={14} /> Schedule</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="publishMode" checked={isDraft} onChange={() => { setIsDraft(true); setIsScheduled(false); }} className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold text-on-surface">Draft</span>
+                  </label>
+                </div>
                 
-                {isScheduled && (
+                {isScheduled && !isDraft && (
                   <div className="mt-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="flex flex-col gap-1">
                       <label className="block text-xs font-bold text-on-surface-variant">Tanggal & Waktu Publish (WIB - Jakarta)</label>

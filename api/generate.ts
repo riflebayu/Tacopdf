@@ -44,7 +44,7 @@ export default async function handler(
     const langListStr = targets.map(code => `${code} (${langNames[code]})`).join(', ');
 
     const jsonStructure = targets.reduce((acc: any, code: string) => {
-      acc[code] = { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." };
+      acc[code] = { "slug": "...", "title": "...", "metaDescription": "...", "category": "Kategori Singkat (contoh: Tutorial, Tips, Berita)", "tags": ["tag1", "tag2", "tag3"], "content": "..." };
       return acc;
     }, {});
 
