@@ -102,7 +102,7 @@ ${content ? `Raw Content: ${content}` : 'Instruksi: Buat artikel dari nol berdas
 ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
       generationConfig: {
         temperature: 0.5,
         responseMimeType: "application/json",

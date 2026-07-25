@@ -50,7 +50,7 @@ Output HARUS berupa JSON object dengan key "suggestions" yang berisi array of ob
 DILARANG memberikan teks apa pun di luar JSON tersebut.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
       generationConfig: {
         temperature: 0.7,
         responseMimeType: "application/json",
