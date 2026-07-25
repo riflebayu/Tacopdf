@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2, Calendar } from 'lucide-react';
+import { LogOut, FileText, BarChart3, Shield, PenTool, Image as ImageIcon, Send, Trash2, Wand2, Calendar, CheckCircle } from 'lucide-react';
 import { auth } from '../firebaseAuth';
 import { signOut } from 'firebase/auth';
 import { db } from '../firebase';
@@ -287,11 +287,18 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             <span>{new Date(article.lastUpdated).toLocaleDateString()} {new Date(article.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             <span>•</span>
                             <span>{Object.keys(article.translations).length} Bahasa</span>
-                            {article.status === 'scheduled' && (
+                            {article.status === 'scheduled' && (!article.scheduledAt || new Date(article.scheduledAt) > new Date()) ? (
                               <>
                                 <span>•</span>
                                 <span className="flex items-center gap-1 text-primary bg-primary/10 px-2 py-0.5 rounded-full font-semibold">
                                   <Calendar size={12} /> Scheduled
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <span>•</span>
+                                <span className="flex items-center gap-1 text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full font-semibold">
+                                  <CheckCircle size={12} /> Terpublish
                                 </span>
                               </>
                             )}
