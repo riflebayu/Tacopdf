@@ -633,7 +633,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 {isPublishing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-5 h-5 border-2 border-on-surface-variant border-t-transparent rounded-full animate-spin" />
-                    Processing with Groq AI (Llama 3)...
+                    Processing with Gemini (3.6 Flash)...
                   </span>
                 ) : (
                   <>
