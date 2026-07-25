@@ -19,6 +19,7 @@ export default defineConfig(() => {
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
     build: {
+      chunkSizeWarningLimit: 1200,
       modulePreload: false,
       minify: 'terser',
       terserOptions: {
@@ -31,28 +32,40 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            // Core React — tiny, always needed
+            // Core React
             if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
               return 'vendor';
             }
-            // Motion/Framer kept separate so it can be tree-shaken better
-            if (id.includes('node_modules/motion')) {
-              return 'motion';
+            // Markdown Editor and its utilities
+            if (id.includes('node_modules/@uiw/react-md-editor')) {
+              return 'editor';
             }
-            if (id.includes('firebaseAuth') || id.includes('AdminContainer') || id.includes('AdminDashboard') || id.includes('AdminLogin') || id.includes('RealAnalytics')) {
-              return 'AdminContainer';
+            if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/rehype')) {
+              return 'markdown';
             }
-            if (id.includes('firebase/auth')) {
-              return 'AdminContainer';
-            }
-            if (id.includes('firebase')) {
+            // Firebase
+            if (id.includes('node_modules/firebase')) {
               return 'firebase';
             }
-            if (id.includes('pdf-lib')) {
+            // PDF libraries
+            if (id.includes('node_modules/pdf-lib') || id.includes('node_modules/qpdf')) {
               return 'pdf';
             }
-            if (id.includes('lucide-react')) {
-              return 'ui';
+            // AI libraries
+            if (id.includes('node_modules/@google/generative-ai') || id.includes('node_modules/groq-sdk')) {
+              return 'ai';
+            }
+            // Tesseract OCR
+            if (id.includes('node_modules/tesseract.js')) {
+              return 'tesseract';
+            }
+            // Icons
+            if (id.includes('node_modules/lucide-react')) {
+              return 'icons';
+            }
+            // Motion/Framer
+            if (id.includes('node_modules/motion')) {
+              return 'motion';
             }
           }
         }
