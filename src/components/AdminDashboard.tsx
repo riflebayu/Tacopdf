@@ -41,6 +41,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   // Article Management State
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [geminiStatus, setGeminiStatus] = useState<'green' | 'red'>('green');
   const [editingArticle, setEditingArticle] = useState<any>(null);
   // We use this local state to instantly hide deleted articles without full refetch
   const [localArticles, setLocalArticles] = useState(articles);
@@ -86,8 +87,14 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: title })
       });
-      if (!response.ok) throw new Error("Failed to suggest title");
       const data = await response.json();
+      if (!response.ok) {
+        if (data.details && (data.details.includes('429') || data.details.includes('Quota') || data.details.includes('quota'))) {
+          setGeminiStatus('red');
+        }
+        throw new Error(data.details || "Failed to suggest title");
+      }
+      setGeminiStatus('green');
       if (data.suggestions) {
         setAiSuggestions(data.suggestions);
       }
@@ -109,8 +116,14 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: '' })
       });
-      if (!response.ok) throw new Error("Failed to auto-generate viral topics");
       const data = await response.json();
+      if (!response.ok) {
+        if (data.details && (data.details.includes('429') || data.details.includes('Quota') || data.details.includes('quota'))) {
+          setGeminiStatus('red');
+        }
+        throw new Error(data.details || "Failed to auto-generate viral topics");
+      }
+      setGeminiStatus('green');
       if (data.suggestions) {
         setAiSuggestions(data.suggestions);
       }
@@ -183,10 +196,14 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           } catch (e) {
             console.error(e);
           }
+          if (errorMsg.includes('429') || errorMsg.includes('Quota') || errorMsg.includes('quota')) {
+            setGeminiStatus('red');
+          }
           throw new Error(errorMsg);
         }
 
         const responseData = await response.json();
+        setGeminiStatus('green');
         
         if (responseData.error) {
           throw new Error(responseData.error);
@@ -272,9 +289,25 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </div>
             <div>
               <h1 className="text-2xl font-extrabold text-on-surface">TacoPDF Admin</h1>
-              <p className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full inline-block mt-1">
-                SysAdmin: {auth.currentUser?.email}
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <p className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full inline-block">
+                  SysAdmin: {auth.currentUser?.email}
+                </p>
+                {/* Traffic Light Indicator */}
+                <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1 rounded-full border border-outline-variant shadow-sm" title={geminiStatus === 'green' ? 'Gemini API is Active' : 'Gemini API Quota Exceeded'}>
+                  <span className="text-xs font-bold text-on-surface-variant uppercase">API</span>
+                  <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    geminiStatus === 'red' 
+                      ? 'bg-red-500 animate-ping shadow-[0_0_12px_rgba(239,68,68,1)]' 
+                      : 'bg-red-900/20'
+                  }`} />
+                  <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    geminiStatus === 'green' 
+                      ? 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.8)]' 
+                      : 'bg-green-900/20'
+                  }`} />
+                </div>
+              </div>
             </div>
           </div>
           <button 
