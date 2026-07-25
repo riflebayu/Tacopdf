@@ -1,6 +1,8 @@
 export const TRANSLATIONS = {
   "en": {
-            "tool.compress-pdf.tip.title": "COMPRESSION INFO",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Optimal: {0}MB (File is already highly optimized)",
+"tool.compress-pdf.tip.title": "COMPRESSION INFO",
     "tool.compress-pdf.tip.desc": "Choose Basic for a safe optimization without quality loss, or Extreme for maximum size reduction.",
     "compress.level.title": "Compression Level",
     "compress.level.basic.desc": "Optimizes PDF structure and removes hidden metadata without losing quality.",
@@ -643,7 +645,9 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Delete Signature"
   },
   "id": {
-            "tool.compress-pdf.tip.title": "INFO KOMPRESI",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Optimal: {0}MB (File sudah sangat teroptimasi)",
+"tool.compress-pdf.tip.title": "INFO KOMPRESI",
     "tool.compress-pdf.tip.desc": "Pilih Dasar untuk optimasi aman tanpa merusak kualitas, atau Ekstrem untuk ukuran sekecil mungkin.",
     "compress.level.title": "Tingkat Kompresi",
     "compress.level.basic.desc": "Mengoptimalkan struktur PDF dan membuang metadata tanpa merusak gambar.",
@@ -1276,7 +1280,9 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Hapus Tanda Tangan"
   },
   "es": {
-            "tool.compress-pdf.tip.title": "INFO COMPRESIÓN",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Óptimo: {0}MB (El archivo ya está altamente optimizado)",
+"tool.compress-pdf.tip.title": "INFO COMPRESIÓN",
     "tool.compress-pdf.tip.desc": "Elige Básico para optimización segura sin pérdida de calidad, o Extremo para máxima reducción.",
     "compress.level.title": "Nivel de Compresión",
     "compress.level.basic.desc": "Optimiza la estructura del PDF y elimina metadatos ocultos sin perder calidad.",
@@ -1895,7 +1901,9 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Excluir"
   },
   "ja": {
-            "tool.compress-pdf.tip.title": "圧縮情報",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ 最適: {0}MB (ファイルは既に最適化されています)",
+"tool.compress-pdf.tip.title": "圧縮情報",
     "tool.compress-pdf.tip.desc": "品質を落とさずに安全に最適化するには「基本」を、最大限縮小するには「極端」を選択します。",
     "compress.level.title": "圧縮レベル",
     "compress.level.basic.desc": "品質を維持しながらPDF構造を最適化し、隠しメタデータを削除します。",
@@ -2536,7 +2544,9 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "署名の削除",
   },
   "pt": {
-            "tool.compress-pdf.tip.title": "INFO COMPRESSÃO",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Ideal: {0}MB (O arquivo já está altamente otimizado)",
+"tool.compress-pdf.tip.title": "INFO COMPRESSÃO",
     "tool.compress-pdf.tip.desc": "Escolha Básico para otimização segura sem perda de qualidade, ou Extremo para redução máxima.",
     "compress.level.title": "Nível de Compressão",
     "compress.level.basic.desc": "Otimiza a estrutura do PDF e remove metadados ocultos sem perder qualidade.",
@@ -3178,7 +3188,9 @@ export const TRANSLATIONS = {
   },
 
   "de": {
-            "tool.compress-pdf.tip.title": "KOMPRESSIONS-INFO",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Optimal: {0}MB (Datei ist bereits hochgradig optimiert)",
+"tool.compress-pdf.tip.title": "KOMPRESSIONS-INFO",
     "tool.compress-pdf.tip.desc": "Wählen Sie Basis für sichere Optimierung ohne Qualitätsverlust oder Extrem für maximale Reduzierung.",
     "compress.level.title": "Kompressionsstufe",
     "compress.level.basic.desc": "Optimiert die PDF-Struktur und entfernt versteckte Metadaten ohne Qualitätsverlust.",
@@ -3822,7 +3834,9 @@ export const TRANSLATIONS = {
     "history.privacy": "Der Verlauf wird nur lokal auf Ihrem Gerät gespeichert."
   },
   "fr": {
-            "tool.compress-pdf.tip.title": "INFO COMPRESSION",
+                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+    "compress.stats.optimal": "✨ Optimal: {0}MB (Le fichier est déjà hautement optimisé)",
+"tool.compress-pdf.tip.title": "INFO COMPRESSION",
     "tool.compress-pdf.tip.desc": "Choisissez Basique pour une optimisation sans perte, ou Extrême pour une réduction maximale.",
     "compress.level.title": "Niveau de Compression",
     "compress.level.basic.desc": "Optimise la structure du PDF et supprime les métadonnées sans perte de qualité.",

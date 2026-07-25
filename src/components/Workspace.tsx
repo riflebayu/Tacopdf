@@ -1600,7 +1600,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const savedPercent = Math.max(0, Math.round(((file.size - outputBytes.length) / file.size) * 100));
         
         if (savedPercent === 0) {
-            customSuccessMessage = `✨ Optimal: ${originalSize}MB (File is already highly optimized)`;
+            customSuccessMessage = t('compress.stats.optimal', '✨ Optimal: {0}MB (File is already highly optimized)').replace('{0}', `${originalSize}`);
         } else {
             customSuccessMessage = t('compress.stats', `Original: {0}MB ➔ New: {1}MB (Saved {2}%)`).replace('{0}', `${originalSize}`).replace('{1}', `${newSize}`).replace('{2}', `${savedPercent}`);
         }
@@ -2710,6 +2710,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         <div className="flex-grow">
                           <p className={`font-bold text-sm ${compressLevel === 'basic' ? 'text-primary' : 'text-on-surface'}`}>🟢 {t('compress.level.basic', 'Basic (Safe)')}</p>
                           <p className="text-xs text-on-surface-variant mt-1">{t('compress.level.basic.desc', 'Optimizes PDF structure and removes hidden metadata without losing quality.')}</p>
+                          <p className="text-xs text-amber-500/80 mt-1.5 italic font-medium">{t('compress.level.basic.note', 'Note: Size may not change if the PDF is already well-optimized.')}</p>
                         </div>
                         {compressLevel === 'basic' && <Check size={18} className="text-primary" />}
                       </label>
