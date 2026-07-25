@@ -41,14 +41,25 @@ export default async function handler(
       'id': 'Indonesia', 'en': 'Inggris', 'es': 'Spanyol', 'fr': 'Prancis', 'de': 'Jerman', 'ja': 'Jepang', 'pt': 'Portugis'
     };
     const targets = Array.isArray(targetLanguages) && targetLanguages.length > 0 ? targetLanguages : Object.keys(langNames);
-    const langListStr = targets.map(code => `${code} (${langNames[code]})`).join(', ');
+    const chunkArray = (arr: string[], size: number) => {
+      const result = [];
+      for(let i = 0; i < arr.length; i += size) {
+        result.push(arr.slice(i, i + size));
+      }
+      return result;
+    };
 
-    const jsonStructure = targets.reduce((acc: any, code: string) => {
-      acc[code] = { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." };
-      return acc;
-    }, {});
+    // Chunk languages into groups of 2 to avoid hitting the 8192 token output limit
+    const targetChunks = chunkArray(targets, 2);
+    
+    const generateForChunk = async (chunk: string[]) => {
+      const chunkLangListStr = chunk.map(code => `${code} (${langNames[code]})`).join(', ');
+      const chunkJsonStructure = chunk.reduce((acc: any, code: string) => {
+        acc[code] = { "slug": "...", "title": "...", "metaDescription": "...", "content": "..." };
+        return acc;
+      }, {});
 
-    const systemInstruction = `PERAN: Kamu adalah Pakar SEO Internasional, Evaluator E-E-A-T Google, dan Copywriter Senior.
+      const systemInstruction = `PERAN: Kamu adalah Pakar SEO Internasional, Evaluator E-E-A-T Google, dan Copywriter Senior.
 
 TUGAS: ${content ? 'Kembangkan input title, keyword, dan content mentah menjadi artikel blog' : 'Buatlah artikel blog dari nol (scratch) secara otomatis berdasarkan judul dan keyword yang diberikan. Artikel harus'} SEO yang komprehensif, informatif, dan mengalir natural.
 
@@ -69,48 +80,47 @@ ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
 4. SEO OPTIMIZED: Sebarkan kata kunci secara natural (jangan memaksakan/keyword stuffing). Gunakan LSI (Latent Semantic Indexing) keywords.
 5. FORMATTING: Gunakan format Markdown murni yang kaya dan rapi (H2, H3, bold pada kata kunci penting, bullet points \`*\`, numbered lists \`1.\`, dan tabel jika perlu).
 
-LOKALISASI SANGAT PENTING: Buat konten orisinal dan terjemahkan ke SEMUA kode bahasa berikut tanpa ada yang terlewat: ${langListStr}.
-DILARANG KERAS MALAS. Kamu WAJIB menghasilkan konten untuk SETIAP bahasa yang diminta. JANGAN LEWATKAN BAHASA APAPUN (terutama pt, fr, dan de).
+LOKALISASI SANGAT PENTING: Buat konten orisinal dan terjemahkan ke SEMUA kode bahasa berikut tanpa ada yang terlewat: ${chunkLangListStr}.
+DILARANG KERAS MALAS. Kamu WAJIB menghasilkan konten untuk SETIAP bahasa yang diminta.
 
 STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur JSON HARUS persis seperti ini dan mencakup SEMUA bahasa:
-${JSON.stringify(jsonStructure, null, 2)}
+${JSON.stringify(chunkJsonStructure, null, 2)}
 Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
-    const userPrompt = `Title: ${title}
+      const userPrompt = `Title: ${title}
 Target Keyword: ${keyword}
 ${content ? `Raw Content: ${content}` : 'Instruksi: Buat artikel dari nol berdasarkan judul dan keyword di atas.'}
 
 ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
 
-    // Call Groq API with llama-3.3-70b-versatile (very fast and supports JSON mode)
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: systemInstruction
-        },
-        {
-          role: "user",
-          content: userPrompt
-        }
-      ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.5,
-      response_format: { type: "json_object" },
-      max_tokens: 15000,
-    });
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: userPrompt }
+        ],
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.5,
+        response_format: { type: "json_object" }
+      });
 
-    const responseText = chatCompletion.choices[0]?.message?.content;
+      const responseText = chatCompletion.choices[0]?.message?.content;
+      if (!responseText) throw new Error("Empty response from Groq API.");
+      
+      return JSON.parse(responseText);
+    };
+
+    // Execute all chunks in parallel
+    const chunkResults = await Promise.all(targetChunks.map(chunk => generateForChunk(chunk)));
     
-    if (!responseText) {
-      throw new Error("Empty response from Groq API.");
+    // Combine results
+    let finalGeneratedData = {};
+    for (const res of chunkResults) {
+      finalGeneratedData = { ...finalGeneratedData, ...res };
     }
-
-    const generatedJSON = JSON.parse(responseText);
 
     return res.status(200).json({
       message: "AI Generation successful",
-      generatedData: generatedJSON,
+      generatedData: finalGeneratedData,
       imageUrl: imageUrl
     });
 
