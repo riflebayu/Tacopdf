@@ -167,7 +167,34 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
                       prose-headings:text-on-surface prose-h2:text-primary prose-h2:border-b prose-h2:border-outline-variant/30 prose-h2:pb-2
                       prose-a:text-primary hover:prose-a:text-primary-container
                       prose-strong:text-on-surface prose-img:rounded-2xl prose-img:border prose-img:border-outline-variant/30">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ node, href, children, ...props }) => {
+              if (!href) return <a {...props}>{children}</a>;
+              
+              // Handle external links normally
+              if (href.startsWith('http')) {
+                return <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>;
+              }
+
+              // Handle internal links intelligently to prevent double language prefixes (e.g. /id/id/tools/redact)
+              let cleanPath = href;
+              if (cleanPath.startsWith('/')) {
+                const parts = cleanPath.split('/');
+                // Check if the first part after the slash is a language code
+                if (parts.length > 1 && LANGUAGES.some(l => l.code === parts[1])) {
+                  parts.splice(1, 1); // Remove the language code from the path
+                  cleanPath = parts.join('/') || '/';
+                }
+              } else {
+                cleanPath = `/${cleanPath}`; // Ensure it's absolute for LocalizedLink
+              }
+
+              return <LocalizedLink to={cleanPath} {...props}>{children}</LocalizedLink>;
+            }
+          }}
+        >
           {translation.content}
         </ReactMarkdown>
       </div>

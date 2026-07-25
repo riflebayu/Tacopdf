@@ -77,8 +77,7 @@ KATALOG TOOL TACOPDF (Gunakan link berikut jika kamu menyebutkan fitur ini di ar
 ATURAN HYPERLINK & INTERNAL LINKING (SANGAT PENTING): 
 Jika artikel membahas atau merekomendasikan salah satu alat di atas, kamu WAJIB menyisipkan tautan (link Markdown) ke URL tersebut! 
 PENTING: Sesuaikan URL dengan kode bahasa yang sedang digenerate.
-- Jika membuat teks bahasa Inggris ('en'): gunakan URL asli, contoh \`[Merge PDF](/tools/merge)\`.
-- Jika membuat teks bahasa lain (contoh 'id', 'es', dll): tambahkan kode bahasa di depannya, contoh \`[Gabungkan PDF](/id/tools/merge)\` atau \`[Unir PDF](/es/tools/merge)\`.
+- Jika membuat teks bahasa lain (contoh 'id', 'es', dll): TETAP GUNAKAN URL ASLI TANPA KODE BAHASA, contoh \`[Gabungkan PDF](/tools/merge)\` atau \`[Unir PDF](/tools/merge)\`. Sistem akan menambahkan kode bahasa secara otomatis.
 JANGAN MENGARANG (halusinasi) fitur yang tidak ada di daftar atas. Jangan membuat link ngawur.
 
 ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
