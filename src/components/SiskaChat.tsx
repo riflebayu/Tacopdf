@@ -19,6 +19,7 @@ export default function SiskaChat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,6 +65,8 @@ export default function SiskaChat() {
     <motion.div 
       drag 
       dragMomentum={false}
+      onDragStart={() => isDragging.current = true}
+      onDragEnd={() => setTimeout(() => isDragging.current = false, 150)}
       className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end justify-end"
       style={{ touchAction: 'none' }}
     >
@@ -160,7 +163,13 @@ export default function SiskaChat() {
 
       {/* Floating Action Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={(e) => {
+          if (isDragging.current) {
+            e.preventDefault();
+            return;
+          }
+          setIsOpen(true);
+        }}
         className={`p-4 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-move ${isOpen ? 'scale-0 opacity-0 hidden' : 'scale-100 opacity-100'}`}
       >
         <Sparkles size={24} className="animate-pulse pointer-events-none" />
