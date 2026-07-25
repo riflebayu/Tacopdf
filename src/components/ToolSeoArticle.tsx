@@ -1,12 +1,18 @@
 import React from 'react';
 import toolSeoData from '../data/toolSeoData.json';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ToolSeoArticleProps {
   toolId: string;
 }
 
 export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId }) => {
-  const content = (toolSeoData as Record<string, string>)[toolId];
+  const { language } = useLanguage();
+  const toolData = (toolSeoData as Record<string, Record<string, string>>)[toolId];
+
+  if (!toolData) return null;
+
+  const content = toolData[language] || toolData['en'];
 
   if (!content) return null;
 
