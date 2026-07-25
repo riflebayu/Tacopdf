@@ -1,6 +1,6 @@
 export const TRANSLATIONS = {
   "en": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "WARNING: This mode ONLY cleans metadata junk. The PDF size WILL NOT SHRINK if it contains images!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (File is already highly optimized)",
 "tool.compress-pdf.tip.title": "COMPRESSION INFO",
     "tool.compress-pdf.tip.desc": "Choose Basic for a safe optimization without quality loss, or Extreme for maximum size reduction.",
@@ -645,7 +645,7 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Delete Signature"
   },
   "id": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "PERHATIAN: Mode ini HANYA membersihkan sampah metadata. Ukuran PDF TIDAK AKAN BERKURANG jika isinya adalah gambar!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (File sudah sangat teroptimasi)",
 "tool.compress-pdf.tip.title": "INFO KOMPRESI",
     "tool.compress-pdf.tip.desc": "Pilih Dasar untuk optimasi aman tanpa merusak kualitas, atau Ekstrem untuk ukuran sekecil mungkin.",
@@ -1280,7 +1280,7 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Hapus Tanda Tangan"
   },
   "es": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "ADVERTENCIA: Este modo SOLO limpia basura de metadatos. ¡El tamaño del PDF NO SE REDUCIRÁ si contiene imágenes!",
     "compress.stats.optimal": "✨ Óptimo: {0}MB (El archivo ya está altamente optimizado)",
 "tool.compress-pdf.tip.title": "INFO COMPRESIÓN",
     "tool.compress-pdf.tip.desc": "Elige Básico para optimización segura sin pérdida de calidad, o Extremo para máxima reducción.",
@@ -1901,7 +1901,7 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Excluir"
   },
   "ja": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "警告: このモードはメタデータのゴミを消去するだけです。画像が含まれている場合、サイズは縮小しません！",
     "compress.stats.optimal": "✨ 最適: {0}MB (ファイルは既に最適化されています)",
 "tool.compress-pdf.tip.title": "圧縮情報",
     "tool.compress-pdf.tip.desc": "品質を落とさずに安全に最適化するには「基本」を、最大限縮小するには「極端」を選択します。",
@@ -2544,7 +2544,7 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "署名の削除",
   },
   "pt": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "AVISO: Este modo APENAS limpa o lixo de metadados. O tamanho do PDF NÃO DIMINUIRÁ se contiver imagens!",
     "compress.stats.optimal": "✨ Ideal: {0}MB (O arquivo já está altamente otimizado)",
 "tool.compress-pdf.tip.title": "INFO COMPRESSÃO",
     "tool.compress-pdf.tip.desc": "Escolha Básico para otimização segura sem perda de qualidade, ou Extremo para redução máxima.",
@@ -3188,7 +3188,7 @@ export const TRANSLATIONS = {
   },
 
   "de": {
-                "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
+                "compress.level.basic.note": "WARNUNG: Dieser Modus bereinigt NUR Metadaten-Müll. Die PDF-Größe WIRD SICH NICHT VERRINGERN, wenn sie Bilder enthält!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (Datei ist bereits hochgradig optimiert)",
 "tool.compress-pdf.tip.title": "KOMPRESSIONS-INFO",
     "tool.compress-pdf.tip.desc": "Wählen Sie Basis für sichere Optimierung ohne Qualitätsverlust oder Extrem für maximale Reduzierung.",
