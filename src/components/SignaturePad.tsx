@@ -1,20 +1,51 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Upload, Eraser, PenTool, Lock, Unlock } from 'lucide-react';
+import { Upload, Eraser, PenTool, Lock, Unlock, Type } from 'lucide-react';
 
 interface SignaturePadProps {
   onSave: (dataUrl: string | null) => void;
 }
 
+const INK_COLORS = [
+  { name: 'Black', value: '#000000' },
+  { name: 'Blue', value: '#0055FF' },
+  { name: 'Red', value: '#FF0000' },
+];
+
 export default function SignaturePad({ onSave }: SignaturePadProps) {
   const { t } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const typeCanvasRef = useRef<HTMLCanvasElement>(null);
+  
   const [isDrawing, setIsDrawing] = useState(false);
-  const [mode, setMode] = useState<'draw' | 'upload'>('draw');
+  const [mode, setMode] = useState<'draw' | 'upload' | 'type'>('draw');
+  const [inkColor, setInkColor] = useState<string>('#000000');
+  const [typedName, setTypedName] = useState<string>('');
+  
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [hasData, setHasData] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const lockTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const handleSaveWrapper = (dataUrl: string | null) => {
+    onSave(dataUrl);
+    setHasData(!!dataUrl);
+    if (dataUrl) {
+      localStorage.setItem('tacopdf_saved_signature', dataUrl);
+    } else {
+      localStorage.removeItem('tacopdf_saved_signature');
+    }
+  };
+
+  // Load saved signature on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('tacopdf_saved_signature');
+    if (saved) {
+      setUploadedImage(saved);
+      setMode('upload');
+      handleSaveWrapper(saved);
+    }
+  }, []);
 
   // Drawing logic
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -82,41 +113,69 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setHasData(false);
     setIsLocked(false);
     if (lockTimeoutRef.current) clearTimeout(lockTimeoutRef.current);
-    onSave(null); // Clear parent state
+    handleSaveWrapper(null);
   };
 
   const saveCanvasData = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    // Check if canvas is actually empty
     const blank = document.createElement('canvas');
     blank.width = canvas.width;
     blank.height = canvas.height;
     if (canvas.toDataURL() === blank.toDataURL()) {
-      setHasData(false);
-      onSave(null);
+      handleSaveWrapper(null);
     } else {
-      setHasData(true);
-      onSave(canvas.toDataURL('image/png'));
+      handleSaveWrapper(canvas.toDataURL('image/png'));
     }
   };
 
-  // Initialize canvas context
+  // Initialize canvas context for Draw Mode
   useEffect(() => {
     if (mode === 'draw' && canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.strokeStyle = '#000000'; // Always black for signature
-        ctx.lineWidth = 6; // Thicker line for higher resolution
+        ctx.strokeStyle = inkColor;
+        ctx.lineWidth = 6; 
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
       }
     }
-  }, [mode]);
+  }, [mode, inkColor]);
+  
+  // Render typed signature
+  useEffect(() => {
+    if (mode === 'type') {
+      const renderText = () => {
+        const canvas = typeCanvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (typedName.trim()) {
+          ctx.fillStyle = inkColor;
+          ctx.font = '280px "Caveat", cursive';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(typedName, canvas.width / 2, canvas.height / 2);
+          
+          handleSaveWrapper(canvas.toDataURL('image/png'));
+        } else {
+          handleSaveWrapper(null);
+        }
+      };
+      
+      if (document.fonts) {
+        document.fonts.ready.then(renderText);
+      } else {
+        renderText();
+      }
+    }
+  }, [typedName, inkColor, mode]);
 
   // Upload Logic
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +198,6 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
         
-        // Remove near-white pixels (Magic Wand)
         const threshold = 200; 
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
@@ -154,8 +212,7 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
         ctx.putImageData(imageData, 0, 0);
         const transparentDataUrl = canvas.toDataURL('image/png');
         setUploadedImage(transparentDataUrl);
-        setHasData(true);
-        onSave(transparentDataUrl);
+        handleSaveWrapper(transparentDataUrl);
       };
       img.src = dataUrl;
     };
@@ -164,35 +221,74 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
 
   const clearUpload = () => {
     setUploadedImage(null);
-    setHasData(false);
-    onSave(null);
+    handleSaveWrapper(null);
   };
 
   return (
     <div className="space-y-4">
-
-
       {/* Mode Switcher */}
-      <div className={`flex bg-surface-container-high p-1 rounded-lg`}>
+      <div className="flex bg-surface-container-high p-1 rounded-lg">
         <button
-          onClick={() => { setMode('draw'); onSave(null); }}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${mode === 'draw' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface hover:bg-surface-container-highest'}`}
+          onClick={() => { setMode('draw'); handleSaveWrapper(null); }}
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-md text-sm font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors ${mode === 'draw' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface hover:bg-surface-container-highest'}`}
         >
           <PenTool size={16} />
-          {t('tool.sign.draw', 'Draw Signature')}
+          {t('tool.sign.draw', 'Draw')}
         </button>
         <button
-          onClick={() => { setMode('upload'); onSave(uploadedImage); }}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${mode === 'upload' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface hover:bg-surface-container-highest'}`}
+          onClick={() => { setMode('type'); handleSaveWrapper(null); setTypedName(''); }}
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-md text-sm font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors ${mode === 'type' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface hover:bg-surface-container-highest'}`}
+        >
+          <Type size={16} />
+          {t('tool.sign.type', 'Type')}
+        </button>
+        <button
+          onClick={() => { setMode('upload'); handleSaveWrapper(uploadedImage); }}
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-md text-sm font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors ${mode === 'upload' ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface hover:bg-surface-container-highest'}`}
         >
           <Upload size={16} />
-          {t('tool.sign.upload', 'Upload Image')}
+          {t('tool.sign.upload', 'Upload')}
         </button>
       </div>
 
+      {/* Ink Colors */}
+      {(mode === 'draw' || mode === 'type') && (
+        <div className="flex items-center justify-center gap-4 py-2">
+          {INK_COLORS.map(c => (
+            <button
+              key={c.value}
+              onClick={() => { setInkColor(c.value); if (mode === 'draw') { setIsLocked(false); } }}
+              className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${inkColor === c.value ? 'scale-125 border-primary' : 'border-transparent hover:scale-110'}`}
+              style={{ backgroundColor: c.value }}
+              title={c.name}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Signature Area */}
       <div className="border border-outline-variant bg-white rounded-xl overflow-hidden relative shadow-inner h-[250px] flex items-center justify-center w-full">
-        {mode === 'draw' ? (
+        {mode === 'type' && (
+          <div className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-surface-container-lowest">
+             <input 
+               type="text" 
+               placeholder={t('tool.sign.type_placeholder', 'Type your name here...')}
+               value={typedName}
+               onChange={(e) => setTypedName(e.target.value)}
+               className="text-center text-2xl font-bold bg-transparent border-b-2 border-outline focus:border-primary outline-none px-4 py-2 mb-4 w-full max-w-md text-on-surface"
+             />
+             <div className="w-full h-full relative flex items-center justify-center overflow-hidden pointer-events-none">
+                <canvas 
+                  ref={typeCanvasRef}
+                  width={1200}
+                  height={500}
+                  className="w-full h-full object-contain"
+                />
+             </div>
+          </div>
+        )}
+
+        {mode === 'draw' && (
           <div className="relative w-full h-full" onClick={() => { if(isLocked) setIsLocked(false); }}>
             <canvas
               ref={canvasRef}
@@ -226,7 +322,9 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
               </button>
             )}
           </div>
-        ) : (
+        )}
+        
+        {mode === 'upload' && (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-surface-container-low/50">
             {uploadedImage ? (
               <div className="relative w-full h-full flex items-center justify-center">

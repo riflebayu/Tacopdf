@@ -391,7 +391,7 @@ function DraggableRedactBox({ box, containerId, onUpdate, onRemove, onDuplicate 
     </div>
   );
 }
-function DraggablePlacedSignature({ sig, containerId, onUpdate, onRemove }) {
+function DraggablePlacedSignature({ sig, containerId, onUpdate, onRemove, onDuplicate }) {
   const nodeRef = React.useRef(null);
   const { t } = useLanguage();
   const x = useMotionValue(0);
@@ -443,6 +443,14 @@ function DraggablePlacedSignature({ sig, containerId, onUpdate, onRemove }) {
             title={t('tool.sign.delete_btn') || 'Delete Signature'}
           >
             <LucideIcon name="Trash2" size={14} />
+          </button>
+          <button 
+            onClick={(e) => { e.stopPropagation(); onDuplicate(sig); }}
+            className="bg-primary hover:bg-primary/90 text-white rounded-full p-1.5 transition-colors"
+            onPointerDown={(e) => e.stopPropagation()}
+            title={t('tool.sign.duplicate_btn') || 'Duplicate'}
+          >
+            <LucideIcon name="Copy" size={14} />
           </button>
         </div>
 
@@ -2328,6 +2336,14 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                   containerId={`page-container-${pageNum}`}
                                   onUpdate={updateSignature}
                                   onRemove={removeSignature}
+                                  onDuplicate={(signatureToCopy) => {
+                                    setPlacedSignatures(prev => [...prev, {
+                                      ...signatureToCopy,
+                                      id: Math.random().toString(36).substring(7),
+                                      x: Math.min(0.9, signatureToCopy.x + 0.05),
+                                      y: Math.min(0.9, signatureToCopy.y + 0.05),
+                                    }]);
+                                  }}
                                 />
                               ))}
                             </div>
