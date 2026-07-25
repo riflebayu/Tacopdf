@@ -20,6 +20,21 @@ export default function SiskaChat() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -63,6 +78,7 @@ export default function SiskaChat() {
 
   return (
     <motion.div 
+      ref={chatRef}
       drag 
       dragMomentum={false}
       onDragStart={() => isDragging.current = true}
