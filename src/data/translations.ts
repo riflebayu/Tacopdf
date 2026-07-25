@@ -1,5 +1,7 @@
 export const TRANSLATIONS = {
   "en": {
+    "progress.success.compress-pdf": "PDF Compressed Successfully!",
+
                 "compress.level.basic.note": "WARNING: This mode ONLY cleans metadata junk. The PDF size WILL NOT SHRINK if it contains images!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (File is already highly optimized)",
 "tool.compress-pdf.tip.title": "COMPRESSION INFO",
@@ -645,6 +647,8 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Delete Signature"
   },
   "id": {
+    "progress.success.compress-pdf": "PDF Berhasil Dikompresi!",
+
                 "compress.level.basic.note": "PERHATIAN: Mode ini HANYA membersihkan sampah metadata. Ukuran PDF TIDAK AKAN BERKURANG jika isinya adalah gambar!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (File sudah sangat teroptimasi)",
 "tool.compress-pdf.tip.title": "INFO KOMPRESI",
@@ -1280,6 +1284,8 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Hapus Tanda Tangan"
   },
   "es": {
+    "progress.success.compress-pdf": "¡PDF comprimido con éxito!",
+
                 "compress.level.basic.note": "ADVERTENCIA: Este modo SOLO limpia basura de metadatos. ¡El tamaño del PDF NO SE REDUCIRÁ si contiene imágenes!",
     "compress.stats.optimal": "✨ Óptimo: {0}MB (El archivo ya está altamente optimizado)",
 "tool.compress-pdf.tip.title": "INFO COMPRESIÓN",
@@ -1901,6 +1907,8 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "Excluir"
   },
   "ja": {
+    "progress.success.compress-pdf": "PDFが正常に圧縮されました！",
+
                 "compress.level.basic.note": "警告: このモードはメタデータのゴミを消去するだけです。画像が含まれている場合、サイズは縮小しません！",
     "compress.stats.optimal": "✨ 最適: {0}MB (ファイルは既に最適化されています)",
 "tool.compress-pdf.tip.title": "圧縮情報",
@@ -2544,6 +2552,8 @@ export const TRANSLATIONS = {
     "tool.sign.delete_btn": "署名の削除",
   },
   "pt": {
+    "progress.success.compress-pdf": "PDF comprimido com sucesso!",
+
                 "compress.level.basic.note": "AVISO: Este modo APENAS limpa o lixo de metadados. O tamanho do PDF NÃO DIMINUIRÁ se contiver imagens!",
     "compress.stats.optimal": "✨ Ideal: {0}MB (O arquivo já está altamente otimizado)",
 "tool.compress-pdf.tip.title": "INFO COMPRESSÃO",
@@ -3188,6 +3198,8 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "progress.success.compress-pdf": "PDF erfolgreich komprimiert!",
+
                 "compress.level.basic.note": "WARNUNG: Dieser Modus bereinigt NUR Metadaten-Müll. Die PDF-Größe WIRD SICH NICHT VERRINGERN, wenn sie Bilder enthält!",
     "compress.stats.optimal": "✨ Optimal: {0}MB (Datei ist bereits hochgradig optimiert)",
 "tool.compress-pdf.tip.title": "KOMPRESSIONS-INFO",
@@ -3834,6 +3846,8 @@ export const TRANSLATIONS = {
     "history.privacy": "Der Verlauf wird nur lokal auf Ihrem Gerät gespeichert."
   },
   "fr": {
+    "progress.success.compress-pdf": "PDF compressé avec succès !",
+
                 "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
     "compress.stats.optimal": "✨ Optimal: {0}MB (Le fichier est déjà hautement optimisé)",
 "tool.compress-pdf.tip.title": "INFO COMPRESSION",

@@ -2809,6 +2809,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       return "Task completed successfully!";
                     })()}
                   </h4>
+                  {processingState.message && 
+                   processingState.message !== t(`progress.success.${tool.id}`) && 
+                   processingState.message !== t('progress.success') && 
+                   processingState.message !== t('progress.success.default') && 
+                   processingState.message !== 'Task completed successfully!' && (
+                    <p className="text-sm font-medium text-green-700/90 mb-1 w-full break-words">
+                      {processingState.message}
+                    </p>
+                  )}
                   <div className="mt-4 mb-2 flex flex-col items-center gap-1.5 w-full max-w-sm min-w-0">
                     <label className="text-xs text-on-surface-variant font-medium w-full text-center break-words">
                       {t('workspace.rename.title') || 'Rename Processed Output:'}
