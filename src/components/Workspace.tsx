@@ -1544,6 +1544,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           if (compressLevel === 'extreme') {
              const fileBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
              const fileBlobUrl = URL.createObjectURL(fileBlob);
+             const pdfjsLib = await loadPdfJs();
              const loadingTask = pdfjsLib.getDocument(fileBlobUrl);
              const srcPdf = await loadingTask.promise;
              const newPdf = await PDFDocument.create();
