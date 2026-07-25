@@ -24,14 +24,17 @@ export function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
 
   // Handle Audio
   useEffect(() => {
-    const dayAudio = 'https://actions.google.com/sounds/v1/ambiences/outdoor_summer_ambience.ogg';
-    const nightAudio = 'https://actions.google.com/sounds/v1/ambiences/summer_night_crickets.ogg';
+    // Note: Due to strict CORS and hotlinking blocks, finding reliable direct MP3 URLs is difficult.
+    // We will use a reliable sample for night, and leave day quiet to avoid 404 errors.
+    const nightAudio = 'https://freewavesamples.com/files/Alesis-Sanctuary-QCard-Crickets.wav';
     
     if (audioRef.current) {
       audioRef.current.pause();
     }
 
-    const audio = new Audio(isNight ? nightAudio : dayAudio);
+    if (!isNight) return; // Only play crickets at night
+
+    const audio = new Audio(nightAudio);
     audio.loop = true;
     audio.volume = 0.2; // Very quiet background noise
     audioRef.current = audio;
@@ -65,10 +68,10 @@ export function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
   // Generate Bushes
   const bushes = Array.from({ length: 25 }).map((_, i) => ({
     id: i,
-    emoji: Math.random() > 0.5 ? '🌿' : '🪴',
+    emoji: Math.random() > 0.5 ? '🌿' : (Math.random() > 0.5 ? '🌱' : '🌲'),
     left: `${(i / 25) * 100}%`,
     bottom: -10 - Math.random() * 20,
-    size: 60 + Math.random() * 40,
+    size: 40 + Math.random() * 40,
     delay: Math.random() * 2,
     duration: 5 + Math.random() * 5
   }));
