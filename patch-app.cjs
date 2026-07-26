@@ -1,48 +1,73 @@
 const fs = require('fs');
+let content = fs.readFileSync('src/App.tsx', 'utf-8');
 
-let content = fs.readFileSync('src/App.tsx', 'utf8');
+const aliases = `
+const TOOL_ALIASES: Record<string, string> = {
+  'merge-pdf': 'merge',
+  'split-pdf': 'split',
+  'rotate-pdf': 'rotate',
+  'delete-pages': 'delete-pages',
+  'extract-pages': 'extract-pages',
+  'protect-pdf': 'protect',
+  'unlock-pdf': 'unlock',
+  'sign': 'sign',
+  'sign-pdf': 'sign',
+  'redact': 'redact',
+  'redact-pdf': 'redact',
+  'image-to-pdf': 'image-to-pdf',
+  'pdf-to-image': 'pdf-to-image',
+  'html-to-pdf': 'html-to-pdf',
+  'add-watermark': 'add-watermark',
+  'add-page-numbers': 'add-page-numbers'
+};
 
-// 1. Add imports
-content = content.replace(
-  "import { motion, AnimatePresence } from 'motion/react';",
-  "import { motion, AnimatePresence } from 'motion/react';\nimport { useLocation, useNavigate } from 'react-router-dom';"
-);
+export default function App() {`;
 
-// 2. Replace state with useLocation
-const stateRegex = /const \[activeToolId, setActiveToolId\] = useState<string \| null>\([\s\S]*?const \[activePage, setActivePage\] = useState<string \| null>\([\s\S]*?return null;\n  \}\);\n/m;
+content = content.replace('export default function App() {', aliases);
 
-const newStateCode = `  const location = useLocation();
-  const navigate = useNavigate();
-  
-  const path = location.pathname;
-  let activeToolId: string | null = null;
-  let activePage: string | null = null;
-  
-  if (path.startsWith('/tools/')) {
+const routerLogic = `
+  const rawPath = path.replace('/', '');
+
+  if (TOOL_ALIASES[rawPath]) {
+    activeToolId = TOOL_ALIASES[rawPath];
+  } else if (path.startsWith('/tools/')) {
     activeToolId = path.replace('/tools/', '');
+  } else if (path.startsWith('/blog/') && path !== '/blog') {
+    activePage = 'article';
+    activeSlug = path.replace('/blog/', '');
+  } else if (path !== '/') {
+    activePage = rawPath;
+  }`;
+
+content = content.replace(`  if (path.startsWith('/tools/')) {
+    activeToolId = path.replace('/tools/', '');
+  } else if (path.startsWith('/blog/') && path !== '/blog') {
+    activePage = 'article';
+    activeSlug = path.replace('/blog/', '');
   } else if (path !== '/') {
     activePage = path.replace('/', '');
-  }
-`;
-content = content.replace(stateRegex, newStateCode);
+  }`, routerLogic);
 
-// 3. Remove useEffect for hashchange
-const useEffectRegex = /  useEffect\(\(\) => \{\n    const handleHashChange = \(\) => \{[\s\S]*?  \}, \[activePage\]\);\n/m;
-content = content.replace(useEffectRegex, "");
+const handleSelect = `
+  const getToolSeoPath = (id: string) => {
+    const entry = Object.entries(TOOL_ALIASES).find(([alias, toolId]) => toolId === id);
+    return entry ? \`/\${entry[0]}\` : \`/tools/\${id}\`;
+  };
 
-// 4. Update handleSelectTool, handleGoHome, handleSelectPage
-content = content.replace(
-  "window.location.hash = `#tool-${id}`;",
-  "navigate(`/tools/${id}`);"
-);
-content = content.replace(
-  "window.location.hash = '';",
-  "navigate('/');"
-);
-content = content.replace(
-  "window.location.hash = `#${pageId}`;",
-  "navigate(`/${pageId}`);"
-);
+  const handleSelectTool = (id: string, withFiles?: File[]) => {
+    navigate(getPrefixedPath(getToolSeoPath(id)));
+    setWorkspaceFiles(withFiles || []);
+    import('./services/analyticsService').then(({ trackToolUsage }) => trackToolUsage(id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };`;
+
+content = content.replace(`  const handleSelectTool = (id: string, withFiles?: File[]) => {
+    navigate(getPrefixedPath(\`/tools/\${id}\`));
+    setWorkspaceFiles(withFiles || []);
+    import('./services/analyticsService').then(({ trackToolUsage }) => trackToolUsage(id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };`, handleSelect);
+
+content = content.replace('<LocalizedLink to={`/tools/${tool.id}`}', '<LocalizedLink to={getToolSeoPath(tool.id)}');
 
 fs.writeFileSync('src/App.tsx', content);
-console.log("App.tsx patched successfully.");

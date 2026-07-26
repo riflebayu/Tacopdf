@@ -6,9 +6,9 @@ import prerender from '@prerenderer/rollup-plugin';
 import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
 
 const tools = [
-  'merge-pdf', 'split-pdf', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 
-  'pdf-to-excel', 'excel-to-pdf', 'pdf-to-jpg', 'jpg-to-pdf', 'pdf-to-powerpoint', 
-  'powerpoint-to-pdf', 'unlock-pdf', 'protect-pdf', 'sign-pdf'
+  'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pages', 'extract-pages', 
+  'protect-pdf', 'unlock-pdf', 'sign-pdf', 'redact-pdf', 'image-to-pdf', 
+  'pdf-to-image', 'html-to-pdf', 'add-watermark', 'add-page-numbers'
 ];
 const staticPages = ['about', 'privacy', 'terms', 'cookie', 'retention', 'disclaimer', 'sitemap', 'contact', 'how-it-works'];
 const langs = ['', '/id', '/es', '/ja', '/de', '/fr', '/pt'];

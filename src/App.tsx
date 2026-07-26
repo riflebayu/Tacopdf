@@ -24,6 +24,26 @@ const AdminContainer = React.lazy(() => import('./components/AdminContainer'));
 import LocalizedLink from './components/LocalizedLink';
 import type { GlobalSettings } from './services/settingsService';
 
+
+const TOOL_ALIASES: Record<string, string> = {
+  'merge-pdf': 'merge',
+  'split-pdf': 'split',
+  'rotate-pdf': 'rotate',
+  'delete-pages': 'delete-pages',
+  'extract-pages': 'extract-pages',
+  'protect-pdf': 'protect',
+  'unlock-pdf': 'unlock',
+  'sign': 'sign',
+  'sign-pdf': 'sign',
+  'redact': 'redact',
+  'redact-pdf': 'redact',
+  'image-to-pdf': 'image-to-pdf',
+  'pdf-to-image': 'pdf-to-image',
+  'html-to-pdf': 'html-to-pdf',
+  'add-watermark': 'add-watermark',
+  'add-page-numbers': 'add-page-numbers'
+};
+
 export default function App() {
   const { t, lang } = useLanguage();
   const location = useLocation();
@@ -39,13 +59,18 @@ export default function App() {
   let activePage: string | null = null;
   let activeSlug: string | null = null;
   
-  if (path.startsWith('/tools/')) {
+
+  const rawPath = path.replace('/', '');
+
+  if (TOOL_ALIASES[rawPath]) {
+    activeToolId = TOOL_ALIASES[rawPath];
+  } else if (path.startsWith('/tools/')) {
     activeToolId = path.replace('/tools/', '');
   } else if (path.startsWith('/blog/') && path !== '/blog') {
     activePage = 'article';
     activeSlug = path.replace('/blog/', '');
   } else if (path !== '/') {
-    activePage = path.replace('/', '');
+    activePage = rawPath;
   }
 
   
@@ -109,8 +134,14 @@ export default function App() {
     return targetPath === '/' ? `/${lang}` : `/${lang}${targetPath}`;
   };
 
+
+  const getToolSeoPath = (id: string) => {
+    const entry = Object.entries(TOOL_ALIASES).find(([alias, toolId]) => toolId === id);
+    return entry ? `/${entry[0]}` : `/tools/${id}`;
+  };
+
   const handleSelectTool = (id: string, withFiles?: File[]) => {
-    navigate(getPrefixedPath(`/tools/${id}`));
+    navigate(getPrefixedPath(getToolSeoPath(id)));
     setWorkspaceFiles(withFiles || []);
     import('./services/analyticsService').then(({ trackToolUsage }) => trackToolUsage(id));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -659,7 +690,7 @@ export default function App() {
                           <ul className="space-y-2">
                             {TOOLS.map((tool) => (
                               <li key={tool.id}>
-                                <LocalizedLink to={`/tools/${tool.id}`} onClick={(e) => { e.preventDefault(); handleSelectTool(tool.id); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
+                                <LocalizedLink to={getToolSeoPath(tool.id)} onClick={(e) => { e.preventDefault(); handleSelectTool(tool.id); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
                                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
                                   {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
                                 </LocalizedLink>
