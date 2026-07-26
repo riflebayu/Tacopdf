@@ -218,7 +218,7 @@ export default function App() {
       onDragOver={(e) => e.preventDefault()}
       className="bg-background text-on-surface min-h-screen flex flex-col font-sans selection:bg-primary-container/35 selection:text-primary relative"
     >
-      <PageSEO title={seoTitle} description={seoDesc} activeToolId={activeToolId} />
+      <PageSEO title={seoTitle} description={seoDesc} activeToolId={activeToolId} currentSlug={path} />
 
       {settings?.banner?.enabled && (
         <div className={`${settings.banner.color || 'bg-primary'} text-on-primary text-center py-2 text-sm font-bold shadow-sm`}>

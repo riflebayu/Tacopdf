@@ -8,9 +8,10 @@ interface PageSEOProps {
   title?: string;
   description?: string;
   activeToolId?: string | null;
+  currentSlug?: string;
 }
 
-export default function PageSEO({ title, description, activeToolId }: PageSEOProps) {
+export default function PageSEO({ title, description, activeToolId, currentSlug = '' }: PageSEOProps) {
   const { lang, t } = useLanguage();
   const location = useLocation();
 
@@ -42,16 +43,17 @@ export default function PageSEO({ title, description, activeToolId }: PageSEOPro
   // Canonical and Hreflang logic
   const BASE_URL = 'https://tacopdf.com';
   
-  let cleanPath = location.pathname;
-  if (lang !== 'en') {
-    cleanPath = cleanPath.replace(new RegExp(`^/${lang}`), '') || '/';
+  // Format currentSlug to ensure it starts with / and doesn't end with / (unless it's just /)
+  let formattedSlug = currentSlug;
+  if (!formattedSlug.startsWith('/')) formattedSlug = '/' + formattedSlug;
+  if (formattedSlug.length > 1 && formattedSlug.endsWith('/')) {
+    formattedSlug = formattedSlug.slice(0, -1);
   }
-  if (!cleanPath.startsWith('/')) cleanPath = '/' + cleanPath;
-  if (cleanPath.length > 1 && cleanPath.endsWith('/')) {
-    cleanPath = cleanPath.slice(0, -1);
-  }
+  const currentSlugStr = formattedSlug === '/' ? '' : formattedSlug;
 
-  const canonicalUrl = `${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`;
+  const canonicalUrl = lang === 'en' 
+    ? `${BASE_URL}${currentSlugStr}` 
+    : `${BASE_URL}/${lang}${currentSlugStr}`;
 
   return (
     <Helmet>
@@ -69,13 +71,13 @@ export default function PageSEO({ title, description, activeToolId }: PageSEOPro
 
       {LANGUAGES.map((l) => {
         const href = l.code === 'en' 
-          ? `${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`
-          : `${BASE_URL}/${l.code}${cleanPath === '/' ? '' : cleanPath}`;
+          ? `${BASE_URL}${currentSlugStr}`
+          : `${BASE_URL}/${l.code}${currentSlugStr}`;
           
         return <link key={l.code} rel="alternate" hrefLang={l.code} href={href} />;
       })}
       
-      <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`} />
+      <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${currentSlugStr}`} />
 
       {faqData && faqData.length > 0 && (
         <script type="application/ld+json">
