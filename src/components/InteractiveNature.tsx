@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'motion/react';
 
 interface InteractiveNatureProps {
   timeOverride: 'auto' | 'day' | 'night';
 }
 
-export function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
+export const InteractiveNature = React.memo(function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
   const [isNight, setIsNight] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioStarted, setAudioStarted] = useState(false);
@@ -65,24 +65,13 @@ export function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
     };
   }, [isNight]);
 
-  // Generate Bushes
-  const bushes = Array.from({ length: 25 }).map((_, i) => ({
-    id: i,
-    emoji: Math.random() > 0.5 ? '🌿' : (Math.random() > 0.5 ? '🌱' : '🌲'),
-    left: `${(i / 25) * 100}%`,
-    bottom: -10 - Math.random() * 20,
-    size: 40 + Math.random() * 40,
-    delay: Math.random() * 2,
-    duration: 5 + Math.random() * 5
-  }));
-
   // Generate Clouds
-  const clouds = Array.from({ length: 5 }).map((_, i) => ({
+  const clouds = useMemo(() => Array.from({ length: 5 }).map((_, i) => ({
     id: i,
     y: 20 + Math.random() * 150,
     duration: 80 + Math.random() * 60,
     delay: -(Math.random() * 60) // Start halfway through animation
-  }));
+  })), []);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" style={{ zIndex: 0 }}>
@@ -136,31 +125,6 @@ export function InteractiveNature({ timeOverride }: InteractiveNatureProps) {
           ☁️
         </motion.div>
       ))}
-
-      {/* Ambient Bushes along the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden flex items-end opacity-90 drop-shadow-xl">
-        {bushes.map((bush) => (
-          <motion.div
-            key={bush.id}
-            animate={{ rotate: [-3, 3, -3] }}
-            transition={{
-              repeat: Infinity,
-              duration: bush.duration,
-              ease: "easeInOut",
-              delay: bush.delay
-            }}
-            className="absolute"
-            style={{
-              left: bush.left,
-              bottom: bush.bottom,
-              fontSize: bush.size,
-              transformOrigin: 'bottom center'
-            }}
-          >
-            {bush.emoji}
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
-}
+});
