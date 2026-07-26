@@ -13,6 +13,7 @@ const tools = [
 const staticPages = ['about', 'privacy', 'terms', 'cookie', 'retention', 'disclaimer', 'sitemap', 'contact', 'how-it-works'];
 const langs = ['', '/id', '/es', '/ja', '/de', '/fr', '/pt'];
 
+// Menghasilkan 98+ rute secara dinamis (termasuk root '/')
 const prerenderRoutes = langs.flatMap(lang => 
   [...tools, ...staticPages].map(path => `${lang}/${path}`)
 ).concat(langs.map(lang => lang === '' ? '/' : `${lang}/`));
@@ -22,17 +23,20 @@ export default defineConfig(() => {
     plugins: [
       react(), 
       tailwindcss(),
+      // Prerender dibungkus agar berjalan POST-BUILD (hanya saat npm run build)
       {
         ...prerender({
+          // WAJIB: Tentukan folder output Vite
           staticDir: path.join(__dirname, 'dist'),
           routes: prerenderRoutes,
           renderer: new PuppeteerRenderer({
-            renderAfterTime: 5000,
+            // Jeda 5 detik per rute untuk memastikan react-helmet-async & rendering selesai
+            renderAfterTime: 5000, 
             maxConcurrentRoutes: 4,
             headless: true,
-            // Skip unnecessary third-party requests to speed up rendering
+            // Skip request Analytics/Ads agar tidak mengganggu proses rendering Puppeteer
             skipThirdPartyRequests: true,
-            // Pass args to prevent crash in constrained environments
+            // Mencegah Puppeteer silent crash di environment tertentu
             puppeteer: {
               args: ['--no-sandbox', '--disable-setuid-sandbox']
             }
@@ -48,10 +52,7 @@ export default defineConfig(() => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
     build: {
@@ -68,41 +69,15 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            // Core React
-            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-              return 'vendor';
-            }
-            // Markdown Editor and its utilities
-            if (id.includes('node_modules/@uiw/react-md-editor')) {
-              return 'editor';
-            }
-            if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/rehype')) {
-              return 'markdown';
-            }
-            // Firebase
-            if (id.includes('node_modules/firebase')) {
-              return 'firebase';
-            }
-            // PDF libraries
-            if (id.includes('node_modules/pdf-lib') || id.includes('node_modules/qpdf')) {
-              return 'pdf';
-            }
-            // AI libraries
-            if (id.includes('node_modules/@google/generative-ai') || id.includes('node_modules/groq-sdk')) {
-              return 'ai';
-            }
-            // Tesseract OCR
-            if (id.includes('node_modules/tesseract.js')) {
-              return 'tesseract';
-            }
-            // Icons
-            if (id.includes('node_modules/lucide-react')) {
-              return 'icons';
-            }
-            // Motion/Framer
-            if (id.includes('node_modules/motion')) {
-              return 'motion';
-            }
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor';
+            if (id.includes('node_modules/@uiw/react-md-editor')) return 'editor';
+            if (id.includes('node_modules/react-markdown') || id.includes('node_modules/remark') || id.includes('node_modules/rehype')) return 'markdown';
+            if (id.includes('node_modules/firebase')) return 'firebase';
+            if (id.includes('node_modules/pdf-lib') || id.includes('node_modules/qpdf')) return 'pdf';
+            if (id.includes('node_modules/@google/generative-ai') || id.includes('node_modules/groq-sdk')) return 'ai';
+            if (id.includes('node_modules/tesseract.js')) return 'tesseract';
+            if (id.includes('node_modules/lucide-react')) return 'icons';
+            if (id.includes('node_modules/motion')) return 'motion';
           }
         }
       }
