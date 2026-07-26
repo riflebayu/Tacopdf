@@ -13,7 +13,7 @@ const Workspace = React.lazy(() => import('./components/Workspace'));
 const ArticleTemplate = React.lazy(() => import('./components/ArticleTemplate'));
 const BlogIndex = React.lazy(() => import('./components/BlogIndex'));
 import ContactPage from './components/ContactPage';
-import { TOOLS } from './data/tools';
+import { TOOLS, TOOL_ALIASES, getToolSeoPath } from './data/tools';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useLanguage } from './context/LanguageContext';
@@ -24,25 +24,6 @@ const AdminContainer = React.lazy(() => import('./components/AdminContainer'));
 import LocalizedLink from './components/LocalizedLink';
 import type { GlobalSettings } from './services/settingsService';
 
-
-const TOOL_ALIASES: Record<string, string> = {
-  'merge-pdf': 'merge',
-  'split-pdf': 'split',
-  'rotate-pdf': 'rotate',
-  'delete-pages': 'delete-pages',
-  'extract-pages': 'extract-pages',
-  'protect-pdf': 'protect',
-  'unlock-pdf': 'unlock',
-  'sign': 'sign',
-  'sign-pdf': 'sign',
-  'redact': 'redact',
-  'redact-pdf': 'redact',
-  'image-to-pdf': 'image-to-pdf',
-  'pdf-to-image': 'pdf-to-image',
-  'html-to-pdf': 'html-to-pdf',
-  'add-watermark': 'add-watermark',
-  'add-page-numbers': 'add-page-numbers'
-};
 
 export default function App() {
   const { t, lang } = useLanguage();
@@ -134,11 +115,6 @@ export default function App() {
     return targetPath === '/' ? `/${lang}` : `/${lang}${targetPath}`;
   };
 
-
-  const getToolSeoPath = (id: string) => {
-    const entry = Object.entries(TOOL_ALIASES).find(([alias, toolId]) => toolId === id);
-    return entry ? `/${entry[0]}` : `/tools/${id}`;
-  };
 
   const handleSelectTool = (id: string, withFiles?: File[]) => {
     navigate(getPrefixedPath(getToolSeoPath(id)));

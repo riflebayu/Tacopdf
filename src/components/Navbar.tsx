@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LocalizedLink from './LocalizedLink';
 import { Menu, X, ChevronDown, Sun, Moon, Clock } from 'lucide-react';
-import { TOOLS, CATEGORIES } from '../data/tools';
+import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
 import TacoIcon from './TacoIcon';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -89,7 +89,8 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                         <ul className="space-y-2">
                           {catTools.map((tool) => (
                             <li key={tool.id}>
-                              <button
+                              <LocalizedLink
+                                to={getToolSeoPath(tool.id)}
                                 onClick={() => handleToolClick(tool.id)}
                                 className="w-full text-left font-medium text-sm text-primary hover:text-primary-container hover:underline flex items-center gap-2 cursor-pointer group"
                               >
@@ -97,7 +98,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                                   <TacoIcon name={tool.icon} size={32} />
                                 </span>
                                 {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
-                              </button>
+                              </LocalizedLink>
                             </li>
                           ))}
                         </ul>
@@ -109,12 +110,13 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             )}
           </div>
 
-          <button 
+          <LocalizedLink 
+            to="/#manipulation"
             onClick={handleAllToolsClick}
             className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer"
           >
             {t('nav.all_tools')}
-          </button>
+          </LocalizedLink>
 
           <LocalizedLink 
             to="/blog"
@@ -267,12 +269,13 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                 >
                   {t('nav.blog')}
                 </LocalizedLink>
-                <button 
+                <LocalizedLink 
+                  to="/#manipulation"
                   onClick={handleAllToolsClick}
                   className="text-sm font-semibold text-primary-container underline cursor-pointer"
                 >
                   {t('nav.all_tools')}
-                </button>
+                </LocalizedLink>
               </div>
             </div>
 
@@ -285,14 +288,15 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                   </h4>
                   <div className="grid grid-cols-2 gap-2">
                     {TOOLS.filter((t) => t.category === cat.id).map((tool) => (
-                      <button
+                      <LocalizedLink
                         key={tool.id}
+                        to={getToolSeoPath(tool.id)}
                         onClick={() => handleToolClick(tool.id)}
                         className="flex items-center gap-2 p-2 rounded-lg bg-surface-container/50 border border-outline-variant/30 text-xs text-primary hover:bg-surface-container text-left"
                       >
                         <TacoIcon name={tool.icon} size={32} />
                         <span className="truncate">{t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}</span>
-                      </button>
+                      </LocalizedLink>
                     ))}
                   </div>
                 </div>

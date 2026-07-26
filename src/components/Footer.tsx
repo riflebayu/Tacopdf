@@ -2,6 +2,7 @@ import React from 'react';
 import { Zap, CloudOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import LocalizedLink from './LocalizedLink';
+import { getToolSeoPath } from '../data/tools';
 
 interface FooterProps {
   onSelectTool: (id: string) => void;
@@ -30,9 +31,9 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
               </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage ? onSelectPage('sitemap') : onGoHome()} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/sitemap" onClick={() => onSelectPage ? onSelectPage('sitemap') : onGoHome()} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.sitemap')}
-              </button>
+              </LocalizedLink>
             </li>
           </ul>
         </div>
@@ -42,24 +43,24 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
           <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.features')}</h3>
           <ul className="space-y-3 text-sm">
             <li>
-              <button onClick={() => onGoHome('manipulation')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/#manipulation" onClick={() => onGoHome('manipulation')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('cat.manipulation')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onGoHome('security')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/#security" onClick={() => onGoHome('security')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('cat.security')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onGoHome('conversion')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/#conversion" onClick={() => onGoHome('conversion')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('cat.conversion')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onGoHome('editing')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/#editing" onClick={() => onGoHome('editing')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('cat.editing')}
-              </button>
+              </LocalizedLink>
             </li>
           </ul>
         </div>
@@ -69,29 +70,29 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
           <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.popular')}</h3>
           <ul className="space-y-3 text-sm">
             <li>
-              <button onClick={() => onSelectTool('merge')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('merge')} onClick={() => onSelectTool('merge')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.merge.name')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectTool('image-to-pdf')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('image-to-pdf')} onClick={() => onSelectTool('image-to-pdf')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.image-to-pdf.name')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectTool('delete-pages')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('delete-pages')} onClick={() => onSelectTool('delete-pages')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.delete-pages.name')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectTool('split')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('split')} onClick={() => onSelectTool('split')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.split.name')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectTool('protect')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('protect')} onClick={() => onSelectTool('protect')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.protect.name')}
-              </button>
+              </LocalizedLink>
             </li>
           </ul>
         </div>
@@ -101,24 +102,24 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
           <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.company')}</h3>
           <ul className="space-y-3 text-sm">
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('how-it-works')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/how-it-works" onClick={() => onSelectPage && onSelectPage('how-it-works')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('page.how.title') || 'How It Works'}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('about')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/about" onClick={() => onSelectPage && onSelectPage('about')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.about')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectTool('blog')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/blog" onClick={() => onSelectTool('blog')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('nav.blog')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('contact')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/contact" onClick={() => onSelectPage && onSelectPage('contact')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.contact')}
-              </button>
+              </LocalizedLink>
             </li>
           </ul>
         </div>
@@ -128,30 +129,30 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
           <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.legal')}</h3>
           <ul className="space-y-3 text-sm flex flex-col items-start">
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('privacy')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/privacy" onClick={() => onSelectPage && onSelectPage('privacy')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.privacy')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('terms')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/terms" onClick={() => onSelectPage && onSelectPage('terms')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.terms')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('cookie')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/cookie" onClick={() => onSelectPage && onSelectPage('cookie')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.cookie')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('disclaimer')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/disclaimer" onClick={() => onSelectPage && onSelectPage('disclaimer')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.disclaimer')}
-              </button>
+              </LocalizedLink>
             </li>
             <li>
-              <button onClick={() => onSelectPage && onSelectPage('retention')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors flex flex-col leading-tight text-left cursor-pointer">
+              <LocalizedLink to="/retention" onClick={() => onSelectPage && onSelectPage('retention')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors flex flex-col leading-tight text-left cursor-pointer">
                 <span>{t('footer.retention').split(' / ')[0]} /</span>
                 <span>{t('footer.retention').split(' / ')[1] || 'File Deletion'}</span>
-              </button>
+              </LocalizedLink>
             </li>
           </ul>
         </div>

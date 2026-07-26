@@ -30,3 +30,27 @@ export const CATEGORIES = [
   { id: 'conversion', name: 'Format Conversion' },
   { id: 'editing', name: 'Editing' }
 ];
+
+export const TOOL_ALIASES: Record<string, string> = {
+  'merge-pdf': 'merge',
+  'split-pdf': 'split',
+  'rotate-pdf': 'rotate',
+  'delete-pages': 'delete-pages',
+  'extract-pages': 'extract-pages',
+  'protect-pdf': 'protect',
+  'unlock-pdf': 'unlock',
+  'sign': 'sign',
+  'sign-pdf': 'sign',
+  'redact': 'redact',
+  'redact-pdf': 'redact',
+  'image-to-pdf': 'image-to-pdf',
+  'pdf-to-image': 'pdf-to-image',
+  'html-to-pdf': 'html-to-pdf',
+  'add-watermark': 'add-watermark',
+  'add-page-numbers': 'add-page-numbers'
+};
+
+export const getToolSeoPath = (id: string) => {
+  const entry = Object.entries(TOOL_ALIASES).find(([alias, toolId]) => toolId === id);
+  return entry ? `/${entry[0]}` : `/tools/${id}`;
+};
