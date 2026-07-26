@@ -190,13 +190,35 @@ export default function App() {
   }
 
 
+  // Compute global SEO
+  let seoTitle = settings?.seo?.title || t('hero.title') || "TacoPDF - Free & Secure Online PDF Tools";
+  let seoDesc = settings?.seo?.description || t('hero.subtitle') || "Process PDFs locally in your browser. Maximum privacy and security.";
+
+  if (activeToolId) {
+    const act = TOOLS.find(t => t.id === activeToolId);
+    if (act) {
+      seoTitle = t(`tool_name.${act.id.replace(/-/g, '_')}`, act.name);
+      seoDesc = t(`seo.features.${act.id.replace(/-/g, '_')}`, act.description);
+    }
+  } else if (activePage === 'contact') {
+    seoTitle = t(`page.contact.title`) || "Contact Us";
+  } else if (activePage === 'admin') {
+    seoTitle = "Admin Dashboard | TacoPDF";
+  } else if (activePage === 'how-it-works') {
+    seoTitle = t('page.how.title') || 'How It Works';
+  } else if (activePage === 'blog') {
+    seoTitle = t('nav.blog') || "Blog";
+  } else if (activePage) {
+    seoTitle = getPageTitle(activePage);
+  }
+
   return (
     <div 
       onDragEnter={handleGlobalDragEnter}
       onDragOver={(e) => e.preventDefault()}
       className="bg-background text-on-surface min-h-screen flex flex-col font-sans selection:bg-primary-container/35 selection:text-primary relative"
     >
-      {settings && <PageSEO title={settings.seo.title} description={settings.seo.description} />}
+      <PageSEO title={seoTitle} description={seoDesc} activeToolId={activeToolId} />
 
       {settings?.banner?.enabled && (
         <div className={`${settings.banner.color || 'bg-primary'} text-on-primary text-center py-2 text-sm font-bold shadow-sm`}>
@@ -277,7 +299,6 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <PageSEO title={t(`page.contact.title`) || "Contact Us"} />
               <ContactPage onBack={handleGoHome} />
             </motion.div>
           ) : activePage === 'admin' ? (
@@ -289,7 +310,6 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <PageSEO title="Admin Dashboard | TacoPDF" />
               <AdminContainer onBack={handleGoHome} />
             </motion.div>
           ) : activePage === 'blog' ? (
@@ -324,7 +344,6 @@ export default function App() {
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className="max-w-[1000px] mx-auto px-4 py-12 md:py-20"
             >
-              <PageSEO title={t('page.how.title') || 'How It Works'} />
               <button 
                 onClick={handleGoHome}
                 className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
@@ -424,7 +443,6 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <PageSEO title={getPageTitle(activePage)} />
               <LegalPage 
                 pageId={activePage}
                 title={getPageTitle(activePage)} 

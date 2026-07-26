@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import toolSeoData from '../data/toolSeoData.json';
 
-import PageSEO from './PageSEO';
 
 interface ToolSeoArticleProps {
   toolId: string;
@@ -26,17 +25,8 @@ export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId }) => {
 
   if (!content) return null;
 
-  // Extract FAQ for JSON-LD Schema
-  const faqRegex = /<strong>(?:Q|T|P|F)\s*:\s*(.*?)<\/strong>\s*<br\s*\/>\s*(?:A|J|R)\s*:\s*(.*?)(?=<\/p>)/gi;
-  const faqMatches = [...content.matchAll(faqRegex)];
-  const faqData = faqMatches.map(m => ({
-    question: m[1].trim(),
-    answer: m[2].trim().replace(/(<([^>]+)>)/gi, "") // strip inner HTML if any
-  }));
-
   return (
     <>
-      {faqData.length > 0 && <PageSEO faqData={faqData} />}
       <div className="w-full flex justify-center mt-12 mb-8 px-4 animate-fade-in">
         <article 
           className="w-full max-w-4xl bg-surface-container-low border border-outline-variant/20 rounded-2xl p-6 md:p-10 shadow-sm

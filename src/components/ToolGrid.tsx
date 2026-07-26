@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Trash2 } from 'lucide-react';
-import { TOOLS, CATEGORIES } from '../data/tools';
+import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
+import LocalizedLink from './LocalizedLink';
 import TacoIcon from './TacoIcon';
 
 
@@ -24,6 +25,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
   });
 
   const toggleFavorite = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
     e.stopPropagation();
     let newFavs;
     if (favorites.includes(id)) {
@@ -46,10 +48,11 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
     const setting = toolSettings?.[tool.id] || { enabled: true, badge: '' };
     
     return (
-      <button
+      <LocalizedLink
         key={tool.id}
-        onClick={() => onSelectTool(tool.id)}
-        className="tool-card w-full text-left bg-surface-container border border-outline-variant rounded-xl p-6 flex gap-4 group cursor-pointer relative hover:border-primary/50 transition-colors"
+        to={getToolSeoPath(tool.id)}
+        onClick={(e) => { e.preventDefault(); onSelectTool(tool.id); }}
+        className="tool-card w-full text-left bg-surface-container border border-outline-variant rounded-xl p-6 flex gap-4 group cursor-pointer relative hover:border-primary/50 transition-colors block"
       >
         {setting.badge && (
           <span className="absolute -top-2 right-2 bg-error text-on-error text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
@@ -74,7 +77,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         >
           <Star size={18} className={isFav ? "fill-yellow-500" : ""} />
         </div>
-      </button>
+      </LocalizedLink>
     );
   };
 

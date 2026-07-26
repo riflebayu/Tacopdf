@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import { useLocation } from 'react-router-dom';
+import toolSeoData from '../data/toolSeoData.json';
 
 interface PageSEOProps {
   title?: string;
   description?: string;
-  faqData?: { question: string; answer: string }[];
+  activeToolId?: string | null;
 }
 
-export default function PageSEO({ title, description, faqData }: PageSEOProps) {
+export default function PageSEO({ title, description, activeToolId }: PageSEOProps) {
   const { lang, t } = useLanguage();
   const location = useLocation();
 
@@ -17,12 +18,25 @@ export default function PageSEO({ title, description, faqData }: PageSEOProps) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  // Cleaned up manual DOM manipulation useEffect which doesn't work during SSG
+  const faqData = useMemo(() => {
+    if (!activeToolId) return null;
+    const toolData = (toolSeoData as Record<string, Record<string, string>>)[activeToolId];
+    if (!toolData) return null;
+    const content = toolData[lang] || toolData['en'];
+    if (!content) return null;
+
+    const faqRegex = /<strong>(?:Q|T|P|F)\s*:\s*(.*?)<\/strong>\s*<br\s*\/>\s*(?:A|J|R)\s*:\s*(.*?)(?=<\/p>)/gi;
+    const faqMatches = [...content.matchAll(faqRegex)];
+    return faqMatches.map(m => ({
+      question: m[1].trim(),
+      answer: m[2].trim().replace(/(<([^>]+)>)/gi, "")
+    }));
+  }, [activeToolId, lang]);
 
   const defaultTitle = t('hero.title') || "TacoPDF - Free & Secure Online PDF Tools";
   const defaultDesc = t('hero.subtitle') || "Process PDFs locally in your browser. Maximum privacy and security.";
   
-  const finalTitle = title ? `${title} - TacoPDF` : defaultTitle;
+  const finalTitle = title ? (title.includes('TacoPDF') ? title : `${title} - TacoPDF`) : defaultTitle;
   const finalDesc = description || defaultDesc;
 
   // Canonical and Hreflang logic
