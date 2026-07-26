@@ -17,20 +17,7 @@ export default function PageSEO({ title, description, faqData }: PageSEOProps) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  useEffect(() => {
-    if (title) {
-      document.title = title;
-    }
-    if (description) {
-      let metaDescription = document.querySelector('meta[name="description"]');
-      if (!metaDescription) {
-        metaDescription = document.createElement('meta');
-        metaDescription.setAttribute('name', 'description');
-        document.head.appendChild(metaDescription);
-      }
-      metaDescription.setAttribute('content', description);
-    }
-  }, [title, description]);
+  // Cleaned up manual DOM manipulation useEffect which doesn't work during SSG
 
   const defaultTitle = t('hero.title') || "TacoPDF - Free & Secure Online PDF Tools";
   const defaultDesc = t('hero.subtitle') || "Process PDFs locally in your browser. Maximum privacy and security.";
@@ -59,6 +46,8 @@ export default function PageSEO({ title, description, faqData }: PageSEOProps) {
       <meta name="description" content={finalDesc} />
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDesc} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDesc} />
       

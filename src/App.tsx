@@ -462,9 +462,6 @@ export default function App() {
                           src="/profile.jpg" 
                           alt="Muhammad Bayu Edi" 
                           className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-surface shadow-lg"
-                          onError={(e) => {
-                            e.currentTarget.src = "https://ui-avatars.com/api/?name=Muhammad+Bayu+Edi&background=1e1e1e&color=e2e2e2&size=200";
-                          }}
                         />
                         <div className="flex-1 text-center md:text-left">
                           <h2 className="text-2xl font-bold text-on-surface mb-1">Muhammad Bayu Edi</h2>
