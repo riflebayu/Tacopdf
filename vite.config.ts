@@ -22,16 +22,25 @@ export default defineConfig(() => {
     plugins: [
       react(), 
       tailwindcss(),
-      prerender({
-        routes: prerenderRoutes,
-        renderer: new PuppeteerRenderer({
-          renderAfterTime: 1500,
-          maxConcurrentRoutes: 2,
+      {
+        ...prerender({
+          staticDir: path.join(__dirname, 'dist'),
+          routes: prerenderRoutes,
+          renderer: new PuppeteerRenderer({
+            renderAfterTime: 5000,
+            maxConcurrentRoutes: 4,
+            headless: true,
+            // Skip unnecessary third-party requests to speed up rendering
+            skipThirdPartyRequests: true,
+            // Pass args to prevent crash in constrained environments
+            puppeteer: {
+              args: ['--no-sandbox', '--disable-setuid-sandbox']
+            }
+          }),
         }),
-        server: {
-          port: 8000,
-        },
-      })
+        apply: 'build',
+        enforce: 'post'
+      }
     ],
     resolve: {
       alias: {
