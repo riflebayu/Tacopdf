@@ -39,13 +39,13 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
-    "@prerenderer/renderer-jsdom": "^1.1.9",
+    "@prerenderer/renderer-puppeteer": "^1.2.4",
     "@prerenderer/rollup-plugin": "^0.3.12",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
-    "jsdom": "^29.1.1",
+    "puppeteer": "^25.3.0",
     "tailwindcss": "^4.1.14",
     "terser": "^5.49.0",
     "tsx": "^4.21.0",

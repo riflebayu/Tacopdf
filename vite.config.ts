@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 import prerender from '@prerenderer/rollup-plugin';
-import JSDOMRenderer from '@prerenderer/renderer-jsdom';
+import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
 
 const tools = [
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pages', 'extract-pages', 
@@ -29,9 +29,17 @@ export default defineConfig(() => {
           // WAJIB: Tentukan folder output Vite
           staticDir: path.join(__dirname, 'dist'),
           routes: prerenderRoutes,
-          renderer: new JSDOMRenderer({
+          renderer: new PuppeteerRenderer({
             // Jeda 5 detik per rute untuk memastikan react-helmet-async & rendering selesai
-            renderAfterTime: 5000
+            renderAfterTime: 5000, 
+            maxConcurrentRoutes: 4,
+            headless: true,
+            // Skip request Analytics/Ads agar tidak mengganggu proses rendering Puppeteer
+            skipThirdPartyRequests: true,
+            // Mencegah Puppeteer silent crash di environment tertentu
+            puppeteer: {
+              args: ['--no-sandbox', '--disable-setuid-sandbox']
+            }
           }),
         }),
         apply: 'build',
