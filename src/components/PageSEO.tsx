@@ -6,9 +6,10 @@ import { useLocation } from 'react-router-dom';
 interface PageSEOProps {
   title?: string;
   description?: string;
+  faqData?: { question: string; answer: string }[];
 }
 
-export default function PageSEO({ title, description }: PageSEOProps) {
+export default function PageSEO({ title, description, faqData }: PageSEOProps) {
   const { lang, t } = useLanguage();
   const location = useLocation();
 
@@ -72,6 +73,23 @@ export default function PageSEO({ title, description }: PageSEOProps) {
       })}
       
       <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`} />
+
+      {faqData && faqData.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })}
+        </script>
+      )}
     </Helmet>
   );
 }

@@ -6,9 +6,10 @@ import { LANGUAGES } from '../context/LanguageContext';
 interface SEOHeadProps {
   title?: string;
   description?: string;
+  faqData?: { question: string; answer: string }[];
 }
 
-export default function SEOHead({ title, description }: SEOHeadProps) {
+export default function SEOHead({ title, description, faqData }: SEOHeadProps) {
   const location = useLocation();
   const BASE_URL = 'https://tacopdf.com';
   
@@ -52,6 +53,23 @@ export default function SEOHead({ title, description }: SEOHeadProps) {
       })}
       
       <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`} />
+
+      {faqData && faqData.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })}
+        </script>
+      )}
     </Helmet>
   );
 }

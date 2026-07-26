@@ -1,11 +1,38 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
+import prerender from '@prerenderer/rollup-plugin';
+import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
+
+const tools = [
+  'merge-pdf', 'split-pdf', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 
+  'pdf-to-excel', 'excel-to-pdf', 'pdf-to-jpg', 'jpg-to-pdf', 'pdf-to-powerpoint', 
+  'powerpoint-to-pdf', 'unlock-pdf', 'protect-pdf', 'sign-pdf'
+];
+const staticPages = ['about', 'privacy', 'terms', 'cookie', 'retention', 'disclaimer', 'sitemap', 'contact', 'how-it-works'];
+const langs = ['', '/id', '/es', '/ja', '/de', '/fr', '/pt'];
+
+const prerenderRoutes = langs.flatMap(lang => 
+  [...tools, ...staticPages].map(path => `${lang}/${path}`)
+).concat(langs.map(lang => lang === '' ? '/' : `${lang}/`));
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(), 
+      tailwindcss(),
+      prerender({
+        routes: prerenderRoutes,
+        renderer: new PuppeteerRenderer({
+          renderAfterTime: 1500,
+          maxConcurrentRoutes: 2,
+        }),
+        server: {
+          port: 8000,
+        },
+      })
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
