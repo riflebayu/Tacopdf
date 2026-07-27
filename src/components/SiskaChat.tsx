@@ -8,6 +8,31 @@ interface ChatMessage {
   content: string;
 }
 
+const playNotificationSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc.start();
+    osc.stop(ctx.currentTime + 0.1);
+  } catch (e) {
+    console.error('Audio play failed:', e);
+  }
+};
+
 export default function SiskaChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -21,6 +46,34 @@ export default function SiskaChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const chatRef = useRef<HTMLDivElement>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const prevMessagesLength = useRef(1);
+
+  useEffect(() => {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setUnreadCount(0);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (messages.length > prevMessagesLength.current) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'assistant' && !isOpen) {
+        setUnreadCount(prev => prev + 1);
+        playNotificationSound();
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          new Notification('Dek Siska', { body: lastMessage.content, icon: '/siska-avatar.png' });
+        }
+      }
+    }
+    prevMessagesLength.current = messages.length;
+  }, [messages, isOpen]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -186,9 +239,14 @@ export default function SiskaChat() {
           }
           setIsOpen(true);
         }}
-        className={`p-4 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-move ${isOpen ? 'scale-0 opacity-0 hidden' : 'scale-100 opacity-100'}`}
+        className={`p-4 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 hover:shadow-xl transition-all duration-300 flex items-center justify-center cursor-move relative ${isOpen ? 'scale-0 opacity-0 hidden' : 'scale-100 opacity-100'}`}
       >
         <Sparkles size={24} className="animate-pulse pointer-events-none" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full animate-bounce shadow-md">
+            {unreadCount}
+          </span>
+        )}
       </button>
     </motion.div>
   );
