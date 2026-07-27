@@ -89,18 +89,6 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
             </ul>
           </div>
 
-          {/* Privacy & AdSense Transparency Policy - Essential for AdSense Approval */}
-          <div className="bg-surface-container/30 border border-outline-variant rounded-xl p-6 space-y-4">
-            <h4 className="text-lg font-bold text-on-surface flex items-center gap-2">
-              <Shield size={18} className="text-primary-container" />
-              {t('seo.privacy.title')}
-            </h4>
-            <div className="text-xs space-y-3 leading-relaxed text-on-surface-variant/80">
-              <p>{t('seo.privacy.p1')}</p>
-              <p dangerouslySetInnerHTML={{ __html: t('seo.privacy.p2') }} />
-              <p>{t('seo.privacy.p3')}</p>
-            </div>
-          </div>
         </div>
 
       </div>
