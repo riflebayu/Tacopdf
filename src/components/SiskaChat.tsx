@@ -38,7 +38,7 @@ export default function SiskaChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
-      content: 'Halo Mas! Aku Siska, Asisten AI TacoPDF. Aku jago banget soal SEO, AdSense, dan *marketing* PDF! Ada yang bisa Siska bantu hari ini buat ngalahin kompetitor kita? 😉'
+      content: 'Halo Mas Bayu! Aku Siska, Asisten AI TacoPDF. Aku jago banget soal SEO, AdSense, dan *marketing* PDF! Ada yang bisa Siska bantu hari ini buat ngalahin kompetitor kita? 😉'
     }
   ]);
   const [input, setInput] = useState('');

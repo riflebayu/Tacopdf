@@ -8,7 +8,6 @@ import { collection, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/fi
 import { RealAnalytics } from './RealAnalytics';
 import { useArticles, cachedArticles } from '../hooks/useArticles';
 import { LANGUAGES } from '../context/LanguageContext';
-import { InteractiveNature } from './InteractiveNature';
 import confetti from 'canvas-confetti';
 import RevisionModal from './RevisionModal';
 import DateTimePicker from './DateTimePicker';
@@ -43,8 +42,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [geminiStatus, setGeminiStatus] = useState<'green' | 'red'>('green');
-  const [natureEnabled, setNatureEnabled] = useState(true);
-  const [timeOverride, setTimeOverride] = useState<'auto' | 'day' | 'night'>('auto');
   const [editingArticle, setEditingArticle] = useState<any>(null);
   // We use this local state to instantly hide deleted articles without full refetch
   const [localArticles, setLocalArticles] = useState(articles);
@@ -283,7 +280,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
   return (
     <div className="min-h-screen bg-surface p-4 md:p-8 font-sans relative">
-      {natureEnabled && <InteractiveNature timeOverride={timeOverride} />}
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-surface-container/80 backdrop-blur-md border border-outline-variant p-6 rounded-3xl shadow-sm">
