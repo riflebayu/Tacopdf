@@ -7,7 +7,6 @@ import ToolGrid from './components/ToolGrid';
 import SEOSection from './components/SEOSection';
 import FAQSection from './components/FAQSection';
 import Banner from './components/Banner';
-import SeoArticle from './components/SeoArticle';
 
 const Workspace = React.lazy(() => import('./components/Workspace'));
 const ArticleTemplate = React.lazy(() => import('./components/ArticleTemplate'));
@@ -287,8 +286,6 @@ export default function App() {
               {/* FAQ Accordions */}
               <FAQSection />
 
-              {/* SEO Long Form Article */}
-              <SeoArticle />
             </motion.div>
           ) : activePage === 'contact' ? (
             /* CONTACT PAGE STATE */
