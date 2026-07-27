@@ -7,6 +7,7 @@ import ToolGrid from './components/ToolGrid';
 import SEOSection from './components/SEOSection';
 import FAQSection from './components/FAQSection';
 import Banner from './components/Banner';
+import CookieBanner from './components/CookieBanner';
 
 const Workspace = React.lazy(() => import('./components/Workspace'));
 const ArticleTemplate = React.lazy(() => import('./components/ArticleTemplate'));
@@ -149,8 +150,7 @@ export default function App() {
 
   const handleGetStarted = () => {
     if (activeToolId || activePage) {
-      setActiveToolId(null);
-      setActivePage(null);
+      navigate(getPrefixedPath('/'));
     }
     setTimeout(() => {
       toolGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -843,6 +843,7 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+      <CookieBanner />
     </div>
   );
 }
