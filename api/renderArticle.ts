@@ -4,46 +4,43 @@ import { getFirestore, collection, query, where, getDocs, limit } from 'firebase
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Pastikan inisialisasi Firebase App hanya dilakukan sekali (singleton) di lingkungan serverless
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID,
-  measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
-};
-
-let app;
-try {
-  app = initializeApp(firebaseConfig);
-} catch (e) {
-  // Catch already initialized error if function is warm
-}
-
-const db = getFirestore(app);
+// Note: Inisialisasi app akan dilakukan di dalam handler untuk mencegah module-level crash 
+// akibat environment variables yang belum siap di runtime tertentu.
+let cachedDb: any = null;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    // Vercel memasukkan named regex groups ke dalam req.query
-    // Namun kita bisa menggunakan path mentah untuk memparsing
+    // 1. Inisialisasi Firebase aman di dalam try/catch
+    if (!cachedDb) {
+      const firebaseConfig = {
+        apiKey: process.env.VITE_FIREBASE_API_KEY,
+        authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.VITE_FIREBASE_APP_ID,
+        measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
+      };
+      
+      const app = initializeApp(firebaseConfig);
+      cachedDb = getFirestore(app);
+    }
+    
+    const db = cachedDb;
+
     const urlPath = req.url?.split('?')[0] || '';
+    const segments = urlPath.split('/').filter(Boolean);
     
-    // Parse lang and slug dari format /blog/:slug atau /:lang/blog/:slug
-    const segments = urlPath.split('/').filter(Boolean); // ['id', 'blog', 'slug'] atau ['blog', 'slug']
-    
-    let lang = 'en'; // Default
+    let lang = 'en';
     let slug = '';
     
     const blogIndex = segments.indexOf('blog');
     if (blogIndex !== -1 && blogIndex < segments.length - 1) {
       slug = segments[blogIndex + 1];
       if (blogIndex === 1) {
-        lang = segments[0]; // ada kode bahasa di depannya
+        lang = segments[0];
       }
     } else {
-      // Jika format tidak dikenali, kembalikan fallback murni
       return serveFallback(res);
     }
 
@@ -53,13 +50,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Ambil data dari Firestore
     const articlesRef = collection(db, 'articles');
-    // Karena translations adalah map, kita mencari di mana terjemahan bahasa spesifik slug-nya sama dengan slug di URL
-    // Format struktur: translations.id.slug == 'slug-nya'
     const q = query(articlesRef, where(`translations.${lang}.slug`, '==', slug), limit(1));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      // Artikel tidak ditemukan
       return serveFallback(res);
     }
 
@@ -71,13 +65,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return serveFallback(res);
     }
 
-    // Ambil fallback.html dari root
-    // Vercel Serverless Function berjalan pada '/var/task/api', namun file statis tersedia sesuai output build
-    // Jika Vercel mendeploy output Vite (di 'dist'), fallback.html akan ada di sana.
-    // Tetapi secara standar kita akan mencoba path root
+    // Baca HTML Fallback
     let htmlPath = path.join(process.cwd(), 'fallback.html');
     if (!fs.existsSync(htmlPath)) {
-        htmlPath = path.join(process.cwd(), 'dist', 'fallback.html'); // Jika di dalam folder dist
+        htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
     }
     
     let html = '';
@@ -88,18 +79,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).send("Server Error: Missing SPA shell");
     }
 
-    // Persiapkan tag SEO
+    // Metadata
     const title = translationData.title || 'TacoPDF Blog';
     const description = translationData.metaDescription || '';
     const category = translationData.category || 'Blog';
-    const featuredImage = data.featuredImage || 'https://tacopdf.com/default-og.jpg'; // Ganti dengan URL default jika ada
+    const featuredImage = data.featuredImage || data.featuredImageUrl || 'https://tacopdf.com/default-og.jpg';
     const imageAltText = data.imageAltText || title;
     const pageUrl = `https://tacopdf.com${urlPath}`;
     const author = data.author || 'TacoPDF Team';
+    const publishedDate = data.createdAt && typeof data.createdAt.toDate === 'function' 
+        ? data.createdAt.toDate().toISOString() 
+        : new Date().toISOString();
 
-    const publishedDate = data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString();
-
-    // Parse Markdown ke Basic HTML untuk keperluan SEO Crawler
     let rawContentHtml = (translationData.content || '')
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -132,7 +123,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     <meta name="twitter:image" content="${featuredImage}">
     <meta name="twitter:image:alt" content="${imageAltText}">
     
-    <!-- JSON-LD Structured Data untuk SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -166,33 +156,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </script>
     `;
 
-    // Injeksi: Ganti blok SEO standar di fallback.html dengan seoTags baru kita.
     html = html.replace('</head>', `\n${seoTags}\n</head>`);
     
-    // Injeksi Raw Content untuk Crawler (Disembunyikan secara visual, akan dihapus oleh React hydrate/mount)
-    const crawlerContent = \`
-      <article id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
-        <h1>\${title}</h1>
-        <img src="\${featuredImage}" alt="\${imageAltText}" />
-        \${rawContentHtml}
-      </article>
-    \`;
-    html = html.replace('</body>', \`\n\${crawlerContent}\n</body>\`);
+    // Injeksi Semantic Layout Penuh (Header, Main, Footer)
+    const crawlerContent = `
+      <div id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
+        <header>
+          <nav>
+            <a href="https://tacopdf.com">TacoPDF Logo</a>
+            <a href="https://tacopdf.com/blog">Blog</a>
+            <a href="https://tacopdf.com/about">About Us</a>
+            <a href="https://tacopdf.com/contact">Contact</a>
+          </nav>
+        </header>
+        <main>
+          <article>
+            <header>
+              <h1>${title}</h1>
+              <p>By ${author} on <time datetime="${publishedDate}">${publishedDate}</time></p>
+              <p>Category: ${category}</p>
+            </header>
+            <figure>
+              <img src="${featuredImage}" alt="${imageAltText}" />
+            </figure>
+            <div class="article-content">
+              ${rawContentHtml}
+            </div>
+          </article>
+        </main>
+        <footer>
+          <p>&copy; ${new Date().getFullYear()} TacoPDF. All rights reserved.</p>
+          <p>TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.</p>
+        </footer>
+      </div>
+    `;
+    
+    html = html.replace('</body>', `\n${crawlerContent}\n</body>`);
 
-    // Edge Cache: Simpan halaman ini di Vercel Edge Cache selama 1 jam, gunakan cache basi selama 12 jam sambil *revalidate* di *background*
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=43200');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    
     return res.status(200).send(html);
 
   } catch (error) {
     console.error("Terjadi kesalahan pada renderArticle:", error);
-    // Selalu *fail-safe* ke SPA shell agar halaman tidak benar-benar blank
+    // 500 CRASH FIX: Return valid fallback HTML string instead of crashing!
     return serveFallback(res);
   }
 }
 
-// Fungsi helper untuk merender fallback SPA
 function serveFallback(res: VercelResponse) {
   let htmlPath = path.join(process.cwd(), 'fallback.html');
   if (!fs.existsSync(htmlPath)) {
@@ -204,6 +215,9 @@ function serveFallback(res: VercelResponse) {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
   } else {
-    return res.status(404).send("Not Found");
+    // If fallback is missing, return a minimal valid HTML
+    const minimalHtml = `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.status(200).send(minimalHtml);
   }
 }
