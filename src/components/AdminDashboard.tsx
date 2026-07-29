@@ -38,7 +38,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [isDraft, setIsDraft] = useState(false);
   const [listTab, setListTab] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
 
-  // Article Management State
+  const [timeOverride, setTimeOverride] = useState<'auto'|'day'|'night'>('auto');
+  const [natureEnabled, setNatureEnabled] = useState(false);
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [geminiStatus, setGeminiStatus] = useState<'green' | 'red'>('green');
