@@ -1,30 +1,40 @@
 name: Vercel Production CI/CD
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
   push:
     branches:
       - main
-      - master
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
-  Deploy-Production:
+  Deploy-to-Vercel:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source Code
+      - name: 1. Checkout Repository
         uses: actions/checkout@v4
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+
+      - name: 2. Setup Bun (Superfast Package Manager)
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 20
-          cache: 'npm'
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Install Project Dependencies
-        run: npm install
-      - name: Pull Vercel Environment Configuration
+          bun-version: latest
+
+      - name: 3. Install Dependencies
+        run: bun install
+
+      - name: 4. Execute Build & Puppeteer SSG Event-Driven
+        run: bun run build
+        
+      - name: 5. Install Vercel CLI
+        run: bun install -g vercel
+
+      - name: 6. Pull Vercel Environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build SSG (Puppeteer Executed on GitHub Runner)
+
+      - name: 7. Build Vercel Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Prebuilt Artifact to Vercel
+
+      - name: 8. Deploy to Vercel (Pasif / Prebuilt)
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
