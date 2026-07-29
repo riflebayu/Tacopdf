@@ -23,6 +23,18 @@ export default defineConfig(() => {
     plugins: [
       react(), 
       tailwindcss(),
+      // Custom plugin untuk menyimpan Blank SPA Shell sebelum Puppeteer menimpa index.html
+      {
+        name: 'copy-spa-shell',
+        apply: 'build',
+        writeBundle() {
+          const fs = require('fs');
+          fs.copyFileSync(
+            path.resolve(__dirname, 'dist/index.html'), 
+            path.resolve(__dirname, 'dist/fallback.html')
+          );
+        }
+      },
       // Prerender dibungkus agar berjalan POST-BUILD (hanya saat npm run build)
       {
         ...prerender({
