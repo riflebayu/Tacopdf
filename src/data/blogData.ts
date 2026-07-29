@@ -12,6 +12,7 @@ export interface ArticleData {
   author: string;
   lastUpdated: string;
   featuredImage: string;
+  imageAltText?: string;
   translations: {
     [key: string]: ArticleTranslation; // 'en', 'id', 'es', 'ja', 'pt', 'de', 'fr'
   };

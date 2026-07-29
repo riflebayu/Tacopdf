@@ -23,6 +23,13 @@ const app = (
   </StrictMode>
 );
 
+// Cleanup: Hapus raw HTML yang disuntikkan serverless untuk Google Crawler
+// Ini mencegah Hydration Mismatch dan duplikasi visual
+const crawlerContent = document.getElementById('seo-crawler-content');
+if (crawlerContent) {
+  crawlerContent.remove();
+}
+
 if (rootElement.firstElementChild) {
   hydrateRoot(rootElement, app);
 } else {

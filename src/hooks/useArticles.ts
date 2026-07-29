@@ -59,6 +59,7 @@ export const useArticles = () => {
             author: data.author || 'TacoPDF Team',
             lastUpdated: lastUpdatedStr,
             featuredImage: data.featuredImage || '',
+            imageAltText: data.imageAltText,
             translations: data.translations || {},
             status,
             scheduledAt: scheduledAtStr,

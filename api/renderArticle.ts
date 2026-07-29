@@ -93,10 +93,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const description = translationData.metaDescription || '';
     const category = translationData.category || 'Blog';
     const featuredImage = data.featuredImage || 'https://tacopdf.com/default-og.jpg'; // Ganti dengan URL default jika ada
+    const imageAltText = data.imageAltText || title;
     const pageUrl = `https://tacopdf.com${urlPath}`;
     const author = data.author || 'TacoPDF Team';
 
     const publishedDate = data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString();
+
+    // Parse Markdown ke Basic HTML untuk keperluan SEO Crawler
+    let rawContentHtml = (translationData.content || '')
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*)\*/gim, '<em>$1</em>')
+      .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
+      .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+      .replace(/\n$/gim, '<br />')
+      .split('\n')
+      .map(line => line.trim() ? `<p>${line.trim()}</p>` : '')
+      .join('\n');
 
     const seoTags = `
     <title>${title} | TacoPDF</title>
@@ -104,6 +120,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     <meta property="og:title" content="${title} | TacoPDF">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${featuredImage}">
+    <meta property="og:image:alt" content="${imageAltText}">
     <meta property="og:url" content="${pageUrl}">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="${publishedDate}">
@@ -113,6 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     <meta name="twitter:title" content="${title} | TacoPDF">
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${featuredImage}">
+    <meta name="twitter:image:alt" content="${imageAltText}">
     
     <!-- JSON-LD Structured Data untuk SEO -->
     <script type="application/ld+json">
@@ -125,7 +143,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       "headline": "${title}",
       "description": "${description}",
-      "image": "${featuredImage}",  
+      "image": {
+        "@type": "ImageObject",
+        "url": "${featuredImage}",
+        "caption": "${imageAltText}"
+      },
       "author": {
         "@type": "Organization",
         "name": "${author}"
@@ -145,8 +167,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     `;
 
     // Injeksi: Ganti blok SEO standar di fallback.html dengan seoTags baru kita.
-    // Kita bisa menyuntikkannya tepat sebelum tag </head>
     html = html.replace('</head>', `\n${seoTags}\n</head>`);
+    
+    // Injeksi Raw Content untuk Crawler (Disembunyikan secara visual, akan dihapus oleh React hydrate/mount)
+    const crawlerContent = \`
+      <article id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
+        <h1>\${title}</h1>
+        <img src="\${featuredImage}" alt="\${imageAltText}" />
+        \${rawContentHtml}
+      </article>
+    \`;
+    html = html.replace('</body>', \`\n\${crawlerContent}\n</body>\`);
 
     // Edge Cache: Simpan halaman ini di Vercel Edge Cache selama 1 jam, gunakan cache basi selama 12 jam sambil *revalidate* di *background*
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=43200');

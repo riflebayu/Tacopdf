@@ -156,9 +156,11 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
       <figure className="mb-16">
         <img 
           src={article.featuredImage} 
-          alt={translation.title}
+          alt={article.imageAltText || translation.title}
           className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl border border-outline-variant/20"
           fetchPriority="high"
+          loading="lazy"
+          decoding="async"
         />
       </figure>
 

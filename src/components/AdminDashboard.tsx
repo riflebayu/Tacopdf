@@ -30,6 +30,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [content, setContent] = useState('');
   const [customPrompt, setCustomPrompt] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<{ type: 'success' | 'error' | '', message: string }>({ type: '', message: '' });
   const [targetLanguages, setTargetLanguages] = useState<string[]>(LANGUAGES.map(l => l.code));
@@ -133,6 +134,52 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check size (max 4MB)
+    if (file.size > 4 * 1024 * 1024) {
+      setPublishStatus({ type: 'error', message: 'Image size exceeds 4MB limit.' });
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setPublishStatus({ type: '', message: 'Uploading image to CDN...' });
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Data = reader.result as string;
+        const res = await fetch('/api/uploadImage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64: base64Data })
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to upload image');
+        }
+        
+        setImageUrl(data.imageUrl);
+        setPublishStatus({ type: 'success', message: 'Image uploaded successfully!' });
+      };
+      
+      reader.onerror = () => {
+        throw new Error('Failed to read image file locally');
+      };
+      
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      console.error('Image upload failed:', err);
+      setPublishStatus({ type: 'error', message: err.message || 'Image upload failed' });
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !keyword || (useRawContent && !content)) {
@@ -217,10 +264,13 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       if (isDraft) finalStatus = "draft";
       else if (isScheduled && scheduledDate) finalStatus = "scheduled";
 
+      const autoImageAlt = title.replace(/[^a-zA-Z0-9\s]/g, '').trim() || 'TacoPDF Blog Article';
+
       // Save to Firestore
       await addDoc(collection(db, "articles"), {
         translations: finalGeneratedData,
         featuredImage: imageUrl,
+        imageAltText: autoImageAlt,
         status: finalStatus,
         scheduledAt: finalStatus === "scheduled" ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
@@ -244,6 +294,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         id: Math.random().toString(), // temp ID
         translations: finalGeneratedData,
         featuredImage: imageUrl,
+        imageAltText: autoImageAlt,
         status: finalStatus,
         scheduledAt: finalStatus === "scheduled" ? new Date(scheduledDate).toISOString() : null,
         author: "Muhammad Bayu Edi",
@@ -565,19 +616,16 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-on-surface mb-2">Featured Image URL</label>
+                <label className="block text-sm font-bold text-on-surface mb-2">Featured Image Upload (CDN)</label>
                 <div className="flex items-center gap-4">
                   <div className="flex-grow relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
-                      <ImageIcon size={20} />
-                    </div>
                     <input 
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="https://images.unsplash.com/photo-..."
-                      className="w-full pl-12 p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                      required
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={isUploadingImage}
+                      className="w-full p-4 bg-surface-variant/30 border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      required={!imageUrl}
                     />
                   </div>
                   {imageUrl && (
@@ -586,6 +634,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     </button>
                   )}
                 </div>
+                {isUploadingImage && (
+                  <div className="mt-4 flex items-center gap-2 text-primary font-medium">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Uploading to secure CDN...
+                  </div>
+                )}
                 {imageUrl && (
                   <div className="mt-4 rounded-xl overflow-hidden border border-outline-variant/30 h-48 w-full relative bg-surface-variant/50 flex items-center justify-center">
                     <img src={imageUrl} alt="Preview" className="object-cover w-full h-full" onError={(e) => (e.currentTarget.style.display = 'none')} />
