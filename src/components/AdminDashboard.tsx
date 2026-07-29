@@ -37,9 +37,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [scheduledDate, setScheduledDate] = useState('');
   const [isDraft, setIsDraft] = useState(false);
   const [listTab, setListTab] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
-
-  const [timeOverride, setTimeOverride] = useState<'auto'|'day'|'night'>('auto');
-  const [natureEnabled, setNatureEnabled] = useState(false);
   const { articles, loading: loadingArticles } = useArticles();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [geminiStatus, setGeminiStatus] = useState<'green' | 'red'>('green');
@@ -312,27 +309,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {/* Nature Toggles */}
-            <div className="flex flex-col items-center gap-1 bg-surface-container-high p-1 rounded-xl border border-outline-variant shadow-sm z-50">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setTimeOverride(prev => prev === 'auto' ? 'day' : prev === 'day' ? 'night' : 'auto')}
-                  className="px-2 py-1 bg-surface rounded-lg shadow-sm text-xs font-bold transition-colors hover:bg-surface-variant flex items-center gap-1"
-                  title="Toggle Day/Night Mode"
-                >
-                  {timeOverride === 'auto' && '🔄 Auto'}
-                  {timeOverride === 'day' && '☀️ Day'}
-                  {timeOverride === 'night' && '🌙 Night'}
-                </button>
-                <button
-                  onClick={() => setNatureEnabled(!natureEnabled)}
-                  className={`p-1.5 rounded-lg shadow-sm transition-colors ${natureEnabled ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant'}`}
-                  title="Toggle Nature Zen Mode"
-                >
-                  <Leaf size={16} />
-                </button>
-              </div>
-            </div>
 
             <button 
               onClick={handleLogout}
