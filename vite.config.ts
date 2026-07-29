@@ -18,23 +18,19 @@ const prerenderRoutes = langs.flatMap(lang =>
   [...tools, ...staticPages].map(path => `${lang}/${path}`)
 ).concat(langs.map(lang => lang === '' ? '/' : `${lang}/`));
 
-const isVercel = process.env.VERCEL === '1';
-
 export default defineConfig(() => {
   return {
     plugins: [
       react(), 
       tailwindcss(),
       // Prerender dibungkus agar berjalan POST-BUILD (hanya saat npm run build)
-      // Nonaktifkan di Vercel karena Puppeteer tidak memiliki dependensi OS di sana
-      ...(isVercel ? [] : [{
+      {
         ...prerender({
           // WAJIB: Tentukan folder output Vite
           staticDir: path.join(__dirname, 'dist'),
           routes: prerenderRoutes,
           renderer: new PuppeteerRenderer({
-            // Jeda 5 detik per rute untuk memastikan react-helmet-async & rendering selesai
-            renderAfterTime: 5000, 
+            renderAfterDocumentEvent: 'seo-ready',
             maxConcurrentRoutes: 4,
             headless: true,
             // Skip request Analytics/Ads agar tidak mengganggu proses rendering Puppeteer
@@ -47,7 +43,7 @@ export default defineConfig(() => {
         }),
         apply: 'build',
         enforce: 'post'
-      }])
+      }
     ],
     resolve: {
       alias: {

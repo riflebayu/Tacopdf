@@ -103,6 +103,16 @@ export default function App() {
     };
   }, []);
 
+  // Trigger seo-ready event untuk Puppeteer (Pre-rendering SSR/SSG)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Berikan jeda mikro (100ms) untuk memastikan react-helmet-async selesai meng-inject <head>
+      const timer = setTimeout(() => {
+        document.dispatchEvent(new Event('seo-ready'));
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
 
   const toolGridRef = useRef<HTMLDivElement>(null);
 
