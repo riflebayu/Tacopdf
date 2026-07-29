@@ -158,6 +158,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     html = html.replace('</head>', `\n${seoTags}\n</head>`);
     
+    const tags = translationData.tags || [];
+    const tagsHtml = tags.length > 0 
+      ? `<div class="article-tags">${tags.map((t: string) => `<span class="seo-tag">#${t}</span>`).join(' ')}</div>` 
+      : '';
+
     // Injeksi Semantic Layout Penuh (Header, Main, Footer)
     const crawlerContent = `
       <div id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
@@ -182,6 +187,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             <div class="article-content">
               ${rawContentHtml}
             </div>
+            ${tagsHtml}
           </article>
         </main>
         <footer>

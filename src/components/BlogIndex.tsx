@@ -20,10 +20,12 @@ export default function BlogIndex() {
 
       <header className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold text-on-surface mb-6">
-          TacoPDF <span className="text-primary">Blog</span>
+          {t('blog.title', 'TacoPDF Blog').split(' ').map((word, i, arr) => 
+            i === arr.length - 1 ? <span key={i} className="text-primary">{word}</span> : `${word} `
+          )}
         </h1>
         <p className="text-lg text-on-surface-variant max-w-2xl mx-auto">
-          Insights, updates, and guides on privacy-first PDF processing, client-side WebAssembly, and secure document management.
+          {t('blog.desc', 'Insights, updates, and guides on privacy-first PDF processing, client-side WebAssembly, and secure document management.')}
         </p>
       </header>
 
@@ -37,7 +39,7 @@ export default function BlogIndex() {
         </div>
       ) : BLOG_ARTICLES.filter(a => a.isPublic).length === 0 ? (
         <div className="text-center py-20 text-on-surface-variant bg-surface-variant/30 rounded-3xl">
-          No articles published yet. Check back soon!
+          {t('blog.empty', 'No articles published yet. Check back soon!')}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -96,7 +98,7 @@ export default function BlogIndex() {
                 </p>
 
                 <LocalizedLink to={`/blog/${translation.slug}`} className="inline-flex items-center gap-2 text-primary font-bold text-sm group-hover:text-primary-container transition-colors mt-auto w-fit">
-                  Read More <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+                  {t('blog.readMore', 'Read More')} <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
                 </LocalizedLink>
               </div>
             </article>

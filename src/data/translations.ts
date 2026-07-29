@@ -640,7 +640,13 @@ export const TRANSLATIONS = {
     "favorites.reset.confirm": "Reset",
     "favorites.confirm_reset": "Are you sure you want to reset your favorites?",
     "tool.sign.add_btn": "Add Signature",
-    "tool.sign.delete_btn": "Delete Signature"
+    "tool.sign.delete_btn": "Delete Signature",
+    "blog.title": "TacoPDF Blog",
+    "blog.desc": "Insights, updates, and guides on privacy-first PDF processing, client-side WebAssembly, and secure document management.",
+    "blog.empty": "No articles published yet. Check back soon!",
+    "blog.readMore": "Read More",
+    "article.writtenBy": "Written by",
+    "article.authorDesc": "Serving the global community with all my might.",
   },
   "id": {
     "progress.success.compress-pdf": "PDF Berhasil Dikompresi!",
@@ -1273,7 +1279,13 @@ export const TRANSLATIONS = {
     "favorites.reset.confirm": "Atur Ulang",
     "favorites.confirm_reset": "Apakah Anda yakin ingin mengatur ulang daftar favorit Anda?",
     "tool.sign.add_btn": "Tambah Tanda Tangan",
-    "tool.sign.delete_btn": "Hapus Tanda Tangan"
+    "tool.sign.delete_btn": "Hapus Tanda Tangan",
+    "blog.title": "Blog TacoPDF",
+    "blog.desc": "Wawasan, pembaruan, dan panduan tentang pemrosesan PDF yang mengutamakan privasi, WebAssembly sisi klien, dan manajemen dokumen yang aman.",
+    "blog.empty": "Belum ada artikel yang dipublikasikan. Cek lagi nanti!",
+    "blog.readMore": "Baca Selengkapnya",
+    "article.writtenBy": "Ditulis oleh",
+    "article.authorDesc": "Melayani masyarakat dunia dengan sekuat tenaga.",
   },
   "es": {
     "progress.success.compress-pdf": "¡PDF comprimido con éxito!",
@@ -1892,7 +1904,13 @@ export const TRANSLATIONS = {
     "favorites.reset.confirm": "Redefinir",
     "favorites.confirm_reset": "Certeza?",
     "tool.sign.add_btn": "Adicionar",
-    "tool.sign.delete_btn": "Excluir"
+    "tool.sign.delete_btn": "Excluir",
+    "blog.title": "Blog de TacoPDF",
+    "blog.desc": "Ideas, actualizaciones y guías sobre procesamiento de PDF con privacidad, WebAssembly en el cliente y gestión segura de documentos.",
+    "blog.empty": "Aún no se han publicado artículos. ¡Vuelve pronto!",
+    "blog.readMore": "Leer más",
+    "article.writtenBy": "Escrito por",
+    "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
     "progress.success.compress-pdf": "PDFが正常に圧縮されました！",
@@ -2534,6 +2552,13 @@ export const TRANSLATIONS = {
     "favorites.confirm_reset": "お気に入りをリセットしてもよろしいですか?",
     "tool.sign.add_btn": "署名の追加",
     "tool.sign.delete_btn": "署名の削除",
+  
+    "blog.title": "TacoPDF ブログ",
+    "blog.desc": "プライバシーを重視したPDF処理、クライアントサイドWebAssembly、安全なドキュメント管理に関する洞察、更新情報、ガイド。",
+    "blog.empty": "公開された記事はまだありません。また後で確認してください！",
+    "blog.readMore": "続きを読む",
+    "article.writtenBy": "著者",
+    "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
     "progress.success.compress-pdf": "PDF comprimido com sucesso!",
@@ -3819,7 +3844,13 @@ export const TRANSLATIONS = {
     "history.title": "Letzte Aktivität",
     "history.clear": "Löschen",
     "history.empty": "Noch keine letzte Aktivität.",
-    "history.privacy": "Der Verlauf wird nur lokal auf Ihrem Gerät gespeichert."
+    "history.privacy": "Der Verlauf wird nur lokal auf Ihrem Gerät gespeichert.",
+    "blog.title": "TacoPDF Blog",
+    "blog.desc": "Einblicke, Updates und Leitfäden zu datenschutzorientierter PDF-Verarbeitung, clientseitigem WebAssembly und sicherer Dokumentenverwaltung.",
+    "blog.empty": "Noch keine Artikel veröffentlicht. Schau bald wieder vorbei!",
+    "blog.readMore": "Weiterlesen",
+    "article.writtenBy": "Geschrieben von",
+    "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
     "progress.success.compress-pdf": "PDF compressé avec succès !",
@@ -4436,6 +4467,12 @@ export const TRANSLATIONS = {
     "favorites.reset.confirm": "Réinitialiser",
     "favorites.confirm_reset": "Êtes-vous sûr de vouloir réinitialiser vos favoris ?",
     "tool.sign.add_btn": "Ajouter une Signature",
-    "tool.sign.delete_btn": "Supprimer la Signature"
+    "tool.sign.delete_btn": "Supprimer la Signature",
+    "blog.title": "Blog TacoPDF",
+    "blog.desc": "Informations, mises à jour et guides sur le traitement de PDF axé sur la confidentialité, le WebAssembly côté client et la gestion sécurisée des documents.",
+    "blog.empty": "Aucun article publié pour le moment. Revenez bientôt !",
+    "blog.readMore": "Lire la suite",
+    "article.writtenBy": "Écrit par",
+    "article.authorDesc": "Servir la communauté mondiale de toutes mes forces.",
   }
 };

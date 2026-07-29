@@ -7,12 +7,14 @@ import { ThemeProvider } from './context/ThemeContext';
 
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 
 const rootElement = document.getElementById('root')!;
 const app = (
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <LanguageProvider>
           <ThemeProvider>
             <App />

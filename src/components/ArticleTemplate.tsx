@@ -153,16 +153,18 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
       </header>
 
       {/* Featured Image */}
-      <figure className="mb-16">
-        <img 
-          src={article.featuredImage} 
-          alt={article.imageAltText || translation.title}
-          className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl border border-outline-variant/20"
-          fetchPriority="high"
-          loading="lazy"
-          decoding="async"
-        />
-      </figure>
+      {article.featuredImage && (
+        <figure className="mb-16">
+          <img 
+            src={article.featuredImage} 
+            alt={article.imageAltText || translation.title}
+            className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl border border-outline-variant/20"
+            fetchPriority="high"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      )}
 
       {/* Article Content */}
       <div className="prose prose-lg prose-invert max-w-none text-on-surface-variant 
@@ -220,13 +222,13 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
           </div>
           <div>
             <h4 className="text-lg font-bold text-on-surface mb-2">
-              Written by{' '}
+              {t('article.writtenBy', 'Written by')}{' '}
               <LocalizedLink to="/about" className="text-primary hover:text-primary-container transition-colors hover:underline">
                 {article.author}
               </LocalizedLink>
             </h4>
             <p className="text-sm text-on-surface-variant leading-relaxed">
-              TacoPDF is dedicated to providing privacy-first, ultra-fast WebAssembly utilities directly inside your browser. Our engineering team shares insights on web technologies, client-side computing, and data privacy.
+              {t('article.authorDesc', 'Serving the global community with all my might.')}
             </p>
           </div>
         </div>
