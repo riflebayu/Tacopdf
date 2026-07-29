@@ -4,7 +4,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import prerender from '@prerenderer/rollup-plugin';
 import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
-import fs from 'fs';
+
 
 const tools = [
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pages', 'extract-pages',
@@ -24,19 +24,19 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
-      // Custom plugin untuk menyimpan Blank SPA Shell sebelum Puppeteer menimpa index.html
+      // Custom plugin untuk men-generate Blank SPA Shell secara native dari memori Vite
       {
-        name: 'copy-spa-shell',
-        apply: 'build',
-        writeBundle() {
-          try {
-            fs.copyFileSync(
-              path.resolve(__dirname, 'dist/index.html'),
-              path.resolve(__dirname, 'dist/fallback.html')
-            );
-            console.log('Successfully generated fallback.html!');
-          } catch (error) {
-            console.error('Failed to generate fallback.html:', error);
+        name: 'generate-fallback-html',
+        enforce: 'post',
+        generateBundle(options, bundle) {
+          const indexHtml = bundle['index.html'];
+          if (indexHtml && indexHtml.type === 'asset') {
+            bundle['fallback.html'] = {
+              ...indexHtml,
+              fileName: 'fallback.html',
+              name: 'fallback.html'
+            };
+            console.log('Successfully generated fallback.html via Vite memory!');
           }
         }
       },
