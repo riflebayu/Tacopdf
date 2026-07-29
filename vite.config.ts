@@ -4,35 +4,40 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import prerender from '@prerenderer/rollup-plugin';
 import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
+import fs from 'fs';
 
 const tools = [
-  'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pages', 'extract-pages', 
-  'protect-pdf', 'unlock-pdf', 'sign-pdf', 'redact-pdf', 'image-to-pdf', 
+  'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pages', 'extract-pages',
+  'protect-pdf', 'unlock-pdf', 'sign-pdf', 'redact-pdf', 'image-to-pdf',
   'pdf-to-image', 'html-to-pdf', 'add-watermark', 'add-page-numbers'
 ];
 const staticPages = ['about', 'privacy', 'terms', 'cookie', 'retention', 'disclaimer', 'sitemap', 'contact', 'how-it-works'];
 const langs = ['', '/id', '/es', '/ja', '/de', '/fr', '/pt'];
 
 // Menghasilkan 98+ rute secara dinamis (termasuk root '/')
-const prerenderRoutes = langs.flatMap(lang => 
+const prerenderRoutes = langs.flatMap(lang =>
   [...tools, ...staticPages].map(path => `${lang}/${path}`)
 ).concat(langs.map(lang => lang === '' ? '/' : `${lang}/`));
 
 export default defineConfig(() => {
   return {
     plugins: [
-      react(), 
+      react(),
       tailwindcss(),
       // Custom plugin untuk menyimpan Blank SPA Shell sebelum Puppeteer menimpa index.html
       {
         name: 'copy-spa-shell',
         apply: 'build',
         writeBundle() {
-          const fs = require('fs');
-          fs.copyFileSync(
-            path.resolve(__dirname, 'dist/index.html'), 
-            path.resolve(__dirname, 'dist/fallback.html')
-          );
+          try {
+            fs.copyFileSync(
+              path.resolve(__dirname, 'dist/index.html'),
+              path.resolve(__dirname, 'dist/fallback.html')
+            );
+            console.log('Successfully generated fallback.html!');
+          } catch (error) {
+            console.error('Failed to generate fallback.html:', error);
+          }
         }
       },
       // Prerender dibungkus agar berjalan POST-BUILD (hanya saat npm run build)
