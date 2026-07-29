@@ -17,3 +17,6 @@ coverage/
 .DS_Store
 *.log
 scratch/
+
+# Generated SPA Shell
+fallback.html

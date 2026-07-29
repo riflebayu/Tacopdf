@@ -24,22 +24,6 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
-      // Custom plugin untuk men-generate Blank SPA Shell secara native dari memori Vite
-      {
-        name: 'generate-fallback-html',
-        enforce: 'post',
-        generateBundle(options, bundle) {
-          const indexHtml = bundle['index.html'];
-          if (indexHtml && indexHtml.type === 'asset') {
-            bundle['fallback.html'] = {
-              ...indexHtml,
-              fileName: 'fallback.html',
-              name: 'fallback.html'
-            };
-            console.log('Successfully generated fallback.html via Vite memory!');
-          }
-        }
-      },
       // Prerender dibungkus agar berjalan POST-BUILD (hanya saat npm run build)
       {
         ...prerender({
@@ -83,6 +67,10 @@ export default defineConfig(() => {
         }
       },
       rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          fallback: path.resolve(__dirname, 'fallback.html')
+        },
         output: {
           manualChunks(id) {
             if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor';
