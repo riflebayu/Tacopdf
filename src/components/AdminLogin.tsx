@@ -24,8 +24,19 @@ export default function AdminLogin({ onLoginSuccess, onBack }: AdminLoginProps) 
       await signInWithEmailAndPassword(auth, email, password);
       onLoginSuccess();
     } catch (err: any) {
-      console.error(err);
-      setError('Gagal login. Periksa kembali email dan password Anda.');
+      console.error("Firebase Auth Error:", err);
+      // Tampilkan error spesifik dari Firebase agar mudah didiagnosis
+      if (err.code === 'auth/user-not-found') {
+        setError('Email tidak terdaftar. Pastikan akun sudah dibuat di Firebase.');
+      } else if (err.code === 'auth/wrong-password') {
+        setError('Password salah.');
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setError('Metode login "Email/Password" BELUM AKTIF di menu Sign-in method Firebase.');
+      } else if (err.code === 'auth/invalid-credential') {
+        setError('Kredensial salah atau tidak valid. Periksa kembali email dan password.');
+      } else {
+        setError(`Error Firebase: ${err.message || err.code}`);
+      }
     } finally {
       setLoading(false);
     }
