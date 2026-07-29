@@ -90,7 +90,7 @@ ATURAN GAYA BAHASA & KUALITAS KONTEN (SANGAT PENTING):
 LOKALISASI SANGAT PENTING: Buat konten orisinal dan terjemahkan ke SEMUA kode bahasa berikut tanpa ada yang terlewat: ${langListStr}.
 DILARANG KERAS MALAS. Kamu WAJIB menghasilkan konten untuk SETIAP bahasa yang diminta.
 
-STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON (JSON object). DILARANG menuliskan teks apa pun di luar JSON. Struktur JSON HARUS persis seperti ini dan mencakup SEMUA bahasa:
+STRUKTUR OUTPUT (WAJIB JSON MURNI): Kamu HARUS MENGEMBALIKAN respons HANYA dalam bentuk objek JSON murni. DILARANG menggunakan markdown formatting (\`\`\`json), dilarang menambahkan teks pengantar/penutup. Output HANYA JSON. Struktur JSON HARUS persis seperti ini dan mencakup SEMUA bahasa:
 ${JSON.stringify(jsonStructure, null, 2)}
 Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 
@@ -98,7 +98,7 @@ Pastikan slug relevan dengan bahasa masing-masing dan URL-friendly.`;
 Target Keyword: ${keyword}
 ${content ? `Raw Content: ${content}` : 'Instruksi: Buat artikel dari nol berdasarkan judul dan keyword di atas.'}
 
-${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN output 100% valid JSON.`;
+${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}"\n\nPastikan kamu mematuhi instruksi khusus di atas dalam penulisan artikel ini.\n\n` : ''}Tolong kembangkan dan lokalisasi artikel ini berdasarkan instruksi sistem. PASTIKAN OUTPUT 100% VALID JSON MURNI TANPA BLOK MARKDOWN.`;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-3.6-flash",
@@ -116,7 +116,19 @@ ${customPrompt ? `INSTRUKSI KHUSUS (CUSTOM PROMPT) DARI ADMIN:\n"${customPrompt}
       throw new Error("Empty response from Gemini API.");
     }
 
-    let generatedJSON = JSON.parse(responseText);
+    let generatedJSON;
+    try {
+      let cleanedText = responseText;
+      // 1. Hapus markdown code blocks jika AI masih menambahkannya
+      cleanedText = cleanedText.replace(/^```(?:json)?\s*/gi, '').replace(/```\s*$/g, '');
+      // 2. Bersihkan karakter kontrol dan line break mentah (replace dengan spasi agar aman di-parse oleh JSON.parse)
+      cleanedText = cleanedText.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
+      
+      generatedJSON = JSON.parse(cleanedText);
+    } catch (parseError: any) {
+      console.error('Failed to parse AI response:', responseText);
+      throw new Error(`AI mengembalikan format respons yang rusak atau bukan JSON murni. (Detail Error: ${parseError.message})`);
+    }
     
     // Extract if AI wrapped it in a root key
     if (generatedJSON.translations) generatedJSON = generatedJSON.translations;
