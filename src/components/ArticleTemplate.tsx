@@ -158,7 +158,7 @@ export default function ArticleTemplate({ slug }: ArticleTemplateProps) {
           <img 
             src={article.featuredImage} 
             alt={article.imageAltText || translation.title}
-            className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl border border-outline-variant/20"
+            className="w-full aspect-video md:aspect-[21/9] object-cover rounded-3xl shadow-xl border border-outline-variant/20"
             fetchPriority="high"
             loading="lazy"
             decoding="async"

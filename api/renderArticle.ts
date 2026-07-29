@@ -3,14 +3,89 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import * as fs from 'fs';
 import * as path from 'path';
+import { TRANSLATIONS } from '../src/data/translations';
 
-// Note: Inisialisasi app akan dilakukan di dalam handler untuk mencegah module-level crash 
-// akibat environment variables yang belum siap di runtime tertentu.
 let cachedDb: any = null;
+
+async function getFallbackHtml(req: VercelRequest): Promise<string> {
+  try {
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    if (host && !host.includes('vercel.app')) { 
+      const response = await fetch(`${protocol}://${host}/fallback.html`);
+      if (response.ok) return await response.text();
+    } else if (host && host.includes('vercel.app')) {
+      const response = await fetch(`https://${host}/fallback.html`);
+      if (response.ok) return await response.text();
+    }
+  } catch (e) {
+    console.error("Failed to fetch fallback.html from host:", e);
+  }
+
+  let htmlPath = path.join(process.cwd(), 'fallback.html');
+  if (!fs.existsSync(htmlPath)) {
+      htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
+  }
+  if (fs.existsSync(htmlPath)) {
+    return fs.readFileSync(htmlPath, 'utf8');
+  }
+  return `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
+}
+
+function generateFooterHtml(t: any): string {
+  return `
+    <footer>
+      <div>
+        <h3>${t('footer.support')}</h3>
+        <ul>
+          <li><a href="/faq">${t('nav.faq')}</a></li>
+          <li><a href="/sitemap">${t('footer.sitemap')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.features')}</h3>
+        <ul>
+          <li><a href="/#manipulation">${t('cat.manipulation')}</a></li>
+          <li><a href="/#security">${t('cat.security')}</a></li>
+          <li><a href="/#conversion">${t('cat.conversion')}</a></li>
+          <li><a href="/#editing">${t('cat.editing')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.popular')}</h3>
+        <ul>
+          <li><a href="/merge-pdf">${t('tools.merge.name')}</a></li>
+          <li><a href="/image-to-pdf">${t('tools.image-to-pdf.name')}</a></li>
+          <li><a href="/delete-pages">${t('tools.delete-pages.name')}</a></li>
+          <li><a href="/split-pdf">${t('tools.split.name')}</a></li>
+          <li><a href="/protect-pdf">${t('tools.protect.name')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.company')}</h3>
+        <ul>
+          <li><a href="/about">${t('nav.about')}</a></li>
+          <li><a href="/contact">${t('nav.contact')}</a></li>
+          <li><a href="/blog">${t('nav.blog')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.legal')}</h3>
+        <ul>
+          <li><a href="/privacy">${t('nav.privacy')}</a></li>
+          <li><a href="/terms">${t('nav.terms')}</a></li>
+          <li><a href="/cookie">${t('nav.cookie')}</a></li>
+          <li><a href="/retention">${t('nav.retention')}</a></li>
+        </ul>
+      </div>
+      <p>&copy; ${new Date().getFullYear()} TacoPDF. ${t('footer.rights') || 'All rights reserved.'}</p>
+      <p>${t('footer.tagline') || 'TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.'}</p>
+    </footer>
+  `;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    // 1. Inisialisasi Firebase aman di dalam try/catch
     if (!cachedDb) {
       const firebaseConfig = {
         apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -21,11 +96,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         appId: process.env.VITE_FIREBASE_APP_ID,
         measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
       };
-      
       const app = initializeApp(firebaseConfig);
       cachedDb = getFirestore(app);
     }
-    
     const db = cachedDb;
 
     const urlPath = req.url?.split('?')[0] || '';
@@ -41,46 +114,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         lang = segments[0];
       }
     } else {
-      return serveFallback(res);
+      let html = await getFallbackHtml(req);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(200).send(html);
     }
 
     if (!slug) {
-      return serveFallback(res);
+      let html = await getFallbackHtml(req);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(200).send(html);
     }
 
-    // Ambil data dari Firestore
+    const t = (key: string) => {
+      // @ts-ignore
+      return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || (TRANSLATIONS['en'] && TRANSLATIONS['en'][key]) || key;
+    };
+
     const articlesRef = collection(db, 'articles');
     const q = query(articlesRef, where(`translations.${lang}.slug`, '==', slug), limit(1));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      return serveFallback(res);
+      let html = await getFallbackHtml(req);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(200).send(html);
     }
 
     const articleDoc = snapshot.docs[0];
     const data = articleDoc.data();
     
-    const translationData = data.translations?.[lang];
+    const translationData = data.translations?.[lang] || data.translations?.['en'];
     if (!translationData) {
-      return serveFallback(res);
+      let html = await getFallbackHtml(req);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(200).send(html);
     }
 
-    // Baca HTML Fallback
-    let htmlPath = path.join(process.cwd(), 'fallback.html');
-    if (!fs.existsSync(htmlPath)) {
-        htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
-    }
-    
-    let html = '';
-    try {
-      html = fs.readFileSync(htmlPath, 'utf8');
-    } catch (e) {
-      console.error("Gagal membaca fallback.html:", e);
-      return res.status(500).send("Server Error: Missing SPA shell");
-    }
+    let html = await getFallbackHtml(req);
 
-    // Metadata
-    const title = translationData.title || 'TacoPDF Blog';
+    const title = translationData.title || t('blog.title');
     const description = translationData.metaDescription || '';
     const category = translationData.category || 'Blog';
     const featuredImage = data.featuredImage || data.featuredImageUrl || 'https://tacopdf.com/default-og.jpg';
@@ -163,23 +235,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ? `<div class="article-tags">${tags.map((t: string) => `<span class="seo-tag">#${t}</span>`).join(' ')}</div>` 
       : '';
 
-    // Injeksi Semantic Layout Penuh (Header, Main, Footer)
     const crawlerContent = `
       <div id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
         <header>
           <nav>
-            <a href="https://tacopdf.com">TacoPDF Logo</a>
-            <a href="https://tacopdf.com/blog">Blog</a>
-            <a href="https://tacopdf.com/about">About Us</a>
-            <a href="https://tacopdf.com/contact">Contact</a>
+            <a href="https://tacopdf.com">TacoPDF</a>
+            <a href="https://tacopdf.com/blog">${t('nav.blog')}</a>
+            <a href="https://tacopdf.com/about">${t('nav.about')}</a>
+            <a href="https://tacopdf.com/contact">${t('nav.contact')}</a>
           </nav>
         </header>
         <main>
           <article>
             <header>
               <h1>${title}</h1>
-              <p>By ${author} on <time datetime="${publishedDate}">${publishedDate}</time></p>
-              <p>Category: ${category}</p>
+              <p>${t('article.writtenBy')} <a href="/about">${author}</a> on <time datetime="${publishedDate}">${publishedDate}</time></p>
+              <p>${category}</p>
             </header>
             <figure>
               <img src="${featuredImage}" alt="${imageAltText}" />
@@ -190,10 +261,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ${tagsHtml}
           </article>
         </main>
-        <footer>
-          <p>&copy; ${new Date().getFullYear()} TacoPDF. All rights reserved.</p>
-          <p>TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.</p>
-        </footer>
+        ${generateFooterHtml(t)}
       </div>
     `;
     
@@ -205,25 +273,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error) {
     console.error("Terjadi kesalahan pada renderArticle:", error);
-    // 500 CRASH FIX: Return valid fallback HTML string instead of crashing!
-    return serveFallback(res);
-  }
-}
-
-function serveFallback(res: VercelResponse) {
-  let htmlPath = path.join(process.cwd(), 'fallback.html');
-  if (!fs.existsSync(htmlPath)) {
-      htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
-  }
-  
-  if (fs.existsSync(htmlPath)) {
-    const html = fs.readFileSync(htmlPath, 'utf8');
+    let html = await getFallbackHtml(req);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
-  } else {
-    // If fallback is missing, return a minimal valid HTML
-    const minimalHtml = `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(minimalHtml);
   }
 }

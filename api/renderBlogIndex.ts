@@ -3,8 +3,87 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import * as fs from 'fs';
 import * as path from 'path';
+import { TRANSLATIONS } from '../src/data/translations';
 
 let cachedDb: any = null;
+
+async function getFallbackHtml(req: VercelRequest): Promise<string> {
+  try {
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    if (host && !host.includes('vercel.app')) { 
+      // fetch from host directly if available
+      const response = await fetch(`${protocol}://${host}/fallback.html`);
+      if (response.ok) return await response.text();
+    } else if (host && host.includes('vercel.app')) {
+      const response = await fetch(`https://${host}/fallback.html`);
+      if (response.ok) return await response.text();
+    }
+  } catch (e) {
+    console.error("Failed to fetch fallback.html from host:", e);
+  }
+
+  let htmlPath = path.join(process.cwd(), 'fallback.html');
+  if (!fs.existsSync(htmlPath)) {
+      htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
+  }
+  if (fs.existsSync(htmlPath)) {
+    return fs.readFileSync(htmlPath, 'utf8');
+  }
+  return `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
+}
+
+function generateFooterHtml(t: any): string {
+  return `
+    <footer>
+      <div>
+        <h3>${t('footer.support')}</h3>
+        <ul>
+          <li><a href="/faq">${t('nav.faq')}</a></li>
+          <li><a href="/sitemap">${t('footer.sitemap')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.features')}</h3>
+        <ul>
+          <li><a href="/#manipulation">${t('cat.manipulation')}</a></li>
+          <li><a href="/#security">${t('cat.security')}</a></li>
+          <li><a href="/#conversion">${t('cat.conversion')}</a></li>
+          <li><a href="/#editing">${t('cat.editing')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.popular')}</h3>
+        <ul>
+          <li><a href="/merge-pdf">${t('tools.merge.name')}</a></li>
+          <li><a href="/image-to-pdf">${t('tools.image-to-pdf.name')}</a></li>
+          <li><a href="/delete-pages">${t('tools.delete-pages.name')}</a></li>
+          <li><a href="/split-pdf">${t('tools.split.name')}</a></li>
+          <li><a href="/protect-pdf">${t('tools.protect.name')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.company')}</h3>
+        <ul>
+          <li><a href="/about">${t('nav.about')}</a></li>
+          <li><a href="/contact">${t('nav.contact')}</a></li>
+          <li><a href="/blog">${t('nav.blog')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${t('footer.legal')}</h3>
+        <ul>
+          <li><a href="/privacy">${t('nav.privacy')}</a></li>
+          <li><a href="/terms">${t('nav.terms')}</a></li>
+          <li><a href="/cookie">${t('nav.cookie')}</a></li>
+          <li><a href="/retention">${t('nav.retention')}</a></li>
+        </ul>
+      </div>
+      <p>&copy; ${new Date().getFullYear()} TacoPDF. ${t('footer.rights') || 'All rights reserved.'}</p>
+      <p>${t('footer.tagline') || 'TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.'}</p>
+    </footer>
+  `;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
@@ -32,19 +111,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       lang = segments[0]; // e.g. /id/blog
     }
 
-    // Ambil fallback.html
-    let htmlPath = path.join(process.cwd(), 'fallback.html');
-    if (!fs.existsSync(htmlPath)) {
-        htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
-    }
-    
-    let html = '';
-    try {
-      html = fs.readFileSync(htmlPath, 'utf8');
-    } catch (e) {
-      console.error("Gagal membaca fallback.html:", e);
-      return res.status(500).send("Server Error: Missing SPA shell");
-    }
+    const t = (key: string) => {
+      // @ts-ignore
+      return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || (TRANSLATIONS['en'] && TRANSLATIONS['en'][key]) || key;
+    };
+
+    let html = await getFallbackHtml(req);
 
     // Ambil artikel
     const articlesRef = collection(db, 'articles');
@@ -56,7 +128,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     snapshot.forEach(doc => {
       const data = doc.data();
-      const translation = data.translations?.[lang];
+      const translation = data.translations?.[lang] || data.translations?.['en'];
       if (!translation) return;
 
       const isPublished = data.status === 'published';
@@ -70,8 +142,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     });
 
-    const title = 'TacoPDF Blog';
-    const description = 'Insights, updates, and guides on privacy-first PDF processing, client-side WebAssembly, and secure document management.';
+    const title = t('blog.title');
+    const description = t('blog.desc');
     const pageUrl = `https://tacopdf.com${urlPath}`;
 
     const seoTags = `
@@ -98,16 +170,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       </li>
     `).join('');
 
-    const emptyState = articlesHtml === '' ? '<p>No articles published yet. Check back soon!</p>' : '';
+    const emptyState = articlesHtml === '' ? `<p>${t('blog.empty')}</p>` : '';
 
     const crawlerContent = `
       <div id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
         <header>
           <nav>
-            <a href="https://tacopdf.com">TacoPDF Logo</a>
-            <a href="https://tacopdf.com/blog">Blog</a>
-            <a href="https://tacopdf.com/about">About Us</a>
-            <a href="https://tacopdf.com/contact">Contact</a>
+            <a href="https://tacopdf.com">TacoPDF</a>
+            <a href="https://tacopdf.com/blog">${t('nav.blog')}</a>
+            <a href="https://tacopdf.com/about">${t('nav.about')}</a>
+            <a href="https://tacopdf.com/contact">${t('nav.contact')}</a>
           </nav>
         </header>
         <main>
@@ -118,10 +190,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           </ul>
           ${emptyState}
         </main>
-        <footer>
-          <p>&copy; ${new Date().getFullYear()} TacoPDF. All rights reserved.</p>
-          <p>TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.</p>
-        </footer>
+        ${generateFooterHtml(t)}
       </div>
     `;
     
@@ -133,23 +202,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error) {
     console.error("Terjadi kesalahan pada renderBlogIndex:", error);
-    return serveFallback(res);
-  }
-}
-
-function serveFallback(res: VercelResponse) {
-  let htmlPath = path.join(process.cwd(), 'fallback.html');
-  if (!fs.existsSync(htmlPath)) {
-      htmlPath = path.join(process.cwd(), 'dist', 'fallback.html');
-  }
-  
-  if (fs.existsSync(htmlPath)) {
-    const html = fs.readFileSync(htmlPath, 'utf8');
+    let html = await getFallbackHtml(req);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
-  } else {
-    const minimalHtml = `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(minimalHtml);
   }
 }
