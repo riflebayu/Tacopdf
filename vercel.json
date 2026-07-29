@@ -3,6 +3,8 @@
     "silent": true
   },
   "rewrites": [
+    { "source": "/blog/:slug", "destination": "/api/renderArticle" },
+    { "source": "/:lang/blog/:slug", "destination": "/api/renderArticle" },
     { "source": "/((?!api/).*)", "destination": "/fallback.html" }
   ]
 }
