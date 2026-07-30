@@ -155,13 +155,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             {t('nav.all_tools')}
           </LocalizedLink>
 
-          <LocalizedLink 
-            to="/blog"
-            className="hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer text-on-surface-variant"
-          >
-            {t('nav.blog')}
-          </LocalizedLink>
-          
+
           <LocalizedLink to="/faq" className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer" onClick={handleGoFAQ}>
             {t('nav.faq')}
           </LocalizedLink>
@@ -268,13 +262,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             <div className="flex justify-between items-center pb-1.5 border-b border-outline-variant/50">
               <span className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{t('nav.tools')}</span>
               <div className="flex gap-2">
-                <LocalizedLink 
-                  to="/blog"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-[11px] font-semibold text-primary-container underline cursor-pointer"
-                >
-                  {t('nav.blog')}
-                </LocalizedLink>
+
                 <LocalizedLink 
                   to="/"
                   onClick={handleAllToolsClick}

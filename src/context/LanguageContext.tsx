@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TRANSLATIONS } from '../data/translations';
-import { getArticleTranslationBySlug } from '../hooks/useArticles';
 
 export interface Language {
   code: string;
@@ -63,18 +62,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       newPath = newPath.replace(new RegExp(`^/${lang}`), '') || '/';
     }
     
-    // SMART LANGUAGE SWITCHER: Translate blog slug if on an article page
-    if (newPath.startsWith('/blog/') && newPath !== '/blog') {
-      const activeSlug = newPath.replace('/blog/', '');
-      const article = getArticleTranslationBySlug(activeSlug);
-      
-      if (article) {
-        // Find the translated slug for the target language (fallback to 'en' if missing)
-        const targetTranslation = article.translations[code] || article.translations['en'];
-        newPath = `/blog/${targetTranslation.slug}`;
-      }
-    }
-    
+
     // Prepend new lang prefix if it's not English
     if (code !== 'en') {
       newPath = `/${code}${newPath === '/' ? '' : newPath}`;

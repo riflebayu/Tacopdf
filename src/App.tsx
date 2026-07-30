@@ -10,8 +10,6 @@ import Banner from './components/Banner';
 
 
 const Workspace = React.lazy(() => import('./components/Workspace'));
-const ArticleTemplate = React.lazy(() => import('./components/ArticleTemplate'));
-const BlogIndex = React.lazy(() => import('./components/BlogIndex'));
 const ContactPage = React.lazy(() => import('./components/ContactPage'));
 import { TOOLS, TOOL_ALIASES, getToolSeoPath } from './data/tools';
 import { motion, AnimatePresence } from 'motion/react';
@@ -47,9 +45,6 @@ export default function App() {
     activeToolId = TOOL_ALIASES[rawPath];
   } else if (path.startsWith('/tools/')) {
     activeToolId = path.replace('/tools/', '');
-  } else if (path.startsWith('/blog/') && path !== '/blog') {
-    activePage = 'article';
-    activeSlug = path.replace('/blog/', '');
   } else if (path !== '/') {
     activePage = rawPath;
   }
@@ -195,7 +190,7 @@ export default function App() {
 
   // Redirect old blog URLs (catch-all for /tools/blog and any subpaths)
   if (path === '/tools/blog' || path.startsWith('/tools/blog/')) {
-    return <Navigate replace to={getPrefixedPath('/blog')} />;
+    return <Navigate replace to={getPrefixedPath('/')} />;
   }
 
 
@@ -215,8 +210,6 @@ export default function App() {
     seoTitle = "Admin Dashboard | TacoPDF";
   } else if (activePage === 'how-it-works') {
     seoTitle = t('page.how.title') || 'How It Works';
-  } else if (activePage === 'blog') {
-    seoTitle = t('nav.blog') || "Blog";
   } else if (activePage) {
     seoTitle = getPageTitle(activePage);
   }
@@ -318,28 +311,6 @@ export default function App() {
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <AdminContainer onBack={handleGoHome} />
-            </motion.div>
-          ) : activePage === 'blog' ? (
-            /* BLOG INDEX STATE */
-            <motion.div
-              key="blog-index"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-            >
-              <BlogIndex />
-            </motion.div>
-          ) : activePage === 'article' && activeSlug ? (
-            /* BLOG ARTICLE STATE */
-            <motion.div
-              key="article-page"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-            >
-              <ArticleTemplate slug={activeSlug} />
             </motion.div>
           ) : activePage === 'how-it-works' ? (
             /* HOW IT WORKS PAGE STATE */
@@ -716,7 +687,6 @@ export default function App() {
                             <ul className="space-y-2">
                               <li><LocalizedLink to="/how-it-works" onClick={(e) => { e.preventDefault(); handleSelectPage('how-it-works'); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>{t('footer.works')}</LocalizedLink></li>
                               <li><LocalizedLink to="/about" onClick={(e) => { e.preventDefault(); handleSelectPage('about'); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>{t('footer.about')}</LocalizedLink></li>
-                              <li><LocalizedLink to="/blog" className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>{t('nav.blog')}</LocalizedLink></li>
                               <li><LocalizedLink to="/contact" onClick={(e) => { e.preventDefault(); handleSelectPage('contact'); }} className="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>{t('footer.contact')}</LocalizedLink></li>
                             </ul>
                           </div>

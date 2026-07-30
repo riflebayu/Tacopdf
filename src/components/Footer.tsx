@@ -111,11 +111,7 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
                 {t('footer.about')}
               </LocalizedLink>
             </li>
-            <li>
-              <LocalizedLink to="/blog" onClick={() => onSelectTool('blog')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
-                {t('nav.blog')}
-              </LocalizedLink>
-            </li>
+
             <li>
               <LocalizedLink to="/contact" onClick={() => onSelectPage && onSelectPage('contact')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.contact')}
