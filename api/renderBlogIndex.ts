@@ -29,7 +29,6 @@ async function getFallbackHtml(req: VercelRequest): Promise<string> {
     const protocol = req.headers['x-forwarded-proto'] || 'https';
     const host = req.headers['x-forwarded-host'] || req.headers.host;
     if (host && !host.includes('vercel.app')) { 
-      // fetch from host directly if available
       const response = await fetch(`${protocol}://${host}/fallback.html`);
       if (response.ok) return await response.text();
     } else if (host && host.includes('vercel.app')) {
@@ -50,55 +49,84 @@ async function getFallbackHtml(req: VercelRequest): Promise<string> {
   return `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
 }
 
-function generateFooterHtml(t: any): string {
+function generateAppShellHtml(lang: string, t: any, pageHtml: string): string {
+  const prefix = lang === 'en' ? '' : `/${lang}`;
+  const getHref = (pathStr: string) => `${prefix}${pathStr}`;
+
   return `
-    <footer>
-      <div>
-        <h3>${t('footer.support')}</h3>
-        <ul>
-          <li><a href="/faq">${t('nav.faq')}</a></li>
-          <li><a href="/sitemap">${t('footer.sitemap')}</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>${t('footer.features')}</h3>
-        <ul>
-          <li><a href="/#manipulation">${t('cat.manipulation')}</a></li>
-          <li><a href="/#security">${t('cat.security')}</a></li>
-          <li><a href="/#conversion">${t('cat.conversion')}</a></li>
-          <li><a href="/#editing">${t('cat.editing')}</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>${t('footer.popular')}</h3>
-        <ul>
-          <li><a href="/merge-pdf">${t('tools.merge.name')}</a></li>
-          <li><a href="/image-to-pdf">${t('tools.image-to-pdf.name')}</a></li>
-          <li><a href="/delete-pages">${t('tools.delete-pages.name')}</a></li>
-          <li><a href="/split-pdf">${t('tools.split.name')}</a></li>
-          <li><a href="/protect-pdf">${t('tools.protect.name')}</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>${t('footer.company')}</h3>
-        <ul>
-          <li><a href="/about">${t('nav.about')}</a></li>
-          <li><a href="/contact">${t('nav.contact')}</a></li>
-          <li><a href="/blog">${t('nav.blog')}</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>${t('footer.legal')}</h3>
-        <ul>
-          <li><a href="/privacy">${t('nav.privacy')}</a></li>
-          <li><a href="/terms">${t('nav.terms')}</a></li>
-          <li><a href="/cookie">${t('nav.cookie')}</a></li>
-          <li><a href="/retention">${t('nav.retention')}</a></li>
-        </ul>
-      </div>
-      <p>&copy; ${new Date().getFullYear()} TacoPDF. ${t('footer.rights') || 'All rights reserved.'}</p>
-      <p>${t('footer.tagline') || 'TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.'}</p>
-    </footer>
+    <div class="bg-background text-on-surface min-h-screen flex flex-col font-sans selection:bg-primary-container/35 selection:text-primary relative">
+      <header class="bg-background border-b border-outline-variant docked full-width top-0 sticky z-50">
+        <div class="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">
+          <div class="flex items-center gap-2">
+            <a href="${getHref('/')}" aria-label="Home" class="flex items-center justify-center p-2 rounded-xl transition-all cursor-pointer group">
+              <span class="text-xl md:text-3xl filter saturate-150 drop-shadow-sm group-hover:scale-110 transition-transform">🌮</span>
+              <span class="font-extrabold text-lg md:text-2xl tracking-tighter text-on-surface ml-2 hidden sm:block">TacoPDF</span>
+            </a>
+          </div>
+          <div class="hidden md:flex items-center gap-6 relative">
+            <a href="${getHref('/')}" class="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer">${t('nav.all_tools')}</a>
+            <a href="${getHref('/blog')}" class="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer">${t('nav.blog')}</a>
+            <a href="${getHref('/faq')}" class="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer">${t('nav.faq')}</a>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-grow">
+        ${pageHtml}
+      </main>
+
+      <footer class="bg-surface border-t border-outline-variant py-12 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div>
+            <h3 class="font-bold text-on-surface mb-4">${t('footer.support')}</h3>
+            <ul class="space-y-2">
+              <li><a href="${getHref('/faq')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.faq')}</a></li>
+              <li><a href="${getHref('/sitemap')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('footer.sitemap')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-on-surface mb-4">${t('footer.features')}</h3>
+            <ul class="space-y-2">
+              <li><a href="${getHref('/#manipulation')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('cat.manipulation')}</a></li>
+              <li><a href="${getHref('/#security')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('cat.security')}</a></li>
+              <li><a href="${getHref('/#conversion')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('cat.conversion')}</a></li>
+              <li><a href="${getHref('/#editing')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('cat.editing')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-on-surface mb-4">${t('footer.popular')}</h3>
+            <ul class="space-y-2">
+              <li><a href="${getHref('/merge-pdf')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('tools.merge.name')}</a></li>
+              <li><a href="${getHref('/image-to-pdf')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('tools.image-to-pdf.name')}</a></li>
+              <li><a href="${getHref('/delete-pages')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('tools.delete-pages.name')}</a></li>
+              <li><a href="${getHref('/split-pdf')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('tools.split.name')}</a></li>
+              <li><a href="${getHref('/protect-pdf')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('tools.protect.name')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-on-surface mb-4">${t('footer.company')}</h3>
+            <ul class="space-y-2">
+              <li><a href="${getHref('/about')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.about')}</a></li>
+              <li><a href="${getHref('/contact')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.contact')}</a></li>
+              <li><a href="${getHref('/blog')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.blog')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-on-surface mb-4">${t('footer.legal')}</h3>
+            <ul class="space-y-2">
+              <li><a href="${getHref('/privacy')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.privacy')}</a></li>
+              <li><a href="${getHref('/terms')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.terms')}</a></li>
+              <li><a href="${getHref('/cookie')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.cookie')}</a></li>
+              <li><a href="${getHref('/retention')}" class="text-on-surface-variant hover:text-primary transition-colors">${t('nav.retention')}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+          <p class="text-on-surface-variant text-sm font-semibold">&copy; ${new Date().getFullYear()} TacoPDF. ${t('footer.rights') || 'All rights reserved.'}</p>
+          <p class="text-on-surface-variant text-sm font-semibold">${t('footer.tagline') || 'TacoPDF provides privacy-first, secure PDF tools directly in your browser using WebAssembly.'}</p>
+        </div>
+      </footer>
+    </div>
   `;
 }
 
@@ -120,7 +148,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     let html = await getFallbackHtml(req);
 
-    // Ambil artikel via REST API to avoid firebase SDK crashes in serverless
+    // Ambil artikel via REST API
     const projectId = process.env.VITE_FIREBASE_PROJECT_ID;
     let documents: any[] = [];
     if (projectId) {
@@ -177,41 +205,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     html = html.replace('</head>', `\n${seoTags}\n</head>`);
     
-    const articlesHtml = articles.map(a => `
-      <li>
-        <a href="https://tacopdf.com/${lang === 'en' ? '' : lang + '/'}blog/${a.translation.slug}">
-          <img src="${a.featuredImage || a.featuredImageUrl || ''}" alt="${a.translation.title}" />
-          <h2>${a.translation.title}</h2>
-          <p>${a.translation.metaDescription}</p>
-        </a>
-      </li>
-    `).join('');
+    const prefix = lang === 'en' ? '' : `/${lang}`;
+    
+    const articlesHtml = articles.map(a => {
+      const dateStr = a.createdAt && typeof a.createdAt === 'string' 
+        ? new Date(a.createdAt).toLocaleDateString(lang, { day: 'numeric', month: 'short', year: 'numeric' }) 
+        : '';
+      const cat = a.translation.category || 'Blog';
+      const img = a.featuredImage || a.featuredImageUrl ? `<div class="h-56 w-full overflow-hidden bg-surface"><img src="${a.featuredImage || a.featuredImageUrl}" alt="${a.translation.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /></div>` : '';
+      
+      return `
+      <a href="${prefix}/blog/${a.translation.slug}" class="group bg-surface-container hover:bg-surface-container-high border border-outline-variant hover:border-primary/50 transition-all duration-300 rounded-[2rem] overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:shadow-primary/5">
+        ${img}
+        <div class="p-6 flex-grow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 text-xs font-bold text-on-surface-variant mb-4 opacity-75">
+              <span class="flex items-center gap-1">👤 ${a.author || 'TacoPDF Team'}</span>
+              <span>•</span>
+              <span class="flex items-center gap-1">📅 ${dateStr}</span>
+            </div>
+            <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full mb-4">${cat}</span>
+            <h3 class="text-xl font-bold text-on-surface group-hover:text-primary transition-colors mb-3 line-clamp-2 leading-tight">${a.translation.title}</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-6 opacity-90">${a.translation.metaDescription}</p>
+          </div>
+          <div class="flex items-center gap-2 text-primary font-bold text-sm group-hover:gap-3 transition-all">
+            ${t('blog.read_more') || 'Read More'} <span class="text-lg">→</span>
+          </div>
+        </div>
+      </a>`;
+    }).join('');
 
-    const emptyState = articlesHtml === '' ? `<p>${t('blog.empty')}</p>` : '';
-
-    const crawlerContent = `
-      <div id="seo-crawler-content" style="position: absolute; pointer-events: none; opacity: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);">
-        <header>
-          <nav>
-            <a href="https://tacopdf.com">TacoPDF</a>
-            <a href="https://tacopdf.com/blog">${t('nav.blog')}</a>
-            <a href="https://tacopdf.com/about">${t('nav.about')}</a>
-            <a href="https://tacopdf.com/contact">${t('nav.contact')}</a>
-          </nav>
-        </header>
-        <main>
-          <h1>${title}</h1>
-          <p>${description}</p>
-          <ul>
-            ${articlesHtml}
-          </ul>
-          ${emptyState}
-        </main>
-        ${generateFooterHtml(t)}
+    const pageHtml = `
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
+        <div class="text-center mb-16 relative">
+          <h1 class="text-4xl md:text-5xl font-extrabold text-on-surface mb-6 font-display tracking-tight">${title}</h1>
+          <p class="text-xl text-on-surface-variant max-w-3xl mx-auto font-medium">${description}</p>
+        </div>
+        ${articlesHtml ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${articlesHtml}</div>` : `<div class="text-center py-20 bg-surface-container rounded-3xl border border-outline-variant max-w-3xl mx-auto"><h3 class="text-2xl font-bold text-on-surface mb-2">${t('blog.empty')}</h3></div>`}
       </div>
     `;
+
+    const fullAppShellHtml = generateAppShellHtml(lang, t, pageHtml);
     
-    html = html.replace('</body>', `\n${crawlerContent}\n</body>`);
+    // Pasang (inject) full app shell menggantikan root kosongan
+    html = html.replace('<div id="root"></div>', `<div id="root">${fullAppShellHtml}</div>`);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=43200');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
