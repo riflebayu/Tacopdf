@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LocalizedLink from './LocalizedLink';
-import { Menu, X, ChevronDown, Sun, Moon, Clock } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
 import TacoIcon from './TacoIcon';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
-import { useTheme } from '../context/ThemeContext';
-import RecentActivity from './RecentActivity';
 
 interface NavbarProps {
   onSelectTool: (id: string) => void;
@@ -17,12 +15,9 @@ interface NavbarProps {
 export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarProps) {
   const { lang, t, setLang, currentLanguage } = useLanguage();
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [hasNewActivity, setHasNewActivity] = useState(false);
 
   // Build proper <a> href for each language (for SEO crawlability)
   const getLanguageHref = (targetLangCode: string) => {
@@ -37,14 +32,6 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
     }
     return `/${targetLangCode}${currentPath === '/' ? '' : currentPath}`;
   };
-
-  useEffect(() => {
-    const handleNewActivity = () => {
-      setHasNewActivity(true);
-    };
-    window.addEventListener('tacopdf-activity-updated', handleNewActivity);
-    return () => window.removeEventListener('tacopdf-activity-updated', handleNewActivity);
-  }, []);
 
   const handleToolClick = (id: string) => {
     onSelectTool(id);
@@ -146,27 +133,6 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
           </LocalizedLink>
 
 
-
-          {/* History Toggle */}
-          <div 
-            className="relative h-full hidden sm:flex items-center"
-            onMouseEnter={() => { setIsHistoryOpen(true); setHasNewActivity(false); }}
-            onMouseLeave={() => setIsHistoryOpen(false)}
-          >
-            <button 
-              onClick={() => { setIsHistoryOpen(prev => !prev); setHasNewActivity(false); }}
-              className={`recent-activity-toggle text-on-surface-variant hover:text-primary-container p-2 rounded-full transition-all relative cursor-pointer ${isHistoryOpen ? 'bg-surface-container text-primary-container' : 'hover:bg-surface-container'}`}
-              title={t('history.title') || 'Recent Activity'}
-              aria-label={t('history.title') || 'Recent Activity'}
-            >
-              <Clock size={20} className={hasNewActivity ? "animate-pulse text-error" : ""} />
-              {hasNewActivity && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-background"></span>
-              )}
-            </button>
-            <RecentActivity isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
-          </div>
-
           {/* Language Dropdown — always in DOM with <a> links for SEO */}
           <div 
             className="relative h-full flex items-center"
@@ -249,21 +215,6 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             </div>
           </div>
 
-          {/* Mobile Recent Activity */}
-          <div className="relative flex items-center">
-            <button 
-              onClick={() => { setIsHistoryOpen(prev => !prev); setHasNewActivity(false); }}
-              className={`recent-activity-toggle p-2 text-on-surface-variant hover:text-primary-container rounded-lg transition-all relative cursor-pointer ${isHistoryOpen ? 'bg-surface-container text-primary-container' : 'hover:bg-surface-container'}`}
-              title={t('history.title') || 'Recent Activity'}
-              aria-label={t('history.title') || 'Recent Activity'}
-            >
-              <Clock size={22} className={hasNewActivity ? "animate-pulse text-error" : ""} />
-              {hasNewActivity && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-background"></span>
-              )}
-            </button>
-            <RecentActivity isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} isMobile={true} />
-          </div>
 
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
