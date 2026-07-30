@@ -79,27 +79,27 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             </button>
 
             {/* Mega Menu Dropdown — always in DOM for SEO crawlability */}
-            <div className={`absolute top-[80%] right-1/2 translate-x-1/2 z-50 w-[720px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-6 mt-2 transition-all duration-150 ${
+            <div className={`absolute top-[80%] right-1/2 translate-x-1/2 z-50 w-[520px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-4 mt-2 transition-all duration-150 ${
               isToolsOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
             }`}>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-4">
                 {CATEGORIES.map((cat) => {
                   const catTools = TOOLS.filter((t) => t.category === cat.id);
                   return (
-                    <div key={cat.id} className="space-y-3">
-                      <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/35 pb-1">
+                    <div key={cat.id} className="space-y-1.5">
+                      <h3 className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/35 pb-1">
                         {t('cat.' + cat.id, cat.name)}
                       </h3>
-                      <ul className="space-y-2">
+                      <ul className="space-y-0.5">
                         {catTools.map((tool) => (
                           <li key={tool.id}>
                             <LocalizedLink
                               to={getToolSeoPath(tool.id)}
                               onClick={() => handleToolClick(tool.id)}
-                              className="w-full text-left font-medium text-sm text-primary hover:text-primary-container hover:underline flex items-center gap-2 cursor-pointer group"
+                              className="w-full text-left font-medium text-xs text-primary hover:text-primary-container hover:underline flex items-center gap-1.5 py-0.5 cursor-pointer group"
                             >
-                              <span className="text-on-surface-variant group-hover:text-primary-container transition-colors">
-                                <TacoIcon name={tool.icon} size={32} />
+                              <span className="text-on-surface-variant group-hover:text-primary-container transition-colors flex-shrink-0">
+                                <TacoIcon name={tool.icon} size={20} />
                               </span>
                               {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
                             </LocalizedLink>
