@@ -1,11 +1,28 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import * as fs from 'fs';
 import * as path from 'path';
 import { TRANSLATIONS } from '../src/data/translations';
 
-let cachedDb: any = null;
+function parseFirestoreValue(value: any): any {
+  if (!value) return null;
+  if ('stringValue' in value) return value.stringValue;
+  if ('integerValue' in value) return parseInt(value.integerValue, 10);
+  if ('booleanValue' in value) return value.booleanValue;
+  if ('timestampValue' in value) return value.timestampValue;
+  if ('mapValue' in value) {
+    const res: any = {};
+    const fields = value.mapValue.fields || {};
+    for (const key of Object.keys(fields)) {
+      res[key] = parseFirestoreValue(fields[key]);
+    }
+    return res;
+  }
+  if ('arrayValue' in value) {
+    return (value.arrayValue.values || []).map(parseFirestoreValue);
+  }
+  if ('nullValue' in value) return null;
+  return value;
+}
 
 async function getFallbackHtml(req: VercelRequest): Promise<string> {
   try {
@@ -86,21 +103,6 @@ function generateFooterHtml(t: any): string {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    if (!cachedDb) {
-      const firebaseConfig = {
-        apiKey: process.env.VITE_FIREBASE_API_KEY,
-        authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.VITE_FIREBASE_APP_ID,
-        measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
-      };
-      const app = initializeApp(firebaseConfig);
-      cachedDb = getFirestore(app);
-    }
-    const db = cachedDb;
-
     const urlPath = req.url?.split('?')[0] || '';
     const segments = urlPath.split('/').filter(Boolean);
     
@@ -130,18 +132,44 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || (TRANSLATIONS['en'] && TRANSLATIONS['en'][key]) || key;
     };
 
-    const articlesRef = collection(db, 'articles');
-    const q = query(articlesRef, where(`translations.${lang}.slug`, '==', slug), limit(1));
-    const snapshot = await getDocs(q);
+    const projectId = process.env.VITE_FIREBASE_PROJECT_ID;
+    let documents: any[] = [];
+    if (projectId) {
+      const apiUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:runQuery`;
+      const apiRes = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{collectionId: 'articles'}],
+            where: {
+              fieldFilter: {
+                field: {fieldPath: `translations.${lang}.slug`},
+                op: 'EQUAL',
+                value: {stringValue: slug}
+              }
+            },
+            limit: 1
+          }
+        })
+      });
+      if (apiRes.ok) {
+        documents = await apiRes.json();
+      }
+    }
 
-    if (snapshot.empty) {
+    // Filter out readTime only results (empty array effectively if no doc)
+    const validDocs = documents.filter((d: any) => d.document);
+
+    if (validDocs.length === 0) {
       let html = await getFallbackHtml(req);
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       return res.status(200).send(html);
     }
 
-    const articleDoc = snapshot.docs[0];
-    const data = articleDoc.data();
+    const data = parseFirestoreValue({ mapValue: { fields: validDocs[0].document.fields } });
     
     const translationData = data.translations?.[lang] || data.translations?.['en'];
     if (!translationData) {
