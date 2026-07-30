@@ -317,7 +317,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     `;
 
     const fullAppShellHtml = generateAppShellHtml(lang, t, pageHtml);
-    html = html.replace('<div id="root"></div>', `<div id="root">${fullAppShellHtml}</div>`);
+    html = html.replace(/<div id="root">[\s\S]*?<\/div>/i, `<div id="root">${fullAppShellHtml}</div>`);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=43200');
     return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
