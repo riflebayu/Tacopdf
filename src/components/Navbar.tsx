@@ -37,9 +37,15 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
   useEffect(() => {
     if (!isLangOpen && !isMobileMenuOpen && !isToolsOpen) return;
     
+    let isStable = false;
+    const timer = setTimeout(() => {
+      isStable = true;
+    }, 300); // Wait 300ms before allowing scroll to close the menus
+    
     const startScrollY = window.scrollY;
     
     const handleScroll = () => {
+      if (!isStable) return; // Ignore layout shifts or momentum scrolls immediately after opening
       if (Math.abs(window.scrollY - startScrollY) > 30) {
         setIsLangOpen(false);
         setIsMobileMenuOpen(false);
@@ -48,7 +54,10 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [isLangOpen, isMobileMenuOpen, isToolsOpen]);
 
   // Close on route change
