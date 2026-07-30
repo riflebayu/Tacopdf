@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as fs from 'fs';
 import * as path from 'path';
-import { TRANSLATIONS } from '../src/data/translations';
+import { TRANSLATIONS } from './translations';
 
 function parseFirestoreValue(value: any): any {
   if (!value) return null;
@@ -46,7 +46,7 @@ async function getFallbackHtml(req: VercelRequest): Promise<string> {
   if (fs.existsSync(htmlPath)) {
     return fs.readFileSync(htmlPath, 'utf8');
   }
-  return `<!DOCTYPE html><html><head><title>TacoPDF Blog</title></head><body><div id="root"></div><script src="/assets/index.js"></script></body></html>`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>TacoPDF</title><script type="module" src="/assets/index.js"></script></head><body><div id="root"></div></body></html>`;
 }
 
 function generateAppShellHtml(lang: string, t: any, pageHtml: string): string {
@@ -145,15 +145,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         lang = segments[0];
       }
     } else {
-      let html = await getFallbackHtml(req);
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(html);
+      const html = await getFallbackHtml(req);
+      return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
     }
 
     if (!slug) {
-      let html = await getFallbackHtml(req);
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(html);
+      const html = await getFallbackHtml(req);
+      return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
     }
 
     const t = (key: string) => {
@@ -192,18 +190,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const validDocs = documents.filter((d: any) => d.document);
 
     if (validDocs.length === 0) {
-      let html = await getFallbackHtml(req);
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(html);
+      const html = await getFallbackHtml(req);
+      return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
     }
 
     const data = parseFirestoreValue({ mapValue: { fields: validDocs[0].document.fields } });
     
     const translationData = data.translations?.[lang] || data.translations?.['en'];
     if (!translationData) {
-      let html = await getFallbackHtml(req);
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(html);
+      const html = await getFallbackHtml(req);
+      return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
     }
 
     let html = await getFallbackHtml(req);
@@ -324,13 +320,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     html = html.replace('<div id="root"></div>', `<div id="root">${fullAppShellHtml}</div>`);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=43200');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(html);
+    return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
 
   } catch (error) {
-    console.error("Terjadi kesalahan pada renderArticle:", error);
-    let html = await getFallbackHtml(req);
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(html);
+    console.error("SSR CRITICAL ERROR in renderArticle:", error);
+
+    // GRACEFUL FALLBACK: Mengembalikan kerangka SPA Vite agar tidak terjadi Blank Page / Error 500.
+    // Client-side React akan mengambil alih rendering (CSR fallback).
+    const fallbackHtml = await getFallbackHtml(req);
+    return res.status(200).setHeader('Content-Type', 'text/html; charset=utf-8').send(fallbackHtml);
   }
 }
