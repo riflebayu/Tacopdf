@@ -33,16 +33,23 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
     return `/${targetLangCode}${currentPath === '/' ? '' : currentPath}`;
   };
 
-  // Close all dropdowns on scroll or route change (mobile UX fix)
+  // Close dropdowns only on significant scroll (mobile UX fix for touch wobble)
   useEffect(() => {
-    const closeAll = () => {
-      setIsLangOpen(false);
-      setIsMobileMenuOpen(false);
-      setIsToolsOpen(false);
+    if (!isLangOpen && !isMobileMenuOpen && !isToolsOpen) return;
+    
+    const startScrollY = window.scrollY;
+    
+    const handleScroll = () => {
+      if (Math.abs(window.scrollY - startScrollY) > 30) {
+        setIsLangOpen(false);
+        setIsMobileMenuOpen(false);
+        setIsToolsOpen(false);
+      }
     };
-    window.addEventListener('scroll', closeAll, { passive: true });
-    return () => window.removeEventListener('scroll', closeAll);
-  }, []);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLangOpen, isMobileMenuOpen, isToolsOpen]);
 
   // Close on route change
   useEffect(() => {
@@ -66,7 +73,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
   const handleAllToolsClick = () => {
     setIsMobileMenuOpen(false);
     setIsToolsOpen(false);
-    onGoHome('manipulation');
+    onGoHome(); // Without arg, this goes to top (beranda atas)
   };
 
   return (
@@ -132,7 +139,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
           </div>
 
           <LocalizedLink 
-            to="/#manipulation"
+            to="/"
             onClick={handleAllToolsClick}
             className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer"
           >
@@ -260,7 +267,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                   {t('nav.blog')}
                 </LocalizedLink>
                 <LocalizedLink 
-                  to="/#manipulation"
+                  to="/"
                   onClick={handleAllToolsClick}
                   className="text-[11px] font-semibold text-primary-container underline cursor-pointer"
                 >
