@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import LocalizedLink from './LocalizedLink';
 import { Menu, X, ChevronDown, Sun, Moon, Clock } from 'lucide-react';
 import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
@@ -14,13 +15,28 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarProps) {
-  const { t, setLang, currentLanguage } = useLanguage();
+  const { lang, t, setLang, currentLanguage } = useLanguage();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [hasNewActivity, setHasNewActivity] = useState(false);
+
+  // Build proper <a> href for each language (for SEO crawlability)
+  const getLanguageHref = (targetLangCode: string) => {
+    let currentPath = location.pathname;
+    // Strip current language prefix if present
+    if (lang !== 'en') {
+      currentPath = currentPath.replace(new RegExp(`^/${lang}`), '') || '/';
+    }
+    // Prepend target language prefix
+    if (targetLangCode === 'en') {
+      return currentPath || '/';
+    }
+    return `/${targetLangCode}${currentPath === '/' ? '' : currentPath}`;
+  };
 
   useEffect(() => {
     const handleNewActivity = () => {
@@ -75,39 +91,39 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <ChevronDown size={14} className={`transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Mega Menu Dropdown */}
-            {isToolsOpen && (
-              <div className="absolute top-[80%] right-1/2 translate-x-1/2 z-50 w-[720px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-6 mt-2 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                  {CATEGORIES.map((cat) => {
-                    const catTools = TOOLS.filter((t) => t.category === cat.id);
-                    return (
-                      <div key={cat.id} className="space-y-3">
-                        <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/35 pb-1">
-                          {t('cat.' + cat.id, cat.name)}
-                        </h3>
-                        <ul className="space-y-2">
-                          {catTools.map((tool) => (
-                            <li key={tool.id}>
-                              <LocalizedLink
-                                to={getToolSeoPath(tool.id)}
-                                onClick={() => handleToolClick(tool.id)}
-                                className="w-full text-left font-medium text-sm text-primary hover:text-primary-container hover:underline flex items-center gap-2 cursor-pointer group"
-                              >
-                                <span className="text-on-surface-variant group-hover:text-primary-container transition-colors">
-                                  <TacoIcon name={tool.icon} size={32} />
-                                </span>
-                                {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
-                              </LocalizedLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  })}
-                </div>
+            {/* Mega Menu Dropdown — always in DOM for SEO crawlability */}
+            <div className={`absolute top-[80%] right-1/2 translate-x-1/2 z-50 w-[720px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-6 mt-2 transition-all duration-150 ${
+              isToolsOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
+            }`}>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                {CATEGORIES.map((cat) => {
+                  const catTools = TOOLS.filter((t) => t.category === cat.id);
+                  return (
+                    <div key={cat.id} className="space-y-3">
+                      <h3 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/35 pb-1">
+                        {t('cat.' + cat.id, cat.name)}
+                      </h3>
+                      <ul className="space-y-2">
+                        {catTools.map((tool) => (
+                          <li key={tool.id}>
+                            <LocalizedLink
+                              to={getToolSeoPath(tool.id)}
+                              onClick={() => handleToolClick(tool.id)}
+                              className="w-full text-left font-medium text-sm text-primary hover:text-primary-container hover:underline flex items-center gap-2 cursor-pointer group"
+                            >
+                              <span className="text-on-surface-variant group-hover:text-primary-container transition-colors">
+                                <TacoIcon name={tool.icon} size={32} />
+                              </span>
+                              {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
+                            </LocalizedLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
           </div>
 
           <LocalizedLink 
@@ -151,7 +167,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             <RecentActivity isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
           </div>
 
-          {/* Language Dropdown */}
+          {/* Language Dropdown — always in DOM with <a> links for SEO */}
           <div 
             className="relative h-full flex items-center"
             onMouseEnter={() => setIsLangOpen(true)}
@@ -165,36 +181,38 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <ChevronDown size={12} className={`transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
             </button>
             
-            {isLangOpen && (
-              <div className="absolute top-[80%] right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 mt-2 animate-in fade-in slide-in-from-top-2 duration-150">
-                <ul className="space-y-0.5">
-                  {LANGUAGES.map((langItem) => (
-                    <li key={langItem.code}>
-                      <button
-                        onClick={() => {
-                          setLang(langItem.code);
-                          setIsLangOpen(false);
-                        }}
-                        className={`w-full text-left font-semibold text-xs flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
-                          langItem.code === currentLanguage.code 
-                            ? 'bg-primary-container text-on-primary-container' 
-                            : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                        }`}
-                      >
-                        <span className="text-base leading-none">{langItem.flag}</span>
-                        <span>{langItem.name}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div className={`absolute top-[80%] right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 mt-2 transition-all duration-150 ${
+              isLangOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
+            }`}>
+              <ul className="space-y-0.5">
+                {LANGUAGES.map((langItem) => (
+                  <li key={langItem.code}>
+                    <Link
+                      to={getLanguageHref(langItem.code)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLang(langItem.code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full text-left font-semibold text-xs flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
+                        langItem.code === currentLanguage.code 
+                          ? 'bg-primary-container text-on-primary-container' 
+                          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                      }`}
+                    >
+                      <span className="text-base leading-none">{langItem.flag}</span>
+                      <span>{langItem.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </nav>
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-1 md:hidden">
-          {/* Mobile Language Dropdown */}
+          {/* Mobile Language Dropdown — always in DOM with <a> links for SEO */}
           <div className="relative flex items-center">
             <button 
               onClick={() => setIsLangOpen(!isLangOpen)}
@@ -203,30 +221,32 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <span className="text-xl leading-none">{currentLanguage.flag}</span>
               <ChevronDown size={14} className={`transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
             </button>
-            {isLangOpen && (
-              <div className="absolute top-[100%] right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 mt-2 animate-in fade-in slide-in-from-top-2 duration-150">
-                <ul className="space-y-0.5">
-                  {LANGUAGES.map((langItem) => (
-                    <li key={langItem.code}>
-                      <button
-                        onClick={() => {
-                          setLang(langItem.code);
-                          setIsLangOpen(false);
-                        }}
-                        className={`w-full text-left font-semibold text-xs flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
-                          langItem.code === currentLanguage.code 
-                            ? 'bg-primary-container text-on-primary-container' 
-                            : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                        }`}
-                      >
-                        <span className="text-base leading-none">{langItem.flag}</span>
-                        <span>{langItem.name}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div className={`absolute top-[100%] right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 mt-2 transition-all duration-150 ${
+              isLangOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
+            }`}>
+              <ul className="space-y-0.5">
+                {LANGUAGES.map((langItem) => (
+                  <li key={langItem.code}>
+                    <Link
+                      to={getLanguageHref(langItem.code)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLang(langItem.code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full text-left font-semibold text-xs flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
+                        langItem.code === currentLanguage.code 
+                          ? 'bg-primary-container text-on-primary-container' 
+                          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                      }`}
+                    >
+                      <span className="text-base leading-none">{langItem.flag}</span>
+                      <span>{langItem.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Mobile Recent Activity */}
@@ -255,9 +275,11 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-outline-variant bg-surface-container-low p-4 space-y-6 animate-in fade-in slide-in-from-top-4 duration-200">
+      {/* Mobile Drawer — always in DOM for SEO crawlability */}
+      <div className={`md:hidden bg-surface-container-low overflow-hidden transition-all duration-200 ${
+        isMobileMenuOpen ? 'max-h-[80vh] opacity-100 border-t border-outline-variant' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="p-4 space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center pb-2 border-b border-outline-variant/50">
               <span className="text-xs uppercase tracking-widest font-bold text-on-surface-variant">{t('nav.tools')}</span>
@@ -304,7 +326,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
             </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }
