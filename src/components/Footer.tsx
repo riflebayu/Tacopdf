@@ -20,11 +20,11 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
   return (
     <footer className="bg-surface-container full-width border-t border-outline-variant mt-auto">
       {/* 5-Column Grid */}
-      <div className="w-full py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="w-full py-8 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
         {/* Support */}
         <div>
-          <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.support')}</h3>
-          <ul className="space-y-3 text-sm">
+          <h3 className="font-bold text-[11px] md:text-sm text-on-surface uppercase mb-2 md:mb-4 tracking-wider">{t('footer.support')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
             <li>
               <LocalizedLink to="/faq" onClick={handleGoFAQ} className="text-on-surface-variant hover:underline hover:text-primary transition-colors cursor-pointer">
                 {t('nav.faq')}
@@ -40,8 +40,8 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
 
         {/* Features */}
         <div>
-          <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.features')}</h3>
-          <ul className="space-y-3 text-sm">
+          <h3 className="font-bold text-[11px] md:text-sm text-on-surface uppercase mb-2 md:mb-4 tracking-wider">{t('footer.features')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
             <li>
               <LocalizedLink to="/#manipulation" onClick={() => onGoHome('manipulation')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('cat.manipulation')}
@@ -67,8 +67,8 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
 
         {/* Popular Tools */}
         <div>
-          <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.popular')}</h3>
-          <ul className="space-y-3 text-sm">
+          <h3 className="font-bold text-[11px] md:text-sm text-on-surface uppercase mb-2 md:mb-4 tracking-wider">{t('footer.popular')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
             <li>
               <LocalizedLink to={getToolSeoPath('merge')} onClick={() => onSelectTool('merge')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.merge.name')}
@@ -99,8 +99,8 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
 
         {/* Company */}
         <div>
-          <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.company')}</h3>
-          <ul className="space-y-3 text-sm">
+          <h3 className="font-bold text-[11px] md:text-sm text-on-surface uppercase mb-2 md:mb-4 tracking-wider">{t('footer.company')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
             <li>
               <LocalizedLink to="/how-it-works" onClick={() => onSelectPage && onSelectPage('how-it-works')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('page.how.title') || 'How It Works'}
@@ -126,8 +126,8 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
 
         {/* Legal */}
         <div>
-          <h3 className="font-bold text-sm text-on-surface uppercase mb-4 tracking-wider">{t('footer.legal')}</h3>
-          <ul className="space-y-3 text-sm flex flex-col items-start">
+          <h3 className="font-bold text-[11px] md:text-sm text-on-surface uppercase mb-2 md:mb-4 tracking-wider">{t('footer.legal')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm flex flex-col items-start">
             <li>
               <LocalizedLink to="/privacy" onClick={() => onSelectPage && onSelectPage('privacy')} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.privacy')}
@@ -160,16 +160,16 @@ export default function Footer({ onSelectTool, onGoHome, onSelectPage }: FooterP
 
       {/* Bottom Row */}
       <div className="border-t border-outline-variant w-full">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-on-surface-variant text-center md:text-left">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-4 md:py-6 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+          <p className="text-xs md:text-sm text-on-surface-variant text-center md:text-left">
             {t('footer.desc')}
           </p>
-          <div className="flex gap-4">
-            <span className="inline-flex items-center gap-1.5 bg-surface-container-high border border-outline-variant/50 px-3 py-1 rounded-full text-xs font-semibold text-primary">
-              <Zap size={12} className="text-primary-container" /> {t('footer.local')}
+          <div className="flex gap-3 md:gap-4">
+            <span className="inline-flex items-center gap-1 md:gap-1.5 bg-surface-container-high border border-outline-variant/50 px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold text-primary">
+              <Zap size={10} className="text-primary-container md:w-3 md:h-3" /> {t('footer.local')}
             </span>
-            <span className="inline-flex items-center gap-1.5 bg-surface-container-high border border-outline-variant/50 px-3 py-1 rounded-full text-xs font-semibold text-primary">
-              <CloudOff size={12} className="text-primary-container" /> {t('footer.storage')}
+            <span className="inline-flex items-center gap-1 md:gap-1.5 bg-surface-container-high border border-outline-variant/50 px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold text-primary">
+              <CloudOff size={10} className="text-primary-container md:w-3 md:h-3" /> {t('footer.storage')}
             </span>
           </div>
         </div>
