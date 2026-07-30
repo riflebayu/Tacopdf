@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as fs from 'fs';
 import * as path from 'path';
-import { TRANSLATIONS } from './translations';
+import { TRANSLATIONS } from './_translations.js';
 
 function parseFirestoreValue(value: any): any {
   if (!value) return null;
