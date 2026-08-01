@@ -1,5 +1,4 @@
 // @ts-nocheck
-"use client";
 export const TRANSLATIONS = {
   "en": {
     "home.title": "TacoPDF - Free & Secure Online PDF Tools",
