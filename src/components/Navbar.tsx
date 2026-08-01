@@ -114,8 +114,11 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <ChevronDown size={14} className={`transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`} />
             </button>
 
+            {/* Invisible bridge prevents gap between button and dropdown from firing onMouseLeave */}
+            <div className="absolute top-[60%] left-0 right-0 h-[50%]" />
+
             {/* Mega Menu Dropdown — always in DOM for SEO crawlability */}
-            <div className={`absolute top-[80%] right-1/2 translate-x-1/2 z-50 w-[520px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-4 mt-2 transition-all duration-150 ${
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 z-50 w-[520px] bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-4 transition-all duration-150 ${
               isToolsOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
             }`}>
               <div className="grid grid-cols-2 gap-x-5 gap-y-4">
@@ -176,8 +179,11 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <span className="uppercase text-xs tracking-wider">{currentLanguage.code}</span>
               <ChevronDown size={12} className={`transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
             </button>
+
+            {/* Invisible bridge prevents gap from firing onMouseLeave */}
+            <div className="absolute top-[60%] left-0 right-0 h-[50%]" />
             
-            <div className={`absolute top-[80%] right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 mt-2 transition-all duration-150 ${
+            <div className={`absolute top-full right-0 z-50 w-44 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-2 transition-all duration-150 ${
               isLangOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
             }`}>
               <ul className="space-y-0.5">
@@ -208,7 +214,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-1 md:hidden">
-          {/* Mobile Language Dropdown — always in DOM with <a> links for SEO */}
+          {/* Mobile Language Dropdown — fixed position to escape overflow:hidden parent */}
           <div className="relative flex items-center">
             <button 
               onClick={() => { setIsLangOpen(!isLangOpen); setIsMobileMenuOpen(false); }}
@@ -217,7 +223,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
               <span className="text-lg leading-none">{currentLanguage.flag}</span>
               <ChevronDown size={12} className={`transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`absolute top-[100%] right-0 z-50 w-40 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-1.5 mt-1 transition-all duration-150 ${
+            <div className={`fixed top-14 right-2 z-[200] w-40 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-1.5 transition-all duration-150 ${
               isLangOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
             }`}>
               <ul className="space-y-0.5">

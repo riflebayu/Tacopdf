@@ -2,6 +2,8 @@
 "use client";
 export const TRANSLATIONS = {
   "en": {
+    "home.title": "TacoPDF - Free & Secure Online PDF Tools",
+    "home.subtitle": "Process PDFs locally in your browser. Maximum privacy and security.",
     "progress.success.compress-pdf": "PDF Compressed Successfully!",
 
                 "compress.level.basic.note": "WARNING: This mode ONLY cleans metadata junk. The PDF size WILL NOT SHRINK if it contains images!",
@@ -651,6 +653,8 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Serving the global community with all my might.",
   },
   "id": {
+    "home.title": "TacoPDF - Alat PDF Online Gratis & Aman",
+    "home.subtitle": "Proses PDF langsung di browser Anda. Privasi dan keamanan maksimal.",
     "progress.success.compress-pdf": "PDF Berhasil Dikompresi!",
 
                 "compress.level.basic.note": "PERHATIAN: Mode ini HANYA membersihkan sampah metadata. Ukuran PDF TIDAK AKAN BERKURANG jika isinya adalah gambar!",
@@ -1290,6 +1294,8 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Melayani masyarakat dunia dengan sekuat tenaga.",
   },
   "es": {
+    "home.title": "TacoPDF - Herramientas PDF Online Gratuitas y Seguras",
+    "home.subtitle": "Procesa PDFs localmente en tu navegador. Máxima privacidad y seguridad.",
     "progress.success.compress-pdf": "¡PDF comprimido con éxito!",
 
                 "compress.level.basic.note": "ADVERTENCIA: Este modo SOLO limpia basura de metadatos. ¡El tamaño del PDF NO SE REDUCIRÁ si contiene imágenes!",
@@ -1915,6 +1921,8 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "home.title": "TacoPDF - 無料・安全なオンラインPDFツール",
+    "home.subtitle": "ブラウザで直接PDFを処理。最高のプライバシーとセキュリティ。",
     "progress.success.compress-pdf": "PDFが正常に圧縮されました！",
 
                 "compress.level.basic.note": "警告: このモードはメタデータのゴミを消去するだけです。画像が含まれている場合、サイズは縮小しません！",
@@ -2563,6 +2571,8 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "home.title": "TacoPDF - Ferramentas PDF Online Grátis e Seguras",
+    "home.subtitle": "Processe PDFs localmente no seu navegador. Máxima privacidade e segurança.",
     "progress.success.compress-pdf": "PDF comprimido com sucesso!",
 
                 "compress.level.basic.note": "AVISO: Este modo APENAS limpa o lixo de metadados. O tamanho do PDF NÃO DIMINUIRÁ se contiver imagens!",
@@ -3205,6 +3215,8 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "home.title": "TacoPDF - Kostenlose & Sichere Online-PDF-Tools",
+    "home.subtitle": "Verarbeite PDFs lokal in deinem Browser. Maximale Privatsphäre und Sicherheit.",
     "progress.success.compress-pdf": "PDF erfolgreich komprimiert!",
 
                 "compress.level.basic.note": "WARNUNG: Dieser Modus bereinigt NUR Metadaten-Müll. Die PDF-Größe WIRD SICH NICHT VERRINGERN, wenn sie Bilder enthält!",
@@ -3855,6 +3867,8 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "home.title": "TacoPDF - Outils PDF En Ligne Gratuits et Sécurisés",
+    "home.subtitle": "Traitez vos PDFs localement dans votre navigateur. Confidentialité et sécurité maximales.",
     "progress.success.compress-pdf": "PDF compressé avec succès !",
 
                 "compress.level.basic.note": "ATTENTION : Ce mode nettoie UNIQUEMENT les déchets de métadonnées. La taille NE RÉDUIRA PAS s'il contient des images !",
