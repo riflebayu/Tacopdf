@@ -18,7 +18,6 @@ const qpdfJsUrl = '/assets/' + 'qpdf-run/qpdf.js'.split('/').pop();
 import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
-import { ToolSeoArticle } from './ToolSeoArticle';
 import JSZip from 'jszip';
 
 interface WorkspaceProps {
@@ -2904,8 +2903,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             </ul>
           </div>
         </div>
-
-        <ToolSeoArticle toolId={tool.id} />
 
       </div>
 
