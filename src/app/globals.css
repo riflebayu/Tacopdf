@@ -1,22 +1,81 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode Colors (Semi-Dark Slate) */
+  --color-bg-base: #cbd5e1; /* slate-300 - darker background */
+  --color-surf-c: #f8fafc; /* slate-50 - pure cards */
+  --color-surf-low: #f1f5f9; /* slate-100 - inner areas */
+  --color-surf-high: #e2e8f0; /* slate-200 - hover areas */
+  --color-surf-highest: #94a3b8; /* slate-400 - prominent borders */
+  
+  --color-prim: #ea580c; /* orange-600 */
+  --color-on-prim: #ffffff;
+  --color-prim-container: #f97316; /* orange-500 */
+  --color-on-prim-container: #ffffff;
+  --color-on-surf: #0f172a; /* slate-900 */
+  --color-on-surf-var: #334155; /* slate-700 */
+  --color-out: #64748b; /* slate-500 */
+  --color-out-var: #94a3b8; /* slate-400 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Forcing Dark mode default since this is TacoPDF */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark Mode Colors (Taco Dark) */
+    --color-bg-base: #17130a;
+    --color-surf-c: #241f15;
+    --color-surf-low: #201b11;
+    --color-surf-high: #2f291f;
+    --color-surf-highest: #3a3429;
+    
+    --color-prim: #ffe1a7;
+    --color-on-prim: #3c2400;
+    --color-prim-container: #fbbf24;
+    --color-on-prim-container: #6c4f00;
+    --color-on-surf: #ece1d1;
+    --color-on-surf-var: #d3c5ac;
+    --color-out: #9c8f79;
+    --color-out-var: #4f4633;
   }
+}
+
+:root.dark {
+  /* Dark Mode Colors (Taco Dark) - Explicit class support if needed */
+  --color-bg-base: #17130a;
+  --color-surf-c: #241f15;
+  --color-surf-low: #201b11;
+  --color-surf-high: #2f291f;
+  --color-surf-highest: #3a3429;
+  
+  --color-prim: #ffe1a7;
+  --color-on-prim: #3c2400;
+  --color-prim-container: #fbbf24;
+  --color-on-prim-container: #6c4f00;
+  --color-on-surf: #ece1d1;
+  --color-on-surf-var: #d3c5ac;
+  --color-out: #9c8f79;
+  --color-out-var: #4f4633;
+}
+
+@theme {
+  --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom palette mapped to CSS variables for Dark/Light mode support */
+  --color-background: var(--color-bg-base);
+  --color-surface-container: var(--color-surf-c);
+  --color-surface-container-low: var(--color-surf-low);
+  --color-surface-container-high: var(--color-surf-high);
+  --color-surface-container-highest: var(--color-surf-highest);
+  
+  --color-primary: var(--color-prim);
+  --color-on-primary: var(--color-on-prim);
+  --color-primary-container: var(--color-prim-container);
+  --color-on-primary-container: var(--color-on-prim-container);
+  --color-on-surface: var(--color-on-surf);
+  --color-on-surface-variant: var(--color-on-surf-var);
+  --color-outline: var(--color-out);
+  --color-outline-variant: var(--color-out-var);
 }
 
 *,
@@ -32,18 +91,30 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
   /* Prevent mobile horizontal scroll */
   overflow-x: hidden;
   max-width: 100vw;
   /* Improve tap experience on mobile */
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Ensure images don't overflow on mobile */
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* Custom interactive animation for tool cards */
+.tool-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-container);
+  box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.15);
 }
