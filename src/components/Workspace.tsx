@@ -2851,46 +2851,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         </div>
       )}
 
-      {/* Dynamic Info & Tips Box for SEO & AdSense Readiness */}
-      <div className="mt-12 border border-outline-variant bg-surface-container rounded-2xl p-6 md:p-8 space-y-6">
-        <h2 className="text-xl font-bold text-primary-container flex items-center gap-2 border-b border-outline-variant pb-3">
-          <LucideIcon name="BookOpen" className="text-primary-container" size={22} />
-          {t('workspace.how_to_use')} - {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface-variant text-sm leading-relaxed">
-          {/* How to Use */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-on-surface text-base flex items-center gap-2">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary text-xs font-mono font-bold">1</span>
-              {t('workspace.how_to_title')} {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
-            </h3>
-            <ol className="list-decimal pl-5 space-y-2.5">
-              {getHowToUse(tool.id, t).map((step, idx) => (
-                <li key={idx} className="marker:text-primary-container marker:font-bold">
-                  {step}
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          {/* Professional Tips */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-on-surface text-base flex items-center gap-2">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary text-xs font-mono font-bold">2</span>
-              {t('workspace.tips_title')}
-            </h3>
-            <ul className="list-disc pl-5 space-y-2.5">
-              {getProfessionalTips(tool.id, t).map((tip, idx) => (
-                <li key={idx} className="marker:text-primary-container">
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-      </div>
+      {/* Server Rendered FAQ Section moved to page.tsx */}
 
       {/* PDF Preview Modal */}
       <AnimatePresence>
