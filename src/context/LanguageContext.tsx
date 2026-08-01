@@ -29,18 +29,15 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LanguageProvider: React.FC<{ children: React.ReactNode, initialLang?: string }> = ({ children, initialLang = 'en' }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine current language from URL
+  // Use explicitly passed lang from server instead of client-side path parsing
+  const lang = LANGUAGES.some(l => l.code === initialLang) ? initialLang : 'en';
+
   const pathParts = location.pathname.split('/').filter(Boolean);
   const firstSegment = pathParts[0];
-
-  let lang = 'en';
-  if (firstSegment && LANGUAGES.some(l => l.code === firstSegment && l.code !== 'en')) {
-    lang = firstSegment;
-  }
 
   // Handle redirect if user visits /en/... manually (English should be at root)
   useEffect(() => {

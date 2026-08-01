@@ -1,23 +1,18 @@
 // @ts-nocheck
 "use client";
 import React from 'react';
-import { useLocation } from '@/utils/router-mock';
 import toolSeoData from '../data/toolSeoData.json';
 
 
 interface ToolSeoArticleProps {
   toolId: string;
+  lang: string;
 }
 
-export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId }) => {
-  const location = useLocation();
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+export const ToolSeoArticle: React.FC<ToolSeoArticleProps> = ({ toolId, lang }) => {
   const supportedLanguages = ['en', 'id', 'es', 'ja', 'de', 'fr', 'pt'];
   
-  let currentLang = 'en';
-  if (pathSegments.length > 0 && supportedLanguages.includes(pathSegments[0])) {
-    currentLang = pathSegments[0];
-  }
+  const currentLang = supportedLanguages.includes(lang) ? lang : 'en';
 
   const toolData = (toolSeoData as Record<string, Record<string, string>>)[toolId];
 

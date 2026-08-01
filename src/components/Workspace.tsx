@@ -1805,21 +1805,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   };
 
   return (
-    <div id="workspace-top" className="max-w-[1200px] mx-auto px-4 md:px-8 py-12 scroll-mt-24">
-      <div className="flex items-center gap-4 mb-8">
-        <button
-          onClick={onBack}
-          className="bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant/50 p-2.5 rounded-lg text-primary hover:text-primary-container transition-all cursor-pointer active:scale-95"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2 mt-1">
-            <TacoIcon name={tool.icon} size={72} className="text-primary-container" />
-            {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
-          </h1>
-        </div>
-      </div>
+    <div className="w-full">
 
       <div className={`flex ${tool.id === 'sign' && uploadedFiles.length > 0 ? 'flex-col-reverse' : 'flex-col'} lg:grid lg:grid-cols-12 gap-8 items-start`}>
         <div className="lg:col-span-7 space-y-6">

@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { LanguageProvider } from '../context/LanguageContext';
 
-export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
+export default function ClientLayoutWrapper({ children, initialLang = 'en' }: { children: React.ReactNode, initialLang?: string }) {
   const handleSelectTool = (_id: string) => {
     // Navigation handled natively by LocalizedLink
   };
@@ -19,7 +19,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   };
 
   return (
-    <LanguageProvider>
+    <LanguageProvider initialLang={initialLang}>
       {/* Full-height flex column for sticky footer */}
       <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
         <Navbar
