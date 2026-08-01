@@ -62,6 +62,29 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
     };
   }, [isLangOpen, isMobileMenuOpen, isToolsOpen]);
 
+  const toolsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const langTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleToolsEnter = () => {
+    if (toolsTimeoutRef.current) clearTimeout(toolsTimeoutRef.current);
+    setIsToolsOpen(true);
+  };
+  const handleToolsLeave = () => {
+    toolsTimeoutRef.current = setTimeout(() => {
+      setIsToolsOpen(false);
+    }, 200);
+  };
+
+  const handleLangEnter = () => {
+    if (langTimeoutRef.current) clearTimeout(langTimeoutRef.current);
+    setIsLangOpen(true);
+  };
+  const handleLangLeave = () => {
+    langTimeoutRef.current = setTimeout(() => {
+      setIsLangOpen(false);
+    }, 200);
+  };
+
   // Close on route change
   useEffect(() => {
     setIsLangOpen(false);
@@ -101,8 +124,8 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
           {/* Tools Mega Dropdown */}
           <div 
             className="relative h-full flex items-center"
-            onMouseEnter={() => setIsToolsOpen(true)}
-            onMouseLeave={() => setIsToolsOpen(false)}
+            onMouseEnter={handleToolsEnter}
+            onMouseLeave={handleToolsLeave}
           >
             <button 
               onClick={handleAllToolsClick}
@@ -169,8 +192,8 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
           {/* Language Dropdown — always in DOM with <a> links for SEO */}
           <div 
             className="relative h-full flex items-center"
-            onMouseEnter={() => setIsLangOpen(true)}
-            onMouseLeave={() => setIsLangOpen(false)}
+            onMouseEnter={handleLangEnter}
+            onMouseLeave={handleLangLeave}
           >
             <button 
               className="text-on-surface-variant hover:text-primary-container font-semibold text-sm flex items-center gap-1.5 transition-all cursor-pointer border border-outline-variant/30 px-3 py-1.5 rounded-full bg-surface-container/30 hover:bg-surface-container/70"
@@ -192,7 +215,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                     <Link
                       to={getLanguageHref(langItem.code)}
                       onClick={(e) => {
-                        e.preventDefault();
+                        // Let Next.js navigate normally! Do NOT preventDefault!
                         setLang(langItem.code);
                         setIsLangOpen(false);
                       }}
@@ -232,7 +255,7 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
                     <Link
                       to={getLanguageHref(langItem.code)}
                       onClick={(e) => {
-                        e.preventDefault();
+                        // Let Next.js navigate normally!
                         setLang(langItem.code);
                         setIsLangOpen(false);
                       }}

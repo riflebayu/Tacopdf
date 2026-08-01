@@ -69,6 +69,28 @@ export default function StaticPageClient({ pageType }: StaticPageClientProps) {
             <div><h3 className="font-bold text-on-surface">{t('retention.p4.title')}</h3><p>{t('retention.p4.text')}</p></div>
           </div>
         );
+      case 'privacy':
+      case 'terms':
+      case 'cookie':
+      case 'disclaimer':
+        return (
+          <div className="space-y-6">
+            <p className="text-on-surface-variant font-medium">{t(`${pageType}.intro`)}</p>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
+              const titleKey = `${pageType}.p${i}.title`;
+              const textKey = `${pageType}.p${i}.text`;
+              const title = t(titleKey, '');
+              const text = t(textKey, '');
+              if (!title || title === titleKey) return null;
+              return (
+                <div key={i} className="space-y-2">
+                  <h3 className="font-bold text-on-surface text-lg">{title}</h3>
+                  <p className="text-on-surface-variant leading-relaxed">{text}</p>
+                </div>
+              );
+            })}
+          </div>
+        );
       default:
         return <p>{t('legal.placeholder', 'This page content is being prepared.')}</p>;
     }
