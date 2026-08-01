@@ -1,5 +1,3 @@
-// @ts-nocheck
-"use client";
 import React from 'react';
 import toolSeoData from '../data/toolSeoData.json';
 

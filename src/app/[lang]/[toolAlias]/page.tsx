@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -114,7 +115,9 @@ export default async function ToolPage({ params }: Props) {
         </div>
 
         {/* Client-Side PDF Logic isolated to WorkspaceWrapper */}
-        <WorkspaceWrapper tool={tool} />
+        <Suspense fallback={<div className="w-full h-64 flex items-center justify-center">Memuat Workspace...</div>}>
+          <WorkspaceWrapper tool={tool} />
+        </Suspense>
         
         {/* Server Rendered FAQ / Tips Section */}
         <div className="mt-12 border border-outline-variant bg-surface-container rounded-2xl p-6 md:p-8 space-y-6">
