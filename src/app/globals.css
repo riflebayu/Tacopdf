@@ -1,42 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  /* Light Mode Colors (Semi-Dark Slate) */
-  --color-bg-base: #cbd5e1; /* slate-300 - darker background */
-  --color-surf-c: #f8fafc; /* slate-50 - pure cards */
-  --color-surf-low: #f1f5f9; /* slate-100 - inner areas */
-  --color-surf-high: #e2e8f0; /* slate-200 - hover areas */
-  --color-surf-highest: #94a3b8; /* slate-400 - prominent borders */
+  /* Default Colors (Taco Dark Warm Theme) */
+  --color-bg-base: #17130a;
+  --color-surf-c: #241f15;
+  --color-surf-low: #201b11;
+  --color-surf-high: #2f291f;
+  --color-surf-highest: #3a3429;
   
-  --color-prim: #ea580c; /* orange-600 */
-  --color-on-prim: #ffffff;
-  --color-prim-container: #f97316; /* orange-500 */
-  --color-on-prim-container: #ffffff;
-  --color-on-surf: #0f172a; /* slate-900 */
-  --color-on-surf-var: #334155; /* slate-700 */
-  --color-out: #64748b; /* slate-500 */
-  --color-out-var: #94a3b8; /* slate-400 */
-}
-
-/* Forcing Dark mode default since this is TacoPDF */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark Mode Colors (Taco Dark) */
-    --color-bg-base: #17130a;
-    --color-surf-c: #241f15;
-    --color-surf-low: #201b11;
-    --color-surf-high: #2f291f;
-    --color-surf-highest: #3a3429;
-    
-    --color-prim: #ffe1a7;
-    --color-on-prim: #3c2400;
-    --color-prim-container: #fbbf24;
-    --color-on-prim-container: #6c4f00;
-    --color-on-surf: #ece1d1;
-    --color-on-surf-var: #d3c5ac;
-    --color-out: #9c8f79;
-    --color-out-var: #4f4633;
-  }
+  --color-prim: #ffe1a7;
+  --color-on-prim: #3c2400;
+  --color-prim-container: #fbbf24;
+  --color-on-prim-container: #6c4f00;
+  --color-on-surf: #ece1d1;
+  --color-on-surf-var: #d3c5ac;
+  --color-out: #9c8f79;
+  --color-out-var: #4f4633;
 }
 
 :root.dark {
