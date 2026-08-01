@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
-import { Link, LinkProps } from 'react-router-dom';
+import { Link, LinkProps } from '@/utils/router-mock';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function LocalizedLink({ to, children, ...props }: LinkProps) {

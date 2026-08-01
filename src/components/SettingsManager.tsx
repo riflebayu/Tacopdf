@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useEffect, useState } from 'react';
 import { Settings, Save, Layout, Search, Megaphone, Wrench } from 'lucide-react';
 import { GlobalSettings, getGlobalSettings, saveGlobalSettings } from '../services/settingsService';

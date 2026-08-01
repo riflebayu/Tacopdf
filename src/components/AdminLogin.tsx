@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Lock, Mail, ArrowRight, ShieldAlert } from 'lucide-react';

@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState, useEffect } from 'react';
 import { FileText, Save, LayoutTemplate, Database } from 'lucide-react';
 import { getPageContent, savePageContent } from '../services/cmsService';

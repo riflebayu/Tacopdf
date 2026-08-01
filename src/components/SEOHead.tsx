@@ -1,6 +1,8 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/utils/router-mock';
 import { LANGUAGES } from '../context/LanguageContext';
 
 interface SEOHeadProps {

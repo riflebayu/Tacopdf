@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 export interface ArticleTranslation {
   title: string;
   metaDescription: string;

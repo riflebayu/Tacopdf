@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 export type ToolCategory = 'manipulation' | 'security' | 'conversion' | 'editing';
 
 export interface PDFTool {

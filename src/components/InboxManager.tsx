@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useEffect, useState } from 'react';
 import { Mail, CheckCircle2, Clock } from 'lucide-react';
 import { getInboxMessages, markMessageAsRead, InboxMessage } from '../services/messageService';

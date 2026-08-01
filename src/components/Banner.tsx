@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';

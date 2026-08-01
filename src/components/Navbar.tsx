@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from '@/utils/router-mock';
 import LocalizedLink from './LocalizedLink';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';

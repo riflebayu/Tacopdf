@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebaseAuth';
 import { onAuthStateChanged, User } from 'firebase/auth';

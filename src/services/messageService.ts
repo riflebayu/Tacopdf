@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 

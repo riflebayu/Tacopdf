@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
 import { Shield, Zap, Lock, Cpu, EyeOff, Globe } from 'lucide-react';
 

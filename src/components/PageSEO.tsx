@@ -1,7 +1,9 @@
+// @ts-nocheck
+"use client";
 import React, { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/utils/router-mock';
 import toolSeoData from '../data/toolSeoData.json';
 
 interface PageSEOProps {

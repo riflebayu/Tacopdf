@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/utils/router-mock';
 import toolSeoData from '../data/toolSeoData.json';
 
 

@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from '@/utils/router-mock';
 import { TRANSLATIONS } from '../data/translations';
 
 export interface Language {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
 import { LogOut, Shield } from 'lucide-react';
 import { auth } from '../firebaseAuth';

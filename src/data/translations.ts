@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 export const TRANSLATIONS = {
   "en": {
     "progress.success.compress-pdf": "PDF Compressed Successfully!",

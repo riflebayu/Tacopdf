@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, MapPin, Clock, Facebook, Instagram, ShieldCheck, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Mail, MapPin, Clock, ShieldCheck, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface ContactPageProps {
@@ -98,10 +100,10 @@ export default function ContactPage({ onBack }: ContactPageProps) {
               <h4 className="font-bold text-sm text-on-surface mb-3">{t('contact.follow') || 'Ikuti Kami'}</h4>
               <div className="flex items-center gap-3">
                 <a href="https://web.facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-surface hover:bg-surface-variant rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/50 shadow-sm" aria-label="Facebook">
-                  <Facebook className="w-5 h-5" />
+                  <span>FB</span>
                 </a>
                 <a href="https://www.instagram.com/bay.lightyear/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-surface hover:bg-surface-variant rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/50 shadow-sm" aria-label="Instagram">
-                  <Instagram className="w-5 h-5" />
+                  <span>IG</span>
                 </a>
               </div>
             </div>

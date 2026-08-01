@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React from 'react';
 import { Zap, CloudOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';

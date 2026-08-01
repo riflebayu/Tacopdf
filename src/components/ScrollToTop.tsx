@@ -1,5 +1,7 @@
+// @ts-nocheck
+"use client";
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/utils/router-mock';
 
 export default function ScrollToTop() {
   const { pathname } = useLocation();

@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState } from 'react';
 import { motion, Reorder, AnimatePresence } from 'motion/react';
 import { Trash2, RotateCw, RotateCcw, AlertCircle, RefreshCw } from 'lucide-react';

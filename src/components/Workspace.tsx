@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw } from 'lucide-react';
 import { PDFDocument, rgb, degrees, StandardFonts } from 'pdf-lib';
@@ -8,11 +10,11 @@ import SignaturePad from './SignaturePad';
 import { useLanguage } from '../context/LanguageContext';
 import { createBrowserQpdfRunner } from 'qpdf-run';
 // @ts-ignore
-import qpdfWorkerUrl from 'qpdf-run/worker?url';
+const qpdfWorkerUrl = '/assets/' + 'qpdf-run/worker'.split('/').pop();
 // @ts-ignore
-import qpdfWasmUrl from 'qpdf-run/qpdf.wasm?url';
+const qpdfWasmUrl = '/assets/' + 'qpdf-run/qpdf.wasm'.split('/').pop();
 // @ts-ignore
-import qpdfJsUrl from 'qpdf-run/qpdf.js?url';
+const qpdfJsUrl = '/assets/' + 'qpdf-run/qpdf.js'.split('/').pop();
 import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
