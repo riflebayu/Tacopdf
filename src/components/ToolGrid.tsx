@@ -10,7 +10,7 @@ import TacoIcon from './TacoIcon';
 import { useLanguage } from '../context/LanguageContext';
 
 interface ToolGridProps {
-  onSelectTool: (id: string) => void;
+  onSelectTool?: (id: string) => void;
   toolSettings?: Record<string, { enabled: boolean; badge: string }>;
 }
 
@@ -53,7 +53,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
       <LocalizedLink
         key={tool.id}
         to={getToolSeoPath(tool.id)}
-        onClick={(e) => { e.preventDefault(); onSelectTool(tool.id); }}
+        onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
         className="tool-card w-full text-left bg-surface-container border border-outline-variant rounded-xl p-6 flex gap-4 group cursor-pointer relative hover:border-primary/50 transition-colors block"
       >
         {setting.badge && (
