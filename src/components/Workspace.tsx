@@ -2063,17 +2063,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                   style={{
                                     color: numberColor,
                                     fontSize: `${numberSize}px`,
-                                    ...(() => {
-                                      let posStyle = {};
-                                      if (numberPosition.includes('left')) posStyle.left = '40px';
-                                      else if (numberPosition.includes('right')) posStyle.right = '40px';
-                                      else { posStyle.left = '50%'; posStyle.transform = 'translateX(-50%)'; }
-                                      
-                                      if (numberPosition.includes('top')) posStyle.top = '40px';
-                                      else posStyle.bottom = '40px';
-                                      
-                                      return posStyle;
-                                    })(),
+                                    left: numberPosition.includes('left') ? '40px' : (numberPosition.includes('right') ? 'auto' : '50%'),
+                                    right: numberPosition.includes('right') ? '40px' : 'auto',
+                                    top: numberPosition.includes('top') ? '40px' : 'auto',
+                                    bottom: numberPosition.includes('top') ? 'auto' : '40px',
+                                    transform: (!numberPosition.includes('left') && !numberPosition.includes('right')) ? 'translateX(-50%)' : 'none'
                                   }}
                                 >
                                   {(() => {
