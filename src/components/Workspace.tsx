@@ -1653,27 +1653,33 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         // Exact metric for Helvetica Bold ascent
         const textHeight = watermarkSize * 0.718; 
         
-        // pdf-lib's degrees() rotates counter-clockwise.
-        // We must subtract the page's internal rotation from the user's intended visual rotation!
         allPages.forEach((page) => {
-          const cropBox = page.getCropBox?.() || { x: 0, y: 0, ...page.getSize() };
-          const { width, height } = cropBox;
+          const { width, height } = page.getSize();
           const pageRotation = page.getRotation().angle || 0;
+
+          // 1. Hitung metrik teks asli dalam unit PDF
+          const pdfTextWidth = font.widthOfTextAtSize(watermarkText, watermarkSize);
+          const pdfTextHeight = font.heightAtSize(watermarkSize); 
+
+          // 2. Tentukan titik tengah halaman
+          const pageCenterX = width / 2;
+          const pageCenterY = height / 2;
+
+          // 3. Kalkulasi rotasi absolut
           const actualRotation = watermarkRotation - pageRotation;
 
+          // 4. Hitung offset untuk memindahkan origin ke tengah teks
           const theta = actualRotation * (Math.PI / 180);
           const cosT = Math.cos(theta);
           const sinT = Math.sin(theta);
-          
-          const cxRel = (textWidth / 2) * cosT - (textHeight / 2) * sinT;
-          const cyRel = (textWidth / 2) * sinT + (textHeight / 2) * cosT;
-          
-          const startX = (cropBox.x + width / 2) - cxRel;
-          const startY = (cropBox.y + height / 2) - cyRel;
 
+          const offsetX = (pdfTextWidth / 2) * cosT - (pdfTextHeight / 2) * sinT;
+          const offsetY = (pdfTextWidth / 2) * sinT + (pdfTextHeight / 2) * cosT;
+
+          // 5. Eksekusi gambar teks
           page.drawText(watermarkText, {
-            x: startX,
-            y: startY,
+            x: pageCenterX - offsetX,
+            y: pageCenterY - offsetY,
             size: watermarkSize,
             font: font,
             color: rgb(r, g, b),
