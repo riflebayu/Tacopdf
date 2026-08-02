@@ -96,9 +96,14 @@ export default async function ToolPage({ params }: Props) {
             <ArrowLeft size={18} />
           </Link>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2 mt-1">
-              <TacoIcon name={tool.icon} size={72} className="text-primary-container" />
-              {translatedName}
+            <h1 className="text-2xl md:text-3xl font-bold text-on-surface flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mt-1">
+              <div className="md:hidden flex">
+                <TacoIcon name={tool.icon} size={48} className="text-primary-container" />
+              </div>
+              <div className="hidden md:flex">
+                <TacoIcon name={tool.icon} size={72} className="text-primary-container" />
+              </div>
+              <span>{translatedName}</span>
             </h1>
           </div>
         </div>
