@@ -1570,7 +1570,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         // pdf-lib's degrees() rotates counter-clockwise.
         // We must subtract the page's internal rotation from the user's intended visual rotation!
         allPages.forEach((page) => {
-          const { width, height } = page.getSize();
+          const cropBox = page.getCropBox?.() || { x: 0, y: 0, ...page.getSize() };
+          const { width, height } = cropBox;
           const pageRotation = page.getRotation().angle || 0;
           const actualRotation = watermarkRotation - pageRotation;
 
@@ -1581,8 +1582,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           const cxRel = (textWidth / 2) * cosT - (textHeight / 2) * sinT;
           const cyRel = (textWidth / 2) * sinT + (textHeight / 2) * cosT;
           
-          const startX = (width / 2) - cxRel;
-          const startY = (height / 2) - cyRel;
+          const startX = (cropBox.x + width / 2) - cxRel;
+          const startY = (cropBox.y + height / 2) - cyRel;
 
           page.drawText(watermarkText, {
             x: startX,
