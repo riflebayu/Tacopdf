@@ -1652,9 +1652,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           const pageRotation = page.getRotation().angle || 0;
           const actualRotation = watermarkRotation - pageRotation;
 
-          // pdf-lib's drawText using degrees(actualRotation) rotates the text counter-clockwise around its bottom-left origin.
-          // To calculate the center displacement, we must use -actualRotation in our rotation matrix to offset it correctly.
-          const theta = -actualRotation * (Math.PI / 180);
+          const theta = actualRotation * (Math.PI / 180);
           const cosT = Math.cos(theta);
           const sinT = Math.sin(theta);
           
