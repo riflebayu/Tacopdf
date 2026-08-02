@@ -42,12 +42,17 @@ const WatermarkPreview = ({
 
   useEffect(() => {
     if (!canvasRef.current || !thumbnailUrl || !pdfWidth) return;
+    
+    let isActive = true;
+    
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const img = new Image();
     img.onload = () => {
+      if (!isActive) return;
+
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       
@@ -86,12 +91,16 @@ const WatermarkPreview = ({
       ctx.restore();
     };
     img.src = thumbnailUrl;
-  }, [thumbnailUrl, text, size, color, opacity, rotation]);
+
+    return () => {
+      isActive = false;
+    };
+  }, [thumbnailUrl, text, size, color, opacity, rotation, pdfWidth]);
 
   return (
     <canvas 
       ref={canvasRef}
-      className="max-w-full max-h-[600px] object-contain block shadow-lg border border-outline-variant/30 bg-white"
+      className="max-w-full w-full h-auto object-contain block shadow-lg border border-outline-variant/30 bg-white"
     />
   );
 };
@@ -733,7 +742,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   // Advanced Visual Tools State
-  const [thumbnailNativeSize, setThumbnailNativeSize] = useState({ w: 892, h: 1263 }); // Default A4 * 1.5
+  const [thumbnailNativeSize, setThumbnailNativeSize] = useState({ w: 0, h: 0 }); // Was 892, 1263
   const [visualThumbnails, setVisualThumbnails] = useState<string[]>([]);
   const [fileThumbnails, setFileThumbnails] = useState<Record<string, string>>({});
   const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
