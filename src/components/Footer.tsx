@@ -19,9 +19,9 @@ function FooterContent(props: FooterProps) {
   return (
     <footer className="bg-surface-container full-width border-t border-outline-variant mt-auto">
       {/* 5-Column Grid */}
-      <div className="w-full py-4 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-x-2 gap-y-4 md:gap-8">
+      <div className="w-full py-4 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid-cols-1 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Support */}
-        <div>
+        <div className="flex flex-col space-y-3">
           <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-1 md:mb-4 tracking-wider">{t('footer.support')}</h3>
           <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
             <li>
@@ -38,7 +38,7 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Features */}
-        <div>
+        <div className="flex flex-col space-y-3">
           <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-1 md:mb-4 tracking-wider">{t('footer.features')}</h3>
           <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
             <li>
@@ -65,7 +65,7 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Popular Tools */}
-        <div>
+        <div className="flex flex-col space-y-3">
           <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-1 md:mb-4 tracking-wider">{t('footer.popular')}</h3>
           <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
             <li>
@@ -97,7 +97,7 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Company */}
-        <div>
+        <div className="flex flex-col space-y-3">
           <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-1 md:mb-4 tracking-wider">{t('footer.company')}</h3>
           <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
             <li>
@@ -120,9 +120,9 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Legal */}
-        <div className="col-span-2 md:col-span-1">
+        <div className="flex flex-col space-y-3">
           <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-1 md:mb-4 tracking-wider">{t('footer.legal')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm grid grid-cols-2 md:flex md:flex-col md:items-start gap-x-2 gap-y-0.5 md:gap-y-0">
+          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm flex flex-col items-start gap-y-0.5 md:gap-y-0">
             <li>
               <LocalizedLink to="/privacy" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.privacy')}

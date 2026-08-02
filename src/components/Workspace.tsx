@@ -2123,11 +2123,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 <>
                   <style>{`
                     @keyframes mobile-glow-yellow {
-                      0%, 100% { box-shadow: 0 0 5px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.5); }
-                      50% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.9); border-color: rgba(234, 179, 8, 1); }
+                      0%, 100% { box-shadow: 0 0 2px rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2); }
+                      50% { box-shadow: 0 0 10px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.5); }
                     }
                     .mobile-glow {
-                      animation: mobile-glow-yellow 2s infinite ease-in-out;
+                      animation: mobile-glow-yellow 3s infinite ease-in-out;
                     }
                     @media (min-width: 768px) {
                       .mobile-glow {
