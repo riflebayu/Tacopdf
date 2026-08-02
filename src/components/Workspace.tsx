@@ -1976,35 +1976,36 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         <span className="text-xs font-medium">Generating Preview...</span>
                       </div>
                     ) : visualThumbnails.length > 0 ? (
-                      <div className="relative inline-block max-w-full shadow-lg border border-outline-variant/30 bg-white" style={{ maxHeight: '600px' }}>
+                      <div className="grid max-w-full shadow-lg border border-outline-variant/30 bg-white" style={{ maxHeight: '600px', placeItems: 'center' }}>
                         <img 
                           src={visualThumbnails[0]} 
                           alt="PDF Preview" 
-                          className="max-w-full max-h-[600px] object-contain block"
+                          className="col-start-1 row-start-1 max-w-full max-h-[600px] object-contain"
                         />
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                          {tool.id === 'add-watermark' && (
-                            <svg 
-                              viewBox={`0 0 ${thumbnailNativeSize.w} ${thumbnailNativeSize.h}`} 
-                              className="w-full h-full absolute inset-0 mix-blend-multiply" 
-                              preserveAspectRatio="xMidYMid meet"
+                        {tool.id === 'add-watermark' && (
+                          <svg 
+                            viewBox={`0 0 ${thumbnailNativeSize.w} ${thumbnailNativeSize.h}`} 
+                            className="col-start-1 row-start-1 w-full h-full mix-blend-multiply" 
+                            preserveAspectRatio="xMidYMid meet"
+                            style={{ WebkitTextSizeAdjust: '100%', pointerEvents: 'none' }}
+                          >
+                            <text 
+                              x="50%" 
+                              y="50%" 
+                              dy="0.35em" 
+                              textAnchor="middle" 
+                              fill={watermarkColor} 
+                              fillOpacity={watermarkOpacity}
+                              fontSize={watermarkSize * 1.5}
+                              fontWeight="bold"
+                              transform={`rotate(${-watermarkRotation}, ${thumbnailNativeSize.w / 2}, ${thumbnailNativeSize.h / 2})`}
+                              style={{ textShadow: '0px 0px 2px rgba(255,255,255,0.5)' }}
                             >
-                              <text 
-                                x="50%" 
-                                y="50%" 
-                                dominantBaseline="central" 
-                                textAnchor="middle" 
-                                fill={watermarkColor} 
-                                fillOpacity={watermarkOpacity}
-                                fontSize={watermarkSize * 1.5}
-                                fontWeight="bold"
-                                transform={`rotate(${-watermarkRotation}, ${thumbnailNativeSize.w / 2}, ${thumbnailNativeSize.h / 2})`}
-                                style={{ textShadow: '0px 0px 2px rgba(255,255,255,0.5)' }}
-                              >
-                                {watermarkText || ' '}
-                              </text>
-                            </svg>
-                          )}
+                              {watermarkText || ' '}
+                            </text>
+                          </svg>
+                        )}
+                        <div className="col-start-1 row-start-1 absolute inset-0 overflow-hidden pointer-events-none">
                           {tool.id === 'add-page-numbers' && (
                             <div 
                               className="whitespace-nowrap font-bold absolute"
