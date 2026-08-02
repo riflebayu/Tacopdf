@@ -64,18 +64,25 @@ const WatermarkPreview = ({
       const fontSize = size * scaleRatio;
       
       ctx.font = `bold ${fontSize}px Helvetica, Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
+      
+      // Get text width
+      const textWidth = ctx.measureText(text || ' ').width;
+      // Exact metric for Helvetica Bold ascent is 0.718 of font size
+      const textHeight = fontSize * 0.718;
+      
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate((-rotation * Math.PI) / 180);
       
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      
+      // Center the text horizontally using -textWidth / 2
+      ctx.fillText(text || ' ', -textWidth / 2, textHeight / 2);
       ctx.shadowColor = 'rgba(255,255,255,0.5)';
       ctx.shadowBlur = 2;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
-
-      ctx.fillText(text || ' ', 0, 0);
+      ctx.fillText(text || ' ', -textWidth / 2, textHeight / 2);
       ctx.restore();
     };
     img.src = thumbnailUrl;
@@ -1634,8 +1641,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const allPages = srcPdf.getPages();
 
         const textWidth = font.widthOfTextAtSize(watermarkText, watermarkSize);
-        // Approximation of the visual height of uppercase letters
-        const textHeight = watermarkSize * 0.75; 
+        // Exact metric for Helvetica Bold ascent
+        const textHeight = watermarkSize * 0.718; 
         
         // pdf-lib's degrees() rotates counter-clockwise.
         // We must subtract the page's internal rotation from the user's intended visual rotation!
