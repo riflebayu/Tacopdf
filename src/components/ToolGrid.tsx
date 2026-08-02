@@ -54,35 +54,30 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className="tool-card w-full text-left bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row gap-3 sm:gap-4 group cursor-pointer relative hover:border-primary/50 transition-colors"
+        className="tool-card w-full text-left bg-surface-container/50 border border-outline-variant/60 rounded-xl p-3 flex flex-row items-center cursor-pointer relative hover:border-primary/50 transition-colors group"
       >
         {setting.badge && (
-          <span className="absolute -top-2 right-2 bg-error text-on-error text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
+          <span className="absolute -top-2 left-2 bg-error text-on-error text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
             {setting.badge.toUpperCase()}
           </span>
         )}
-        <div className="bg-surface-container-highest border border-outline-variant/30 p-2 sm:p-3 rounded-lg text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200 shrink-0 self-start inline-block">
-          <div className="sm:hidden flex items-center justify-center">
-            <TacoIcon name={tool.icon} size={48} />
-          </div>
-          <div className="hidden sm:flex items-center justify-center">
-            <TacoIcon name={tool.icon} size={72} />
-          </div>
+        <div className="flex-shrink-0 w-12 h-12 bg-surface-container-highest border border-outline-variant/30 rounded-lg flex items-center justify-center p-2 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
+          <TacoIcon name={tool.icon} size={28} />
         </div>
-        <div className="flex-grow pr-8">
-          <h3 className="font-bold text-base text-on-surface group-hover:text-primary-container transition-colors duration-150">
+        <div className="flex-grow flex flex-col ml-3 mr-8">
+          <h3 className="text-sm font-bold text-on-surface group-hover:text-primary-container transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
-          <p className="text-sm text-on-surface-variant mt-1 leading-relaxed">
+          <p className="text-xs text-on-surface-variant leading-snug mt-0.5">
             {t(`seo.features.${tool.id.replace(/-/g, '_')}`, tool.description)}
           </p>
         </div>
         <div 
           onClick={(e) => toggleFavorite(e, tool.id)}
-          className={`absolute top-4 right-4 p-2 rounded-full cursor-pointer transition-colors ${isFav ? 'text-yellow-500' : 'text-outline-variant hover:text-yellow-500 hover:bg-surface-container-high'}`}
+          className={`absolute right-3 top-3 p-1.5 rounded-full cursor-pointer transition-colors ${isFav ? 'text-yellow-500' : 'text-outline-variant hover:text-yellow-500 hover:bg-surface-container-high'}`}
           title={isFav ? "Remove from Favorites" : "Add to Favorites"}
         >
-          <Star size={18} className={isFav ? "fill-yellow-500" : ""} />
+          <Star size={16} className={isFav ? "fill-yellow-500" : ""} />
         </div>
       </LocalizedLink>
     );
