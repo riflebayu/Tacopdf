@@ -19,6 +19,10 @@ export default function TacoIcon({ name, className = '', size = 32 }: TacoIconPr
     );
   }
 
+  if (name === 'help-circle') {
+    return <LucideIcon name="HelpCircle" size={size} className={className} />;
+  }
+
   return (
     <img 
       src={`/images/tools/${name}.webp`} 

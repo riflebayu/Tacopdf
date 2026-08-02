@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomePageClient from '../components/HomePageClient';
+import { TRANSLATIONS } from '../data/translations';
+
+const lang = 'en';
+const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+const title = dict['home.title' as keyof typeof dict] || 'TacoPDF - Free & Secure Online PDF Tools';
+const description = dict['home.subtitle' as keyof typeof dict] || 'Process PDFs locally in your browser. Maximum privacy and security.';
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <HomePageClient lang={lang} client:load />
+</BaseLayout>

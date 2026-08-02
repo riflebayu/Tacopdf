@@ -6,15 +6,13 @@ import LocalizedLink from './LocalizedLink';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
 import TacoIcon from './TacoIcon';
-import { useLanguage, LANGUAGES } from '../context/LanguageContext';
+import { LanguageProvider, useLanguage, LANGUAGES } from '../context/LanguageContext';
 
 interface NavbarProps {
-  onSelectTool: (id: string) => void;
-  onGoHome: (scrollToId?: string) => void;
-  activeToolId: string | null;
+  activeToolId?: string | null;
 }
 
-export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarProps) {
+function NavbarContent({ activeToolId }: NavbarProps) {
   const { lang, t, setLang, currentLanguage } = useLanguage();
   const location = useLocation();
   const [isToolsOpen, setIsToolsOpen] = useState(false);
@@ -93,28 +91,29 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
   }, [location.pathname]);
 
   const handleToolClick = (id: string) => {
-    onSelectTool(id);
     setIsToolsOpen(false);
     setIsMobileMenuOpen(false);
   };
 
   const handleGoFAQ = (e: React.MouseEvent) => {
-    e.preventDefault();
     setIsMobileMenuOpen(false);
-    onGoHome('faq');
+    // Navigation is handled by LocalizedLink
   };
 
   const handleAllToolsClick = () => {
     setIsMobileMenuOpen(false);
     setIsToolsOpen(false);
-    onGoHome(); // Without arg, this goes to top (beranda atas)
+  };
+
+  const handleGoHome = () => {
+    // Navigation is handled by LocalizedLink
   };
 
   return (
-    <header className="bg-background border-b border-outline-variant docked full-width top-0 sticky z-50">
+    <header className="bg-[#17130a]/85 backdrop-blur-md border-b border-outline-variant/40 docked full-width top-0 sticky z-50">
       <div className="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">
         {/* Logo */}
-        <LocalizedLink to="/" className="flex items-center gap-2 md:gap-3 cursor-pointer group hover:opacity-90 transition-opacity" onClick={() => onGoHome()}>
+        <LocalizedLink to="/" className="flex items-center gap-2 md:gap-3 cursor-pointer group hover:opacity-90 transition-opacity" onClick={handleGoHome}>
           <img src="/logo.webp" alt="TacoPDF Logo" width="48" height="48" className="w-9 h-9 md:w-12 md:h-12 drop-shadow-sm rounded-lg" />
           <span className="font-extrabold text-xl md:text-2xl tracking-tight text-on-surface">TacoPDF</span>
         </LocalizedLink>
@@ -330,5 +329,13 @@ export default function Navbar({ onSelectTool, onGoHome, activeToolId }: NavbarP
         </div>
       </div>
     </header>
+  );
+}
+
+export default function Navbar(props: NavbarProps & { initialLang?: string }) {
+  return (
+    <LanguageProvider initialLang={props.initialLang || 'en'}>
+      <NavbarContent {...props} />
+    </LanguageProvider>
   );
 }

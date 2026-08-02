@@ -1,25 +1,27 @@
-"use client";
-import dynamic from 'next/dynamic';
-
-const Workspace = dynamic(() => import('@/components/Workspace'), { 
-  ssr: false,
-  loading: () => (
-    <div className="w-full flex flex-col lg:flex-row gap-6 animate-pulse">
-      <div className="lg:col-span-7 flex-1 border-2 border-dashed border-outline-variant/30 rounded-2xl h-80 bg-surface-container-low flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-surface-container-high rounded-full mb-4"></div>
-        <div className="h-4 w-48 bg-surface-container-high rounded mb-2"></div>
-        <div className="h-10 w-32 bg-primary-container rounded-full mt-4"></div>
-      </div>
-      <div className="lg:col-span-5 w-full lg:w-80 h-80 bg-surface-container border border-outline-variant/30 rounded-2xl">
-      </div>
-    </div>
-  )
-});
+import React, { Suspense } from 'react';
+import Workspace from '../Workspace';
+import { LanguageProvider } from '../../context/LanguageContext';
 
 export default function WorkspaceWrapper(props: any) {
   return (
-    <div className="w-full animate-fade-in">
-      <Workspace tool={props.tool} initialFiles={[]} onBack={() => window.location.href = '/'} />
-    </div>
+    <LanguageProvider initialLang={props.lang || 'en'}>
+      <div className="w-full animate-fade-in">
+        <Suspense fallback={
+        <div className="w-full flex flex-col lg:flex-row gap-6 animate-pulse">
+          <div className="lg:col-span-7 flex-1 border-2 border-dashed border-outline-variant/30 rounded-2xl h-80 bg-surface-container-low flex flex-col items-center justify-center">
+            <div className="w-16 h-16 bg-surface-container-high rounded-full mb-4"></div>
+            <div className="h-4 w-48 bg-surface-container-high rounded mb-2"></div>
+            <div className="h-10 w-32 bg-primary-container rounded-full mt-4"></div>
+          </div>
+          <div className="lg:col-span-5 w-full lg:w-80 h-80 bg-surface-container border border-outline-variant/30 rounded-2xl">
+          </div>
+        </div>
+      }>
+        <Workspace tool={props.tool} initialFiles={[]} onBack={() => {
+          if (typeof window !== 'undefined') window.location.href = '/';
+        }} />
+      </Suspense>
+      </div>
+    </LanguageProvider>
   );
 }

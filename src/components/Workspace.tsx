@@ -2,7 +2,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw } from 'lucide-react';
-import { PDFDocument, rgb, degrees, StandardFonts } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
+import JSZip from 'jszip';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { PDFTool, ProcessingState } from '../types';
 import TacoIcon from './TacoIcon';
 import LucideIcon from './LucideIcon';
@@ -18,7 +21,6 @@ const qpdfJsUrl = '/assets/' + 'qpdf-run/qpdf.js'.split('/').pop();
 import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
-import JSZip from 'jszip';
 
 interface WorkspaceProps {
   tool: PDFTool;
@@ -1710,35 +1712,83 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         outName = 'signed_taco.pdf';
 
       } else if (tool.id === 'html-to-pdf') {
-        const htmlPdf = await PDFDocument.create();
-        const fontTitle = await htmlPdf.embedFont(StandardFonts.HelveticaBold);
-        const fontBody = await htmlPdf.embedFont(StandardFonts.Helvetica);
+        setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html') || 'Rendering HTML view...' });
         
-        const page = htmlPdf.addPage([595, 842]);
-        const { width, height } = page.getSize();
-        
-        page.drawText('TacoPDF Compiled Document', { x: 50, y: height - 60, size: 18, font: fontTitle });
+        const element = document.getElementById('html-to-pdf-render-target');
+        if (!element) throw new Error('Render target not found');
 
-        const htmlLines = htmlContent.split('\n');
-        let currY = height - 110;
-        
-        for (const rawLine of htmlLines) {
-          const trimmed = rawLine.trim();
-          if (!trimmed) continue;
-          if (currY < 60) break;
+        // Capture the DOM element safely by sanitizing modern CSS colors (oklab/oklch) that html2canvas doesn't support
+        const canvas = await html2canvas(element, {
+          scale: 2, // High resolution
+          useCORS: true,
+          logging: false,
+          windowWidth: element.scrollWidth,
+          windowHeight: element.scrollHeight,
+          onclone: (clonedDoc) => {
+            // Remove external stylesheets and sanitize style tags to avoid oklab/oklch parsing errors
+            const styleTags = clonedDoc.querySelectorAll('style');
+            styleTags.forEach((style) => {
+              if (style.textContent) {
+                style.textContent = style.textContent
+                  .replace(/oklab\([^)]+\)/gi, '#000000')
+                  .replace(/oklch\([^)]+\)/gi, '#000000');
+              }
+            });
 
-          if (trimmed.startsWith('<h1>')) {
-            page.drawText(trimmed.replace(/<[^>]*>/g, ''), { x: 50, y: currY, size: 15, font: fontTitle });
-            currY -= 26;
-          } else {
-            const cleanText = trimmed.replace(/<[^>]*>/g, '');
-            page.drawText(cleanText, { x: 50, y: currY, size: 10, font: fontBody });
-            currY -= 18;
+            const linkTags = clonedDoc.querySelectorAll('link[rel="stylesheet"]');
+            linkTags.forEach((link) => link.remove());
+
+            const allElements = clonedDoc.querySelectorAll('*');
+            allElements.forEach((el) => {
+              const styleAttr = el.getAttribute('style');
+              if (styleAttr && (styleAttr.includes('oklab') || styleAttr.includes('oklch'))) {
+                el.setAttribute(
+                  'style',
+                  styleAttr
+                    .replace(/oklab\([^)]+\)/gi, '#000000')
+                    .replace(/oklch\([^)]+\)/gi, '#000000')
+                );
+              }
+            });
+
+            const target = clonedDoc.getElementById('html-to-pdf-render-target');
+            if (target) {
+              target.style.transform = 'none';
+              target.style.marginBottom = '0px';
+            }
           }
+        });
+
+        setProcessingState({ status: 'processing', progress: 70, message: t('progress.converting_pdf') || 'Converting to PDF format...' });
+        
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // First page
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Additional pages if content overflows
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+          heightLeft -= pageHeight;
         }
 
-        outputBytes = await htmlPdf.save();
-        outName = 'html_compiled_taco.pdf';
+        outputBytes = pdf.output('arraybuffer');
+        outName = 'html_rendered_taco.pdf';
 
       } else {
         throw new Error(t('error.unrecognized_tool'));
@@ -1837,15 +1887,35 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               <textarea
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
-                rows={10}
+                rows={8}
                 className="w-full bg-background border border-outline-variant rounded-lg p-4 font-mono text-xs text-on-surface focus:border-primary-container focus:outline-none leading-relaxed"
                 placeholder={t('workspace.html.placeholder')}
               />
+              <div className="border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest mt-4">
+                 <div className="bg-surface-container-high px-4 py-2 border-b border-outline-variant text-xs font-bold text-on-surface-variant flex items-center gap-2">
+                   <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
+                 </div>
+                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-center max-h-[500px]">
+                    <div 
+                      id="html-to-pdf-render-target"
+                      className="bg-white text-black shadow-sm ring-1 ring-gray-900/5"
+                      style={{ 
+                        width: '794px', 
+                        minHeight: '1123px', 
+                        padding: '40px',
+                        transform: 'scale(0.8)',
+                        transformOrigin: 'top center',
+                        marginBottom: '-220px' // offset the scale height reduction
+                      }}
+                      dangerouslySetInnerHTML={{ __html: htmlContent }}
+                    />
+                 </div>
+              </div>
             </div>
           ) : (
             /* Standard Upload DropZone */
             <div className="space-y-4">
-              {(tool.id === 'add-watermark' || tool.id === 'add-page-numbers') && uploadedFiles.length > 0 ? (
+              {(tool.id === 'add-watermark' || tool.id === 'add-page-numbers') && uploadedFiles.length > 0 && !uploadedFiles.some(f => lockedFileIds.has(f.id)) ? (
                 <div className="bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col mb-6">
                   <div className="flex justify-between items-center px-4 py-3 bg-surface-container-high border-b border-outline-variant shrink-0">
                     <div className="flex items-center gap-4">
@@ -2172,7 +2242,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 </div>
               )}
 
-              {tool.id === 'redact' && uploadedFiles.length > 0 && (
+              {tool.id === 'redact' && uploadedFiles.length > 0 && !uploadedFiles.some(f => lockedFileIds.has(f.id)) && (
                 <div id="redact-container" className="mt-6 space-y-6 scroll-mt-28">
                   <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl text-sm flex gap-3 shadow-sm">
                     <LucideIcon name="AlertCircle" className="shrink-0 mt-0.5 text-amber-500" size={20} />
@@ -2766,25 +2836,43 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       );
                     })()}
                   </div>
-                  <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-4 w-full">
-                    {processingState.outputFileName && !processingState.outputFileName.endsWith('.zip') && !processingState.outputFileName.match(/\.(png|jpe?g)$/i) && (
-                      <button
-                        onClick={() => setShowPreview(true)}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-surface-variant hover:bg-surface-container-highest text-on-surface rounded-lg text-sm font-medium transition-colors w-full sm:w-auto"
-                      >
-                        <LucideIcon name="Eye" size={16} />
-                        Preview
-                      </button>
-                    )}
-                    <a 
-                      href={processingState.downloadUrl}
-                      download={processingState.outputFileName || 'document.pdf'}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-on-primary rounded-lg text-sm font-bold shadow-md transition-colors w-full sm:w-auto overflow-hidden text-ellipsis whitespace-nowrap"
-                    >
-                      <LucideIcon name="Download" size={16} />
-                      Download
-                    </a>
-                  </div>
+                    <div className="flex flex-col gap-3 mt-5 w-full">
+                      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
+                        {processingState.outputFileName && !processingState.outputFileName.endsWith('.zip') && !processingState.outputFileName.match(/\.(png|jpe?g)$/i) && (
+                          <button
+                            onClick={() => setShowPreview(true)}
+                            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-variant hover:bg-surface-container-highest text-on-surface rounded-lg text-sm font-medium transition-colors flex-1 sm:flex-none min-w-[120px]"
+                          >
+                            <LucideIcon name="Eye" size={16} />
+                            Preview
+                          </button>
+                        )}
+                        <a 
+                          href={processingState.downloadUrl}
+                          download={processingState.outputFileName || 'document.pdf'}
+                          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-lg text-sm font-bold shadow-md transition-colors flex-1 sm:flex-none min-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          <LucideIcon name="Download" size={16} />
+                          Download
+                        </a>
+                      </div>
+                      
+                      <div className="pt-4 mt-2 border-t border-[#132F1A]/10 flex justify-center w-full">
+                        <button
+                          onClick={() => {
+                            setProcessingState({ status: 'idle', progress: 0, message: '' });
+                            setUploadedFiles([]);
+                            setTimeout(() => {
+                              document.getElementById('workspace-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 100);
+                          }}
+                          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F9FAF8] hover:bg-[#EAECE8] dark:bg-[#1E1F1E] dark:hover:bg-[#2D2E2D] border border-outline-variant/30 text-on-surface rounded-lg text-sm font-medium transition-colors w-full shadow-sm"
+                        >
+                          <LucideIcon name="RotateCcw" size={16} />
+                          {t('workspace.btn.another') || 'Process Another Document'}
+                        </button>
+                      </div>
+                    </div>
                 </div>
               )}
 
@@ -2796,20 +2884,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 >
                   <TacoIcon name={tool.icon} size={32} />
                   {tool.id === 'html-to-pdf' ? t('workspace.btn.compile') : tool.id === 'add-watermark' ? (t('workspace.btn.save_download') || 'Save & Download PDF') : `${t('workspace.btn.run')} ${t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}`}
-                </button>
-              )}
-              {processingState.status === 'success' && (
-                <button
-                  onClick={() => {
-                    setProcessingState({ status: 'idle', progress: 0, message: '' });
-                    setUploadedFiles([]);
-                    setTimeout(() => {
-                      document.getElementById('workspace-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                  }}
-                  className="w-full text-center text-xs text-on-surface-variant hover:text-primary-container py-2 underline transition-colors"
-                >
-                  ✨ {t('workspace.btn.another') || 'Process Another Document'}
                 </button>
               )}
 

@@ -99,11 +99,14 @@ export default function ContactPage({ onBack }: ContactPageProps) {
             <div className="pt-4 border-t border-outline-variant">
               <h4 className="font-bold text-sm text-on-surface mb-3">{t('contact.follow') || 'Ikuti Kami'}</h4>
               <div className="flex items-center gap-3">
-                <a href="https://web.facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-surface hover:bg-surface-variant rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/50 shadow-sm" aria-label="Facebook">
-                  <span>FB</span>
+                <a href="https://web.facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-blue-600/10 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors" aria-label="Facebook">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
-                <a href="https://www.instagram.com/bay.lightyear/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-surface hover:bg-surface-variant rounded-full text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/50 shadow-sm" aria-label="Instagram">
-                  <span>IG</span>
+                <a href="https://www.instagram.com/bay.lightyear/" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-pink-600/10 text-pink-600 hover:bg-pink-600 hover:text-white transition-colors" aria-label="Instagram">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                </a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mbayuedi@gmail.com" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors" aria-label="Email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                 </a>
               </div>
             </div>

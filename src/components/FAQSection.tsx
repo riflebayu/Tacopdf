@@ -3,7 +3,7 @@
 import React from 'react';
 import { ShieldCheck, Coins, Cpu } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useLanguage } from '../context/LanguageContext';
+import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 
 interface FAQItem {
   id: string;
@@ -12,7 +12,7 @@ interface FAQItem {
   icon: React.ReactNode;
 }
 
-export default function FAQSection() {
+export function FAQSectionContent() {
   const { t } = useLanguage();
 
   const faqs: FAQItem[] = [
@@ -76,5 +76,13 @@ export default function FAQSection() {
         ))}
       </div>
     </section>
+  );
+}
+
+export default function FAQSection({ initialLang = 'en' }: { initialLang?: string }) {
+  return (
+    <LanguageProvider initialLang={initialLang}>
+      <FAQSectionContent />
+    </LanguageProvider>
   );
 }

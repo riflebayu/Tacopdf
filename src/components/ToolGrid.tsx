@@ -91,18 +91,18 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="flex items-center justify-between border-b border-outline-variant pb-2">
             <h2 className="text-2xl font-bold text-yellow-500 flex items-center gap-2">
-              <Star className="fill-yellow-500" size={24} /> Favorite Tools
+              <Star className="fill-yellow-500" size={24} /> {t('favorites.title', 'Favorite Tools')}
             </h2>
             <button
               onClick={() => {
-                if (window.confirm(t('favorites.confirm_reset') || 'Are you sure you want to clear all your favorite tools?')) {
+                if (window.confirm(t('favorites.confirm_reset', 'Are you sure you want to clear all your favorite tools?'))) {
                   localStorage.removeItem('tacopdf-favorites');
                   setFavorites([]);
                 }
               }}
               className="text-xs font-semibold text-on-surface-variant hover:text-error transition-colors flex items-center gap-1.5 bg-surface-container-lowest hover:bg-red-500/10 px-3 py-1.5 rounded-lg border border-outline-variant/60 shadow-sm cursor-pointer"
             >
-              <Trash2 size={14} /> {t('favorites.reset') || 'Reset Favorites'}
+              <Trash2 size={14} /> {t('favorites.reset', 'Reset Favorites')}
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

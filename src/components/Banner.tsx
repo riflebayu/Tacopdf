@@ -9,8 +9,8 @@ export default function Banner() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Only show if not dismissed in this session
-    const isDismissed = sessionStorage.getItem('tacopdf_banner_dismissed');
+    // Only show if not dismissed permanently by the user (new users)
+    const isDismissed = localStorage.getItem('tacopdf_banner_dismissed');
     if (!isDismissed) {
       setIsVisible(true);
     }
@@ -20,7 +20,7 @@ export default function Banner() {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    sessionStorage.setItem('tacopdf_banner_dismissed', 'true');
+    localStorage.setItem('tacopdf_banner_dismissed', 'true');
   };
 
   return (
