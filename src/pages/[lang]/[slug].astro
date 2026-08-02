@@ -59,7 +59,7 @@ if (tool) {
   const toolNameKey = `tool_name.${tool.id.replace(/-/g, '_')}`;
   translatedName = dict[toolNameKey as keyof typeof dict] || TRANSLATIONS['en'][toolNameKey as keyof typeof TRANSLATIONS['en']] || tool.name;
 
-  const descriptionKey = `tools.${tool.id.replace(/-/g, '_')}.description`;
+  const descriptionKey = `seo.features.${tool.id.replace(/-/g, '_')}`;
   translatedDescription = dict[descriptionKey as keyof typeof dict] || TRANSLATIONS['en'][descriptionKey as keyof typeof TRANSLATIONS['en']] || tool.description;
 
   for (let i = 1; i <= 5; i++) {

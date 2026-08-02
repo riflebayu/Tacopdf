@@ -70,10 +70,7 @@ export default function VisualGrid({
   const handleRotate = (index: number, angle: number) => {
     setPageRotations((prev) => {
       const current = prev[index] || 0;
-      let newRot = current + angle;
-      if (newRot < 0) newRot = 360 + (newRot % 360);
-      else newRot = newRot % 360;
-      return { ...prev, [index]: newRot };
+      return { ...prev, [index]: current + angle };
     });
   };
 
@@ -114,14 +111,16 @@ export default function VisualGrid({
 
   return (
     <div className="mt-8 space-y-4">
-      <div className="bg-primary-container/10 border border-primary-container/30 text-primary-container p-3 rounded-xl text-sm flex gap-3">
-        <AlertCircle className="shrink-0 mt-0.5" size={18} />
-        <p>
-          {toolId === 'delete-pages' && (t('tool.delete.example') || 'Click the trash icon on any page to remove it.')}
-          {(toolId === 'split' || toolId === 'extract-pages') && (t('tool.extract.tip') || 'Click on the pages you want to extract.')}
-          {toolId === 'rotate' && t('tool.rotate.tip', 'Click the rotate icon to rotate individual pages.')}
-        </p>
-      </div>
+      {['delete-pages', 'split', 'extract-pages', 'rotate'].includes(toolId) && (
+        <div className="bg-primary-container/10 border border-primary-container/30 text-primary-container p-3 rounded-xl text-sm flex gap-3">
+          <AlertCircle className="shrink-0 mt-0.5" size={18} />
+          <p>
+            {toolId === 'delete-pages' && (t('tool.delete.example') || 'Click the trash icon on any page to remove it.')}
+            {(toolId === 'split' || toolId === 'extract-pages') && (t('tool.extract.tip') || 'Click on the pages you want to extract.')}
+            {toolId === 'rotate' && t('tool.rotate.tip', 'Click the rotate icon to rotate individual pages.')}
+          </p>
+        </div>
+      )}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {thumbnails.map((thumbUrl, idx) => {
           const isDeleted = toolId === 'delete-pages' && pagesToDelete.includes(idx);

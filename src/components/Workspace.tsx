@@ -12,12 +12,10 @@ import LucideIcon from './LucideIcon';
 import SignaturePad from './SignaturePad';
 import { useLanguage } from '../context/LanguageContext';
 import { createBrowserQpdfRunner } from 'qpdf-run';
-// @ts-ignore
-const qpdfWorkerUrl = '/assets/' + 'qpdf-run/worker'.split('/').pop();
-// @ts-ignore
-const qpdfWasmUrl = '/assets/' + 'qpdf-run/qpdf.wasm'.split('/').pop();
-// @ts-ignore
-const qpdfJsUrl = '/assets/' + 'qpdf-run/qpdf.js'.split('/').pop();
+const qpdfWasmUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.wasm';
+const qpdfJsUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.js';
+const qpdfWorkerCode = `importScripts('https://unpkg.com/qpdf-run@0.2.1/src/worker.js');`;
+const qpdfWorkerUrl = typeof window !== 'undefined' ? URL.createObjectURL(new Blob([qpdfWorkerCode], { type: 'application/javascript' })) : '';
 import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
@@ -659,6 +657,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   // Advanced Visual Tools State
+  const [thumbnailNativeSize, setThumbnailNativeSize] = useState({ w: 892, h: 1263 }); // Default A4 * 1.5
   const [visualThumbnails, setVisualThumbnails] = useState<string[]>([]);
   const [fileThumbnails, setFileThumbnails] = useState<Record<string, string>>({});
   const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
@@ -724,7 +723,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
   React.useEffect(() => {
     // Generate thumbnails for visual tools
-    if (uploadedFiles.length > 0 && ['delete-pages', 'rotate', 'reorder', 'redact', 'split', 'sign', 'extract-pages', 'merge', 'image-to-pdf', 'add-watermark', 'add-page-numbers'].includes(tool.id)) {
+    if (uploadedFiles.length > 0 && ['delete-pages', 'rotate', 'reorder', 'redact', 'split', 'sign', 'extract-pages', 'merge', 'image-to-pdf', 'add-watermark', 'add-page-numbers', 'pdf-to-image'].includes(tool.id)) {
       setIsGeneratingThumbnails(true);
       const generateThumbnails = async () => {
         try {
@@ -1195,15 +1194,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         });
 
         const allPages = srcPdf.getPages();
-        const hasRotations = Object.keys(pageRotations).length > 0;
+        const hasRotations = Object.entries(pageRotations).some(([_, rot]) => rot % 360 !== 0);
         
         if (!hasRotations) {
-          throw new Error(t('error.select_pages_rotate'));
+          throw new Error(t('error.select_pages_rotate') || 'Please select pages to rotate.');
         }
 
         Object.entries(pageRotations).forEach(([idxStr, rot]) => {
           const idx = parseInt(idxStr);
-          if (rot > 0 && allPages[idx]) {
+          if (rot % 360 !== 0 && allPages[idx]) {
             const currentRot = allPages[idx].getRotation().angle;
             allPages[idx].setRotation(degrees(currentRot + rot));
           }
@@ -1561,16 +1560,35 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const { r, g, b } = hexToRgb(watermarkColor);
         const allPages = srcPdf.getPages();
 
+        const textWidth = font.widthOfTextAtSize(watermarkText, watermarkSize);
+        // Approximation of the visual height of uppercase letters
+        const textHeight = watermarkSize * 0.75; 
+        
+        // pdf-lib's degrees() rotates counter-clockwise.
+        // We must subtract the page's internal rotation from the user's intended visual rotation!
         allPages.forEach((page) => {
           const { width, height } = page.getSize();
+          const pageRotation = page.getRotation().angle || 0;
+          const actualRotation = watermarkRotation - pageRotation;
+
+          const theta = actualRotation * (Math.PI / 180);
+          const cosT = Math.cos(theta);
+          const sinT = Math.sin(theta);
+          
+          const cxRel = (textWidth / 2) * cosT - (textHeight / 2) * sinT;
+          const cyRel = (textWidth / 2) * sinT + (textHeight / 2) * cosT;
+          
+          const startX = (width / 2) - cxRel;
+          const startY = (height / 2) - cyRel;
+
           page.drawText(watermarkText, {
-            x: width / 2 - (watermarkText.length * watermarkSize * 0.25),
-            y: height / 2,
+            x: startX,
+            y: startY,
             size: watermarkSize,
             font: font,
             color: rgb(r, g, b),
             opacity: watermarkOpacity,
-            rotate: degrees(watermarkRotation),
+            rotate: degrees(actualRotation),
           });
         });
 
@@ -1959,23 +1977,35 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                           src={visualThumbnails[0]} 
                           alt="PDF Preview" 
                           className="max-w-full max-h-[600px] object-contain block"
+                          onLoad={(e) => {
+                            setThumbnailNativeSize({
+                              w: e.currentTarget.naturalWidth,
+                              h: e.currentTarget.naturalHeight
+                            });
+                          }}
                         />
                         <div className="absolute inset-0 overflow-hidden pointer-events-none">
                           {tool.id === 'add-watermark' && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div 
-                                className="whitespace-nowrap font-bold"
-                                style={{
-                                  color: watermarkColor,
-                                  opacity: watermarkOpacity,
-                                  fontSize: `${watermarkSize}px`,
-                                  transform: `rotate(-${watermarkRotation}deg)`,
-                                  textShadow: '0px 0px 2px rgba(255,255,255,0.5)'
-                                }}
+                            <svg 
+                              viewBox={`0 0 ${thumbnailNativeSize.w} ${thumbnailNativeSize.h}`} 
+                              className="w-full h-full absolute inset-0 mix-blend-multiply" 
+                              preserveAspectRatio="xMidYMid meet"
+                            >
+                              <text 
+                                x="50%" 
+                                y="50%" 
+                                dominantBaseline="central" 
+                                textAnchor="middle" 
+                                fill={watermarkColor} 
+                                fillOpacity={watermarkOpacity}
+                                fontSize={watermarkSize * 1.5}
+                                fontWeight="bold"
+                                transform={`rotate(${-watermarkRotation}, ${thumbnailNativeSize.w / 2}, ${thumbnailNativeSize.h / 2})`}
+                                style={{ textShadow: '0px 0px 2px rgba(255,255,255,0.5)' }}
                               >
                                 {watermarkText || ' '}
-                              </div>
-                            </div>
+                              </text>
+                            </svg>
                           )}
                           {tool.id === 'add-page-numbers' && (
                             <div 
