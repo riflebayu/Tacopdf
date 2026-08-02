@@ -2127,7 +2127,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-4 md:p-10 w-full flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex flex-col items-center justify-center cursor-pointer transition-all ${
                   isDragActive 
                     ? 'border-primary-container bg-surface-container' 
                     : 'border-outline-variant bg-surface-container/40'
@@ -2141,17 +2141,41 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   multiple={tool.id === 'merge' || tool.id === 'image-to-pdf'}
                   accept={tool.id === 'image-to-pdf' ? "image/*" : ".pdf"}
                 />
-                <LucideIcon name="UploadCloud" size={48} className="text-primary-container mb-1 md:mb-4 scale-75 md:scale-100" />
-                <p className="text-sm md:text-lg font-bold text-on-surface mb-0.5 md:mb-2">{t('workspace.drop.title')}</p>
-                <p className="text-[10px] md:text-sm text-on-surface-variant">
-                  {tool.id === 'image-to-pdf' ? t('workspace.drop.support_img') : t('workspace.drop.support_pdf')}
-                </p>
-                <button
-                  onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                  className="mt-2 md:mt-6 px-8 py-2 md:px-6 md:py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-xs"
-                >
-                  {t('workspace.drop.browse')}
-                </button>
+                {/* Mobile View: Horizontal Banner */}
+                <div className="flex md:hidden items-center justify-between w-full px-1">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary-container/10 p-2.5 rounded-lg shrink-0">
+                      <LucideIcon name="UploadCloud" size={24} className="text-primary-container" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-black text-on-surface leading-tight mb-0.5">{t('workspace.drop.title')}</p>
+                      <p className="text-[10px] text-on-surface-variant font-medium">
+                        {tool.id === 'image-to-pdf' ? t('workspace.drop.support_img') : t('workspace.drop.support_pdf')}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                    className="ml-2 shrink-0 px-4 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-[10px]"
+                  >
+                    {t('workspace.drop.browse')}
+                  </button>
+                </div>
+
+                {/* Desktop View: Vertical Stack */}
+                <div className="hidden md:flex flex-col items-center justify-center text-center">
+                  <LucideIcon name="UploadCloud" size={48} className="text-primary-container mb-4" />
+                  <p className="text-lg font-bold text-on-surface mb-2">{t('workspace.drop.title')}</p>
+                  <p className="text-sm text-on-surface-variant mb-6">
+                    {tool.id === 'image-to-pdf' ? t('workspace.drop.support_img') : t('workspace.drop.support_pdf')}
+                  </p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                    className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-xs"
+                  >
+                    {t('workspace.drop.browse')}
+                  </button>
+                </div>
               </div>
 
               <AnimatePresence>
