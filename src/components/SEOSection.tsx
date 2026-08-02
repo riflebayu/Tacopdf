@@ -28,8 +28,8 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
         </div>
 
         {/* SEO Bento Grid for Keywords & Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-          <div className="bg-surface-container border border-outline-variant/60 p-6 rounded-xl space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+          <div className="flex-none w-[85%] snap-center bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
             <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
               <EyeOff size={24} />
             </div>
@@ -39,7 +39,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
             </p>
           </div>
 
-          <div className="bg-surface-container border border-outline-variant/60 p-6 rounded-xl space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+          <div className="flex-none w-[85%] snap-center bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
             <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
               <Zap size={24} />
             </div>
@@ -49,7 +49,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
             </p>
           </div>
 
-          <div className="bg-surface-container border border-outline-variant/60 p-6 rounded-xl space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+          <div className="flex-none w-[85%] snap-center bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
             <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
               <Globe size={24} />
             </div>
