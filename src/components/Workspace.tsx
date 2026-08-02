@@ -27,7 +27,8 @@ const WatermarkPreview = ({
   size,
   color,
   opacity,
-  rotation
+  rotation,
+  pdfWidth
 }: {
   thumbnailUrl: string,
   text: string,
