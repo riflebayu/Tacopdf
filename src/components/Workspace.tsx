@@ -34,12 +34,13 @@ const WatermarkPreview = ({
   size: number,
   color: string,
   opacity: number,
-  rotation: number
+  rotation: number,
+  pdfWidth: number
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current || !thumbnailUrl) return;
+    if (!canvasRef.current || !thumbnailUrl || !pdfWidth) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -57,7 +58,10 @@ const WatermarkPreview = ({
       ctx.globalAlpha = opacity;
       ctx.fillStyle = color;
       
-      const fontSize = size * 1.5;
+      // Calculate exact scaling ratio relative to 1:1 PDF points
+      const scaleRatio = canvas.width / pdfWidth;
+      const fontSize = size * scaleRatio;
+      
       ctx.font = `bold ${fontSize}px Helvetica, Arial, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -858,7 +862,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 if (i === 1 && (tool.id === 'add-watermark' || tool.id === 'add-page-numbers')) {
-                  setThumbnailNativeSize({ w: viewport.width, h: viewport.height });
+                  // Store 1:1 PDF points dimensions, NOT the scaled viewport dimensions
+                  setThumbnailNativeSize({ w: page.getViewport({ scale: 1 }).width, h: page.getViewport({ scale: 1 }).height });
                 }
                 await page.render({ canvasContext: context, viewport }).promise;
                 urls.push(canvas.toDataURL('image/jpeg', 0.8));
@@ -1639,7 +1644,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           const pageRotation = page.getRotation().angle || 0;
           const actualRotation = watermarkRotation - pageRotation;
 
-          const theta = actualRotation * (Math.PI / 180);
+          // pdf-lib's drawText using degrees(actualRotation) rotates the text counter-clockwise around its bottom-left origin.
+          // To calculate the center displacement, we must use -actualRotation in our rotation matrix to offset it correctly.
+          const theta = -actualRotation * (Math.PI / 180);
           const cosT = Math.cos(theta);
           const sinT = Math.sin(theta);
           
@@ -2049,6 +2056,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                             color={watermarkColor}
                             opacity={watermarkOpacity}
                             rotation={watermarkRotation}
+                            pdfWidth={thumbnailNativeSize.w}
                           />
                         ) : (
                           <div className="relative inline-block max-w-full shadow-lg border border-outline-variant/30 bg-white" style={{ maxHeight: '600px' }}>
