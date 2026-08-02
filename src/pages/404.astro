@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LucideIcon from '../components/LucideIcon';
+
+const title = '404 - Page Not Found | TacoPDF';
+const description = 'The page you are looking for does not exist or has been moved. Explore our free online PDF tools.';
+
+const popularTools = [
+  { name: 'Merge PDF', slug: 'merge-pdf', icon: 'Files', desc: 'Combine multiple PDFs into one document.' },
+  { name: 'Split PDF', slug: 'split-pdf', icon: 'Scissors', desc: 'Separate pages into individual PDF files.' },
+  { name: 'Compress PDF', slug: 'compress-pdf', icon: 'FileArchive', desc: 'Reduce PDF file size without losing quality.' },
+  { name: 'PDF to Image', slug: 'pdf-to-image', icon: 'Image', desc: 'Convert PDF pages into high quality images.' },
+  { name: 'Unlock PDF', slug: 'unlock', icon: 'Unlock', desc: 'Remove password protection from encrypted PDFs.' },
+  { name: 'Protect PDF', slug: 'protect', icon: 'Lock', desc: 'Encrypt your PDF with a strong password.' },
+];
+---
+
+<BaseLayout title={title} description={description} lang="en">
+  <main className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-16 text-center max-w-4xl mx-auto">
+    {/* 404 Hero Badge */}
+    <div className="relative mb-6">
+      <div className="text-8xl sm:text-9xl font-extrabold text-primary/10 select-none tracking-widest">
+        404
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
+          404
+        </span>
+      </div>
+    </div>
+
+    {/* Message */}
+    <h1 className="text-2xl sm:text-3xl font-extrabold text-on-surface mb-3">
+      Halaman Tidak Ditemukan / Page Not Found
+    </h1>
+    <p className="text-on-surface-variant text-sm sm:text-base max-w-md mb-8 leading-relaxed">
+      Maaf, halaman yang Anda cari tidak dapat ditemukan. Alamat web mungkin salah atau halaman telah dipindahkan.
+    </p>
+
+    {/* Home Button */}
+    <a
+      href="/"
+      className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-on-primary font-bold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 mb-16"
+    >
+      <LucideIcon name="Home" size={18} />
+      Kembali ke Beranda
+    </a>
+
+    {/* Quick Tools Section */}
+    <div className="w-full text-left bg-surface-container/50 border border-outline-variant/40 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-sm">
+      <h2 className="text-lg font-bold text-on-surface mb-1 flex items-center gap-2">
+        <LucideIcon name="Wrench" size={20} className="text-primary" />
+        Alat PDF Popular
+      </h2>
+      <p className="text-xs text-on-surface-variant mb-6">
+        Mungkin Anda sedang mencari salah satu alat pengolah PDF di bawah ini:
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {popularTools.map((tool) => (
+          <a
+            key={tool.slug}
+            href={`/${tool.slug}`}
+            className="group flex flex-col p-4 bg-background border border-outline-variant/60 rounded-xl hover:border-primary/50 hover:shadow-md transition-all duration-200"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-primary/10 text-primary rounded-lg group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <LucideIcon name={tool.icon} size={18} />
+              </div>
+              <span className="font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
+                {tool.name}
+              </span>
+            </div>
+            <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
+              {tool.desc}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
