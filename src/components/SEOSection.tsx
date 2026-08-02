@@ -70,7 +70,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
 
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-on-surface">{t('seo.features.title')}</h3>
-            <ul className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 md:grid md:grid-cols-2 md:gap-3 md:pl-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+            <ul className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4 pb-4 md:grid md:grid-cols-2 md:gap-3 md:pl-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
               {TOOLS.map((tool) => (
                 <li key={tool.id} className="flex-none w-[85%] snap-center bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto md:bg-transparent md:border-transparent md:p-0 md:rounded-none flex flex-col md:flex-row items-start gap-3 md:gap-2">
                   <span className="hidden md:inline-block text-primary-container shrink-0 mt-0.5">✓</span>
@@ -87,7 +87,9 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
                       onClick={() => onSelectTool && onSelectTool(tool.id)}
                       className="text-on-surface flex items-center gap-1.5 mb-2 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-lg md:text-base w-full"
                     >
-                      <TacoIcon name={tool.icon} size={24} className="hidden md:inline-block text-primary" />
+                      <span className="hidden md:inline-block">
+                        <TacoIcon name={tool.icon} size={24} className="text-primary" />
+                      </span>
                       {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}:
                     </button> 
                     <p className="text-sm text-on-surface-variant md:text-on-surface leading-relaxed">
