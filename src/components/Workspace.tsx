@@ -793,6 +793,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               if (context) {
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
+                if (i === 1 && (tool.id === 'add-watermark' || tool.id === 'add-page-numbers')) {
+                  setThumbnailNativeSize({ w: viewport.width, h: viewport.height });
+                }
                 await page.render({ canvasContext: context, viewport }).promise;
                 urls.push(canvas.toDataURL('image/jpeg', 0.8));
               }
@@ -1977,12 +1980,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                           src={visualThumbnails[0]} 
                           alt="PDF Preview" 
                           className="max-w-full max-h-[600px] object-contain block"
-                          onLoad={(e) => {
-                            setThumbnailNativeSize({
-                              w: e.currentTarget.naturalWidth,
-                              h: e.currentTarget.naturalHeight
-                            });
-                          }}
                         />
                         <div className="absolute inset-0 overflow-hidden pointer-events-none">
                           {tool.id === 'add-watermark' && (
