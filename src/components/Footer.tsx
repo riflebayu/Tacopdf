@@ -22,8 +22,8 @@ function FooterContent(props: FooterProps) {
       <div className="w-full py-4 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-x-2 gap-y-6 md:gap-8">
         {/* Support */}
         <div className="col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.support')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
+          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.support')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm">
             <li>
               <LocalizedLink to="/faq" onClick={handleGoFAQ} className="text-on-surface-variant hover:underline hover:text-primary transition-colors cursor-pointer">
                 {t('nav.faq')}
@@ -39,8 +39,8 @@ function FooterContent(props: FooterProps) {
 
         {/* Features */}
         <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 items-end md:items-start">
-          <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.features')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
+          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.features')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
             <li>
               <LocalizedLink to="/#manipulation" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
                 {t('cat.manipulation')}
@@ -66,8 +66,8 @@ function FooterContent(props: FooterProps) {
 
         {/* Popular Tools */}
         <div className="col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.popular')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm">
+          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.popular')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm">
             <li>
               <LocalizedLink to={getToolSeoPath('merge')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('tools.merge.name')}
@@ -98,8 +98,8 @@ function FooterContent(props: FooterProps) {
 
         {/* Company */}
         <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 items-end md:items-start">
-          <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.company')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
+          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.company')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
             <li>
               <LocalizedLink to="/how-it-works" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
                 {t('page.how.title') || 'How It Works'}
@@ -121,8 +121,8 @@ function FooterContent(props: FooterProps) {
 
         {/* Legal */}
         <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-[9px] md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.legal')}</h3>
-          <ul className="space-y-0.5 md:space-y-3 text-[10px] md:text-sm flex flex-col items-start gap-y-0.5 md:gap-y-0">
+          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.legal')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm flex flex-col items-start gap-y-1.5 md:gap-y-0">
             <li>
               <LocalizedLink to="/privacy" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.privacy')}
