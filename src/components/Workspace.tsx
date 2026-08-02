@@ -20,6 +20,69 @@ import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
 
+const WatermarkPreview = ({
+  thumbnailUrl,
+  text,
+  size,
+  color,
+  opacity,
+  rotation
+}: {
+  thumbnailUrl: string,
+  text: string,
+  size: number,
+  color: string,
+  opacity: number,
+  rotation: number
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current || !thumbnailUrl) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = color;
+      
+      const fontSize = size * 1.5;
+      ctx.font = `bold ${fontSize}px Helvetica, Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((-rotation * Math.PI) / 180);
+      
+      ctx.shadowColor = 'rgba(255,255,255,0.5)';
+      ctx.shadowBlur = 2;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      ctx.fillText(text || ' ', 0, 0);
+      ctx.restore();
+    };
+    img.src = thumbnailUrl;
+  }, [thumbnailUrl, text, size, color, opacity, rotation]);
+
+  return (
+    <canvas 
+      ref={canvasRef}
+      className="max-w-full max-h-[600px] object-contain block shadow-lg border border-outline-variant/30 bg-white"
+    />
+  );
+};
+
 interface WorkspaceProps {
   tool: PDFTool;
   onBack: () => void;
@@ -1976,47 +2039,56 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         <span className="text-xs font-medium">Generating Preview...</span>
                       </div>
                     ) : visualThumbnails.length > 0 ? (
-                      <div className="grid max-w-full shadow-lg border border-outline-variant/30 bg-white" style={{ maxHeight: '600px', placeItems: 'center' }}>
-                        <img 
-                          src={visualThumbnails[0]} 
-                          alt="PDF Preview" 
-                          className="col-start-1 row-start-1 max-w-full max-h-[600px] object-contain"
-                        />
-                        {tool.id === 'add-watermark' && (
-                          <svg 
-                            viewBox={`0 0 ${thumbnailNativeSize.w} ${thumbnailNativeSize.h}`} 
-                            className="col-start-1 row-start-1 w-full h-full mix-blend-multiply" 
-                            preserveAspectRatio="xMidYMid meet"
-                            style={{ WebkitTextSizeAdjust: '100%', pointerEvents: 'none' }}
-                          >
-                            <text 
-                              x="50%" 
-                              y="50%" 
-                              dy="0.35em" 
-                              textAnchor="middle" 
-                              fill={watermarkColor} 
-                              fillOpacity={watermarkOpacity}
-                              fontSize={watermarkSize * 1.5}
-                              fontWeight="bold"
-                              transform={`rotate(${-watermarkRotation}, ${thumbnailNativeSize.w / 2}, ${thumbnailNativeSize.h / 2})`}
-                              style={{ textShadow: '0px 0px 2px rgba(255,255,255,0.5)' }}
-                            >
-                              {watermarkText || ' '}
-                            </text>
-                          </svg>
+                      <div className="flex justify-center items-center max-w-full">
+                        {tool.id === 'add-watermark' ? (
+                          <WatermarkPreview 
+                            thumbnailUrl={visualThumbnails[0]}
+                            text={watermarkText}
+                            size={watermarkSize}
+                            color={watermarkColor}
+                            opacity={watermarkOpacity}
+                            rotation={watermarkRotation}
+                          />
+                        ) : (
+                          <div className="relative inline-block max-w-full shadow-lg border border-outline-variant/30 bg-white" style={{ maxHeight: '600px' }}>
+                            <img 
+                              src={visualThumbnails[0]} 
+                              alt="PDF Preview" 
+                              className="max-w-full max-h-[600px] object-contain block"
+                            />
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                              {tool.id === 'add-page-numbers' && (
+                                <div 
+                                  className="whitespace-nowrap font-bold absolute"
+                                  style={{
+                                    color: numberColor,
+                                    fontSize: `${numberSize}px`,
+                                    ...(() => {
+                                      let posStyle = {};
+                                      if (numberPosition.includes('left')) posStyle.left = '40px';
+                                      else if (numberPosition.includes('right')) posStyle.right = '40px';
+                                      else { posStyle.left = '50%'; posStyle.transform = 'translateX(-50%)'; }
+                                      
+                                      if (numberPosition.includes('top')) posStyle.top = '40px';
+                                      else posStyle.bottom = '40px';
+                                      
+                                      return posStyle;
+                                    })(),
+                                  }}
+                                >
+                                  {(() => {
+                                    const p1Str = (t('tool.page_num.format_2') || 'Page 1').replace('1', '');
+                                    const pOfStr = (t('tool.page_num.format_3') || '1 of 10').replace('1', '').replace('10', '').trim();
+                                    let pStr = numberFormat.replace('{n}', '1').replace('{total}', pdfPageCount.toString());
+                                    if (numberFormat.includes('Page ')) pStr = pStr.replace('Page ', p1Str.trim() + ' ');
+                                    if (numberFormat.includes(' of ')) pStr = pStr.replace(' of ', ' ' + pOfStr + ' ');
+                                    return pStr;
+                                  })()}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         )}
-                        <div className="col-start-1 row-start-1 absolute inset-0 overflow-hidden pointer-events-none">
-                          {tool.id === 'add-page-numbers' && (
-                            <div 
-                              className="whitespace-nowrap font-bold absolute"
-                              style={{
-                                color: numberColor,
-                                fontSize: `${numberSize}px`,
-                                ...(() => {
-                                  let posStyle = {};
-                                  if (numberPosition.includes('left')) posStyle.left = '40px';
-                                  else if (numberPosition.includes('right')) posStyle.right = '40px';
-                                  else { posStyle.left = '50%'; posStyle.transform = 'translateX(-50%)'; }
                                   
                                   if (numberPosition.includes('top')) posStyle.top = '40px';
                                   else posStyle.bottom = '40px';
