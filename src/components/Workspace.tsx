@@ -2121,16 +2121,30 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 </div>
               ) : (
                 <>
+                  <style>{`
+                    @keyframes mobile-glow-yellow {
+                      0%, 100% { box-shadow: 0 0 5px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.5); }
+                      50% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.9); border-color: rgba(234, 179, 8, 1); }
+                    }
+                    .mobile-glow {
+                      animation: mobile-glow-yellow 2s infinite ease-in-out;
+                    }
+                    @media (min-width: 768px) {
+                      .mobile-glow {
+                        animation: none;
+                      }
+                    }
+                  `}</style>
                   <div
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex flex-col items-center justify-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex flex-col items-center justify-center cursor-pointer transition-all mobile-glow ${
                   isDragActive 
                     ? 'border-primary-container bg-surface-container' 
-                    : 'border-outline-variant bg-surface-container/40'
+                    : 'md:border-outline-variant bg-surface-container/40'
                 }`}
               >
                 <input
