@@ -12,13 +12,14 @@ import LucideIcon from './LucideIcon';
 import SignaturePad from './SignaturePad';
 import { useLanguage } from '../context/LanguageContext';
 import { createBrowserQpdfRunner } from 'qpdf-run';
+import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
+import Tesseract from 'tesseract.js';
+import VisualGrid from './VisualGrid';
+
 const qpdfWasmUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.wasm';
 const qpdfJsUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.js';
 const qpdfWorkerCode = `importScripts('https://unpkg.com/qpdf-run@0.2.1/src/worker.js');`;
 const qpdfWorkerUrl = typeof window !== 'undefined' ? URL.createObjectURL(new Blob([qpdfWorkerCode], { type: 'application/javascript' })) : '';
-import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
-import Tesseract from 'tesseract.js';
-import VisualGrid from './VisualGrid';
 
 const WatermarkPreview = ({
   thumbnailUrl,
@@ -2083,25 +2084,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                             </div>
                           </div>
                         )}
-                                  
-                                  if (numberPosition.includes('top')) posStyle.top = '40px';
-                                  else posStyle.bottom = '40px';
-                                  
-                                  return posStyle;
-                                })(),
-                              }}
-                            >
-                              {(() => {
-                                const p1Str = (t('tool.page_num.format_2') || 'Page 1').replace('1', '');
-                                const pOfStr = (t('tool.page_num.format_3') || '1 of 10').replace('1', '').replace('10', '').trim();
-                                let pStr = numberFormat.replace('{n}', '1').replace('{total}', pdfPageCount.toString());
-                                if (numberFormat.includes('Page ')) pStr = pStr.replace('Page ', p1Str.trim() + ' ');
-                                if (numberFormat.includes(' of ')) pStr = pStr.replace(' of ', ' ' + pOfStr + ' ');
-                                return pStr;
-                              })()}
-                            </div>
-                          )}
-                        </div>
                       </div>
                     ) : (
                       <span className="text-xs text-red-500 font-medium">Preview generation failed.</span>
