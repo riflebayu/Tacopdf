@@ -11,7 +11,7 @@ interface FooterProps {
 }
 
 function FooterContent(props: FooterProps) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const handleGoFAQ = (e: React.MouseEvent) => {
     // Let LocalizedLink handle it
@@ -33,6 +33,16 @@ function FooterContent(props: FooterProps) {
               <LocalizedLink to="/sitemap" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
                 {t('footer.sitemap')}
               </LocalizedLink>
+            </li>
+            <li>
+              <a
+                href={lang === 'id' ? 'https://saweria.co/tacopdf' : 'https://ko-fi.com/tacopdf'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-400 hover:text-amber-300 transition-colors cursor-pointer font-medium"
+              >
+                {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+              </a>
             </li>
           </ul>
         </div>

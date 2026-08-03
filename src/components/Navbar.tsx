@@ -186,6 +186,15 @@ function NavbarContent({ activeToolId }: NavbarProps) {
             {t('nav.blog', 'Blog')}
           </LocalizedLink>
 
+          <a 
+            href={lang === 'id' ? 'https://saweria.co/tacopdf' : 'https://ko-fi.com/tacopdf'} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-amber-400 hover:text-amber-300 transition-colors text-sm font-medium ml-2"
+          >
+            {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+          </a>
+
 
           {/* Language Dropdown — always in DOM with <a> links for SEO */}
           <div 
@@ -299,6 +308,14 @@ function NavbarContent({ activeToolId }: NavbarProps) {
                 >
                   {t('nav.blog', 'Blog')}
                 </LocalizedLink>
+                <a 
+                  href={lang === 'id' ? 'https://saweria.co/tacopdf' : 'https://ko-fi.com/tacopdf'} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+                </a>
               </div>
             </div>
 
