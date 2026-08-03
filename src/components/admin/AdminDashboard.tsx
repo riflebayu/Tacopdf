@@ -44,10 +44,11 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/suggest-ideas', { method: 'POST' });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch ideas');
       if (data.ideas) setIdeas(data.ideas);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to fetch ideas.');
+      alert('Failed to fetch ideas: ' + err.message);
     } finally {
       setIdeasLoading(false);
     }
@@ -64,10 +65,11 @@ export default function AdminDashboard() {
         body: JSON.stringify({ topic }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch titles');
       if (data.titles) setTitles(data.titles);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to fetch titles.');
+      alert('Failed to fetch titles: ' + err.message);
     } finally {
       setTitlesLoading(false);
     }
