@@ -1,10 +1,19 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 
-// Initialize the API client. Ensure GEMINI_API_KEY is in your .env
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+// Helper to get API key
+function getApiKey() {
+  // Try import.meta.env first (Astro/Vite), then process.env
+  return (import.meta.env && import.meta.env.GEMINI_API_KEY) || process.env.GEMINI_API_KEY || '';
+}
+
+function getGenAI() {
+  const key = getApiKey();
+  if (!key) throw new Error("GEMINI_API_KEY is not set in .env");
+  return new GoogleGenerativeAI(key);
+}
 
 export async function suggestTopics() {
-  const model = genAI.getGenerativeModel({
+  const model = getGenAI().getGenerativeModel({
     model: 'gemini-2.5-flash',
     // In some older @google/generative-ai versions, Google Search tool might not be typed properly,
     // but the API supports it if passed like this:
@@ -28,7 +37,7 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 }
 
 export async function generateTitles(topic: string) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const model = getGenAI().getGenerativeModel({ model: 'gemini-2.5-flash' });
   const prompt = `Given the topic: "${topic}", suggest 5 highly viral, click-worthy article titles.
 Return the result strictly as a JSON array of strings. Do not include markdown formatting like \`\`\`json.`;
 
@@ -46,7 +55,7 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 
 export async function generateArticle(topic: string, language: string, promptOverride: string) {
   // We use gemini-2.5-pro for complex long-form content generation
-  const model = genAI.getGenerativeModel({ 
+  const model = getGenAI().getGenerativeModel({ 
     model: 'gemini-2.5-pro',
     generationConfig: {
       responseMimeType: "application/json",
