@@ -2582,8 +2582,12 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         
         {/* Right Sidebar */}
         <div className="lg:col-span-5 space-y-6 w-full overflow-hidden">
-          <div id="tool-config-container" className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 sm:p-6 shadow-sm sticky top-24 w-full overflow-hidden box-border scroll-mt-28">
-            <h3 className="font-bold text-lg text-on-surface flex items-center gap-2 mb-4 border-b border-outline-variant pb-4">
+          <div id="tool-config-container" className={`bg-surface-container-low border border-outline-variant rounded-2xl sm:p-6 shadow-sm sticky top-24 w-full overflow-hidden box-border scroll-mt-28 ${
+            ['merge', 'split', 'rotate', 'delete-pages', 'extract-pages', 'redact'].includes(tool.id) ? 'p-3' : 'p-4'
+          }`}>
+            <h3 className={`font-bold text-lg text-on-surface items-center gap-2 mb-4 border-b border-outline-variant pb-4 ${
+              ['merge', 'split', 'rotate', 'delete-pages', 'extract-pages', 'redact'].includes(tool.id) ? 'hidden md:flex' : 'flex'
+            }`}>
               <LucideIcon name="Settings" className="text-primary-container" size={20} />
               {t('workspace.options') || 'Options & Instructions'}
             </h3>
