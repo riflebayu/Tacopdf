@@ -61,10 +61,10 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
             {setting.badge.toUpperCase()}
           </span>
         )}
-        <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center p-2 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
-          <TacoIcon name={tool.icon} size={28} />
+        <div className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 md:p-4 lg:p-5 flex-shrink-0 mb-0 md:mb-5 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
+          <TacoIcon name={tool.icon} className="!w-full !h-full object-contain drop-shadow-sm" />
         </div>
-        <div className="flex-grow flex flex-col ml-3 md:ml-0 md:mt-4 mr-8 md:mr-0">
+        <div className="flex-grow flex flex-col mt-0 ml-3 md:ml-0 mr-8 md:mr-0">
           <h3 className="text-sm md:text-base font-bold text-white group-hover:text-primary-container transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
