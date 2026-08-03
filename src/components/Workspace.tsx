@@ -2590,7 +2590,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
             <div className="mb-6 p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl">
               {/* Default/Desktop View */}
-              <div className={tool.id === 'merge' ? 'hidden md:block space-y-3' : 'space-y-3'}>
+              <div className={tool.id === 'merge' && uploadedFiles.length > 0 ? 'hidden md:block space-y-3' : 'space-y-3'}>
                 <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
                   {t(`tool.${tool.id}.tip.title`) || '✨ INFO'}
                 </h4>
@@ -2599,8 +2599,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 </p>
               </div>
 
-              {/* Mobile Merge View */}
-              {tool.id === 'merge' && (
+              {/* Mobile Merge View (Only when files are uploaded) */}
+              {tool.id === 'merge' && uploadedFiles.length > 0 && (
                 <div className="block md:hidden space-y-3">
                   <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
                     ✨ INFO
