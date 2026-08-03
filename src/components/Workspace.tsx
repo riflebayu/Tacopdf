@@ -2939,11 +2939,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               )}
 
               {processingState.status === 'success' && processingState.downloadUrl && (
-                <div id="success-box-container" className="bg-green-500/10 border border-green-500/20 rounded-xl p-4 sm:p-6 shadow-sm text-center mb-4 w-full max-w-full overflow-hidden flex flex-col items-center break-words box-border scroll-mt-28">
-                  <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mx-auto mb-3 shrink-0">
-                    <LucideIcon name="Check" size={24} />
+                <div id="success-box-container" className="bg-green-500/10 border border-green-500/20 rounded-xl p-3 sm:p-6 shadow-sm text-center mb-4 w-full max-w-full overflow-hidden flex flex-col items-center break-words box-border scroll-mt-28">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mx-auto mb-2 sm:mb-3 shrink-0">
+                    <LucideIcon name="Check" className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <h4 className="font-bold text-on-surface mb-2 break-words w-full">
+                  <h4 className="font-bold text-on-surface mb-1 sm:mb-2 break-words w-full">
                     {(() => {
                       const successKey = `progress.success.${tool.id}`;
                       const successText = t(successKey);
@@ -3001,7 +3001,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       );
                     })()}
                   </div>
-                    <div className="flex flex-col gap-3 mt-5 w-full">
+                    <div className="flex flex-col gap-2 sm:gap-3 mt-3 sm:mt-5 w-full">
                       <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
                         {processingState.outputFileName && !processingState.outputFileName.endsWith('.zip') && !processingState.outputFileName.match(/\.(png|jpe?g)$/i) && (
                           <button
@@ -3022,7 +3022,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         </a>
                       </div>
                       
-                      <div className="pt-4 mt-2 border-t border-[#132F1A]/10 flex justify-center w-full">
+                      <div className="pt-3 mt-1 sm:pt-4 sm:mt-2 border-t border-[#132F1A]/10 flex justify-center w-full">
                         <button
                           onClick={() => {
                             setProcessingState({ status: 'idle', progress: 0, message: '' });
