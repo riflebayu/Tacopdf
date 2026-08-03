@@ -90,6 +90,27 @@ Write a highly engaging, human-like article about "${topic}" in the ${language} 
 Use high burstiness and perplexity. Avoid AI cliches (e.g., 'In conclusion', 'Delve into', 'It is important to note').
 Use H2 and H3 markdown tags for structuring the content. 
 Ensure the content is deeply informative, solving a specific problem. Length should be between 1200 and 2000 words.
+
+If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
+The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
+Here are the available TacoPDF tools and their exact paths:
+- Merge PDF (path: merge-pdf)
+- Split PDF (path: split-pdf)
+- Rotate PDF (path: rotate-pdf)
+- Delete Pages (path: delete-pages)
+- Extract Pages (path: extract-pages)
+- Protect PDF (path: protect-pdf)
+- Unlock PDF (path: unlock-pdf)
+- Sign PDF (path: sign-pdf)
+- Redact PDF (path: redact-pdf)
+- Image to PDF (path: image-to-pdf)
+- PDF to Image (path: pdf-to-image)
+- HTML to PDF (path: html-to-pdf)
+- Add Watermark (path: add-watermark)
+- Add Page Numbers (path: add-page-numbers)
+
+Example usage (for 'id' language): "Kamu bisa menggunakan fitur [Gabung PDF](/id/merge-pdf) dari TacoPDF."
+Example usage (for 'en' language): "Try our free [Split PDF](/split-pdf) tool."
 ${promptOverride ? `\nAdditional Instructions: ${promptOverride}` : ''}
 
 Output must be in JSON matching the specified schema. The "content" field should contain pure Markdown.`;

@@ -82,26 +82,15 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
           <img 
             src={post.data.featuredImage} 
             alt={post.data.title}
-            class="w-full h-full object-cover"
+            class="w-full h-auto object-contain rounded-lg"
           />
         </div>
       )}
 
       {/* Markdown Content */}
-      <div class="prose prose-invert prose-lg max-w-none 
-        prose-headings:text-on-surface prose-headings:font-bold prose-headings:tracking-tight 
-        prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-outline-variant prose-h2:pb-4
-        prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
-        prose-p:text-on-surface-variant prose-p:leading-relaxed
-        prose-a:text-primary hover:prose-a:text-primary-container prose-a:transition-colors
-        prose-strong:text-on-surface prose-strong:font-bold
-        prose-ul:text-on-surface-variant prose-ol:text-on-surface-variant
-        prose-li:marker:text-primary
-        prose-blockquote:border-l-primary prose-blockquote:bg-surface-container prose-blockquote:py-1 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:text-on-surface-variant prose-blockquote:not-italic
-        prose-code:text-primary-container prose-code:bg-surface-container prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
-        prose-img:rounded-2xl prose-img:border prose-img:border-outline">
+      <article class="prose max-w-none mx-auto lg:prose-lg dark:prose-invert prose-img:rounded-xl prose-img:w-full prose-img:h-auto prose-img:object-contain">
         <Content />
-      </div>
+      </article>
 
     </div>
   </article>
