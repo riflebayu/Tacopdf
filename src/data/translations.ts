@@ -125,7 +125,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Web Analytics and Log Files",
     "privacy.p5.text": "To ensure website stability and ongoing performance improvements, we collect standard traffic analytics data. This includes basic information such as browser type, visit timestamps, accessed tool pages, and anonymized IP addresses. It is critical to note that this tracking is strictly limited to web page interactions and does not track, collect, or access the contents of the PDF documents processed locally on your device.",
     "privacy.p6.title": "6. Contact Support Team",
-    "privacy.p6.text": "Your trust is our top priority. If you have any further questions, feedback, or concerns regarding our privacy protection practices, please feel free to reach out to our team at any time via the Contact Support page.",
+    "privacy.p6.text": "Your trust is our top priority. If you have any further questions, feedback, or concerns regarding our privacy protection practices, please feel free to reach out to our team at any time via the <a href=\"/contact\" class=\"text-primary underline\">Contact Support page</a>.",
 
 
     "contact.back": "Back to Home",
@@ -781,7 +781,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Analisis Web dan File Log",
     "privacy.p5.text": "Untuk memastikan situs web berjalan dengan stabil dan terus berkembang, kami mengumpulkan data analitik lalu lintas standar. Data ini mencakup informasi dasar seperti jenis browser, waktu kunjungan, halaman alat yang diakses, dan alamat IP yang telah dianonimkan. Sangat penting dicatat bahwa pelacakan ini murni terbatas pada interaksi halaman web, dan sama sekali tidak melacak, mengumpulkan, atau memiliki akses ke isi dokumen PDF yang Anda proses secara lokal di perangkat Anda.",
     "privacy.p6.title": "6. Hubungi Tim Dukungan",
-    "privacy.p6.text": "Kepercayaan Anda adalah prioritas utama kami. Jika Anda memiliki pertanyaan lebih lanjut, masukan, atau kekhawatiran mengenai praktik perlindungan privasi ini, silakan hubungi tim kami kapan saja melalui halaman Hubungi Dukungan.",
+    "privacy.p6.text": "Kepercayaan Anda adalah prioritas utama kami. Jika Anda memiliki pertanyaan lebih lanjut, masukan, atau kekhawatiran mengenai praktik perlindungan privasi ini, silakan hubungi tim kami kapan saja melalui <a href=\"/id/contact\" class=\"text-primary underline\">halaman Hubungi Dukungan</a>.",
 
 
     "contact.back": "Kembali ke Beranda",
@@ -1430,7 +1430,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Analítica Web y Archivos de Registro",
     "privacy.p5.text": "Para garantizar la estabilidad del sitio web y su constante evolución, recopilamos datos estándar de analítica de tráfico. Esto incluye información básica como el tipo de navegador, hora de visita, páginas de herramientas accedidas y direcciones IP anonimizadas. Es fundamental destacar que este seguimiento se limita estrictamente a la interacción con las páginas web y en ningún momento rastrea, recopila ni tiene acceso al contenido de los documentos PDF procesados localmente en su dispositivo.",
     "privacy.p6.title": "6. Contactar al Equipo de Soporte",
-    "privacy.p6.text": "Su confianza es nuestra máxima prioridad. Si tiene más preguntas, comentarios o inquietudes sobre nuestras prácticas de protección de la privacidad, no dude en ponerse en contacto con nuestro equipo en cualquier momento a través de la página de Contactar Soporte.",
+    "privacy.p6.text": "Su confianza es nuestra máxima prioridad. Si tiene más preguntas, comentarios o inquietudes sobre nuestras prácticas de protección de la privacidad, no dude en ponerse en contacto con nuestro equipo en cualquier momento a través de la <a href=\"/es/contact\" class=\"text-primary underline\">página de Contactar Soporte</a>.",
 
 
     "contact.back": "Volver al Inicio",
@@ -2062,7 +2062,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Webアナリティクスおよびログファイル",
     "privacy.p5.text": "ウェブサイトの安定した稼働と継続的な改善を確実にするため、当社は標準的なトラフィック解析データを収集しています。これには、ブラウザの種類、訪問日時、アクセスしたツールページ、匿名化されたIPアドレスなどの基本情報が含まれます。なお、このトラッキングはウェブページの操作ログにのみ限定されており、お客様のデバイス上でローカル処理されるPDFドキュメントの内容を追跡、収集、または閲覧することは一切ありません。",
     "privacy.p6.title": "6. サポートチームへのお問い合わせ",
-    "privacy.p6.text": "お客様からの信頼は当社の最優先事項です。当社のプライバシー保護方針に関してご質問、ご意見、懸念事項がございましたら、サポートにお問い合わせページよりいつでもお気軽にご連絡ください。",
+    "privacy.p6.text": "お客様からの信頼は当社の最優先事項です。当社のプライバシー保護方針に関してご質問、ご意見、懸念事項がございましたら、<a href=\"/ja/contact\" class=\"text-primary underline\">サポートにお問い合わせページ</a>よりいつでもお気軽にご連絡ください。",
 
 
     "contact.back": "ホームに戻る",
@@ -2717,7 +2717,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Análise Web e Arquivos de Log",
     "privacy.p5.text": "Para garantir a estabilidade do site e sua constante evolução, coletamos dados padrão de análise de tráfego. Isso inclui informações básicas, como tipo de navegador, horário da visita, páginas acessadas e endereços IP anonimizados. É fundamental destacar que esse rastreamento limita-se estritamente à interação com as páginas web, não rastreando, coletando ou tendo acesso ao conteúdo dos documentos PDF processados localmente no seu dispositivo.",
     "privacy.p6.title": "6. Contatar a Equipe de Suporte",
-    "privacy.p6.text": "Sua confiança é nossa prioridade máxima. Se você tiver dúvidas, comentários ou preocupações sobre nossas práticas de proteção de privacidade, sinta-se à vontade para entrar em contato com nossa equipe a qualquer momento por meio da página Fale Conosco.",
+    "privacy.p6.text": "Sua confiança é nossa prioridade máxima. Se você tiver dúvidas, comentários ou preocupações sobre nossas práticas de proteção de privacidade, sinta-se à vontade para entrar em contato com nossa equipe a qualquer momento por meio da <a href=\"/pt/contact\" class=\"text-primary underline\">página Fale Conosco</a>.",
 
 
     "contact.back": "Voltar ao Início",
@@ -3366,7 +3366,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Web-Analytics und Log-Dateien",
     "privacy.p5.text": "Um die Stabilität der Website zu gewährleisten und den Dienst kontinuierlich zu verbessern, erfassen wir standardmäßige Traffic-Analysedaten. Dies umfasst grundlegende Informationen wie Browsertyp, Zugriffszeiten, aufgerufene Tool-Seiten und anonymisierte IP-Adressen. Es ist wichtig zu betonen, dass sich dieses Tracking rein auf die Interaktion mit den Webseiten beschränkt und die Inhalte der lokal auf Ihrem Gerät verarbeiteten PDF-Dokumente zu keinem Zeitpunkt nachverfolgt, erfasst oder liest.",
     "privacy.p6.title": "6. Support-Team Kontaktieren",
-    "privacy.p6.text": "Ihr Vertrauen ist unsere oberste Priorität. Wenn Sie weitere Fragen, Feedback oder Bedenken bezüglich unserer Datenschutzpraktiken haben, können Sie sich jederzeit über die Seite Support kontaktieren an unser Team wenden.",
+    "privacy.p6.text": "Ihr Vertrauen ist unsere oberste Priorität. Wenn Sie weitere Fragen, Feedback oder Bedenken bezüglich unserer Datenschutzpraktiken haben, können Sie sich jederzeit über die <a href=\"/de/contact\" class=\"text-primary underline\">Seite Support kontaktieren</a> an unser Team wenden.",
 
 
     "workspace.preview.close_hint_mobile": "Tippen Sie zum Schließen nach draußen, oder",
@@ -4023,7 +4023,7 @@ export const TRANSLATIONS = {
     "privacy.p5.title": "5. Analyse Web et Fichiers Journaux",
     "privacy.p5.text": "Afin de garantir la stabilité du site et d'optimiser en continu nos services, nous collectons des données d'analyse de trafic standard. Cela inclut des informations de base telles que le type de navigateur, l'heure de la visite, les pages consultées et des adresses IP anonymisées. Il est essentiel de noter que ce suivi est strictement limité aux interactions sur les pages Web et n'accède, ne collecte ni ne suit en aucun cas le contenu des documents PDF traités localement sur votre appareil.",
     "privacy.p6.title": "6. Contacter l'Équipe de Support",
-    "privacy.p6.text": "Votre confiance est notre priorité absolue. Si vous avez des questions, remarques ou préoccupations concernant nos pratiques de protection de la vie privée, n'hésitez pas à contacter notre équipe à tout moment via la page Contacter le Support.",
+    "privacy.p6.text": "Votre confiance est notre priorité absolue. Si vous avez des questions, remarques ou préoccupations concernant nos pratiques de protection de la vie privée, n'hésitez pas à contacter notre équipe à tout moment via la <a href=\"/fr/contact\" class=\"text-primary underline\">page Contacter le Support</a>.",
 
 
     "contact.back": "Retour à l'accueil",
