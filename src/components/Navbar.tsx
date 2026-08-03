@@ -192,7 +192,7 @@ function NavbarContent({ activeToolId }: NavbarProps) {
             rel="noopener noreferrer"
             className="text-amber-400 hover:text-amber-300 transition-colors text-sm font-medium ml-2"
           >
-            {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+            {lang === 'id' ? '🌮 Donasi' : t('nav.donate', '🌮 Buy me a Taco')}
           </a>
 
 
@@ -314,7 +314,7 @@ function NavbarContent({ activeToolId }: NavbarProps) {
                   rel="noopener noreferrer"
                   className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors"
                 >
-                  {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+                  {lang === 'id' ? '🌮 Donasi' : t('nav.donate', '🌮 Buy me a Taco')}
                 </a>
               </div>
             </div>

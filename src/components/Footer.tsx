@@ -41,7 +41,7 @@ function FooterContent(props: FooterProps) {
                 rel="noopener noreferrer"
                 className="text-amber-400 hover:text-amber-300 transition-colors cursor-pointer font-medium"
               >
-                {lang === 'id' ? '⚡ Dukung Kami' : t('nav.donate', '🌮 Buy me a Taco')}
+                {lang === 'id' ? '🌮 Donasi' : t('nav.donate', '🌮 Buy me a Taco')}
               </a>
             </li>
           </ul>
