@@ -22,11 +22,11 @@ function HomePageContent() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#fbbf24]/15 blur-[80px] rounded-full pointer-events-none z-0" />
         
         <div className="max-w-4xl mx-auto relative z-10">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-on-surface mb-3 md:mb-6 leading-tight tracking-tight">
-            {t('home.title', 'TacoPDF - Free & Secure Online PDF Tools')}
+          <h1 className="text-balance text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-on-surface mb-3 md:mb-6 leading-tight tracking-tight">
+            {t('home.title', 'Manage PDF Files Fast, Free & Secure')}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-on-surface-variant font-medium leading-relaxed max-w-2xl mx-auto">
-            {t('home.subtitle', 'Process PDFs locally in your browser. Maximum privacy and security.')}
+            {t('home.subtitle', 'Process documents directly in your browser. Total privacy with zero file storage.')}
           </p>
         </div>
       </section>

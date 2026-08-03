@@ -10,8 +10,9 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
-const title = dict['home.title' as keyof typeof dict] || 'TacoPDF - Free & Secure Online PDF Tools';
-const description = dict['home.subtitle' as keyof typeof dict] || 'Process PDFs locally in your browser. Maximum privacy and security.';
+const baseTitle = dict['home.title' as keyof typeof dict] || 'Manage PDF Files Fast, Free & Secure';
+const title = `${baseTitle} | TacoPDF`;
+const description = dict['home.subtitle' as keyof typeof dict] || 'Process documents directly in your browser. Total privacy with zero file storage.';
 ---
 
 <BaseLayout title={title} description={description} lang={lang}>
