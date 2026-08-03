@@ -66,7 +66,7 @@ export default function LegalPage({ pageId, title, lastUpdated, content, onBack 
 
       <div className="bg-surface-container border border-outline-variant rounded-2xl p-8 md:p-12 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
-          <LucideIcon name={getPageIcon(pageId)} className="text-primary" size={28} />
+          <LucideIcon name={getPageIcon(pageId)} className="text-primary shrink-0" size={28} />
           <h1 className="text-3xl font-extrabold text-on-surface">{title}</h1>
         </div>
         <p className="text-sm text-on-surface-variant mb-10 pb-6 border-b border-outline-variant/50">
