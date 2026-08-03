@@ -14,7 +14,7 @@ function getGenAI() {
 
 export async function suggestTopics() {
   const model = getGenAI().getGenerativeModel({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-flash-latest',
     // In some older @google/generative-ai versions, Google Search tool might not be typed properly,
     // but the API supports it if passed like this:
     tools: [{ googleSearch: {} }] as any,
@@ -37,7 +37,7 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 }
 
 export async function generateTitles(topic: string) {
-  const model = getGenAI().getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const model = getGenAI().getGenerativeModel({ model: 'gemini-flash-latest' });
   const prompt = `Given the topic: "${topic}", suggest 5 highly viral, click-worthy article titles.
 Return the result strictly as a JSON array of strings. Do not include markdown formatting like \`\`\`json.`;
 
@@ -54,9 +54,9 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 }
 
 export async function generateArticle(topic: string, language: string, promptOverride: string) {
-  // We use gemini-2.5-pro for complex long-form content generation
+  // We use gemini-pro-latest for complex long-form content generation
   const model = getGenAI().getGenerativeModel({ 
-    model: 'gemini-2.5-pro',
+    model: 'gemini-pro-latest',
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
