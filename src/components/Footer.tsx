@@ -39,7 +39,7 @@ function FooterContent(props: FooterProps) {
                 href={lang === 'id' ? 'https://saweria.co/tacopdf' : 'https://ko-fi.com/tacopdf'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-amber-300 transition-colors cursor-pointer font-medium"
+                className="text-amber-400 hover:text-amber-200 transition-all duration-300 cursor-pointer font-medium hover:[text-shadow:0_0_12px_rgba(251,191,36,0.9)] md:hover:scale-105 inline-block"
               >
                 {lang === 'id' ? '🌮 Donasi' : t('nav.donate', '🌮 Buy me a Taco')}
               </a>
