@@ -15,11 +15,11 @@ function HomePageContent() {
 
       {/* Hero Section — uses useLanguage() so all 7 languages render correctly */}
       <section
-        className="relative pt-10 pb-10 md:pt-16 md:pb-20 px-4 text-center w-full flex flex-col items-center justify-center overflow-hidden"
+        className="relative pt-10 pb-10 md:pt-16 md:pb-20 px-4 text-center w-full flex flex-col items-center justify-center overflow-hidden max-md:bg-[#0B0F19]"
         id="beranda-atas"
       >
         {/* Subtle Radial Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#fbbf24]/15 blur-[80px] rounded-full pointer-events-none z-0" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[300px] bg-[#fbbf24] opacity-15 blur-[80px] rounded-full pointer-events-none z-0" />
         
         <div className="max-w-4xl mx-auto relative z-10">
           <h1 className="text-balance text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-on-surface mb-3 md:mb-6 leading-tight tracking-tight">
