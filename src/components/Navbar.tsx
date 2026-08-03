@@ -175,11 +175,10 @@ function NavbarContent({ activeToolId }: NavbarProps) {
           </div>
 
           <LocalizedLink 
-            to="/"
-            onClick={handleAllToolsClick}
+            to="/#faq"
             className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer"
           >
-            {t('nav.all_tools')}
+            FAQ
           </LocalizedLink>
 
 
@@ -294,11 +293,10 @@ function NavbarContent({ activeToolId }: NavbarProps) {
               <div className="flex gap-2">
 
                 <LocalizedLink 
-                  to="/"
-                  onClick={handleAllToolsClick}
+                  to="/#faq"
                   className="text-[11px] font-semibold text-primary-container underline cursor-pointer"
                 >
-                  {t('nav.all_tools')}
+                  FAQ
                 </LocalizedLink>
               </div>
             </div>
