@@ -45,18 +45,23 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-on-surface mb-2">{t('how.intro.title')}</h2>
-              <p>{t('how.intro.text')}</p>
+              <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t('how.intro.text') }} />
             </div>
-            <div><h3 className="font-bold text-on-surface">{t('how.step1.title')}</h3><p>{t('how.step1.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('how.step2.title')}</h3><p>{t('how.step2.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('how.step3.title')}</h3><p>{t('how.step3.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('how.step4.title')}</h3><p>{t('how.step4.text')}</p></div>
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="space-y-1">
+                <h3 className="font-bold text-on-surface text-lg">{t(`how.step${i}.title`)}</h3>
+                <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`how.step${i}.text`) }} />
+              </div>
+            ))}
             <div>
-              <h2 className="text-xl font-bold text-on-surface mt-4 mb-3">{t('how.benefits.title')}</h2>
-              <div className="space-y-3">
-                <div><h3 className="font-bold text-on-surface">{t('how.benefit1.title')}</h3><p>{t('how.benefit1.text')}</p></div>
-                <div><h3 className="font-bold text-on-surface">{t('how.benefit2.title')}</h3><p>{t('how.benefit2.text')}</p></div>
-                <div><h3 className="font-bold text-on-surface">{t('how.benefit3.title')}</h3><p>{t('how.benefit3.text')}</p></div>
+              <h2 className="text-xl font-bold text-on-surface mt-6 mb-4">{t('how.benefits.title')}</h2>
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="space-y-1">
+                    <h3 className="font-bold text-on-surface text-lg">{t(`how.benefit${i}.title`)}</h3>
+                    <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`how.benefit${i}.text`) }} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
