@@ -1,0 +1,97 @@
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+
+// Initialize the API client. Ensure GEMINI_API_KEY is in your .env
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+export async function suggestTopics() {
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    // In some older @google/generative-ai versions, Google Search tool might not be typed properly,
+    // but the API supports it if passed like this:
+    tools: [{ googleSearch: {} }] as any,
+  });
+
+  const prompt = `Fetch the latest global trends and news regarding PDF technology, document security, or paperless tech. 
+Based on these trends, suggest 5 highly viral, click-worthy article ideas.
+Return the result strictly as a JSON array of strings. Do not include markdown formatting like \`\`\`json.`;
+
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+  
+  try {
+    const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error('Failed to parse topics JSON', e, responseText);
+    return [];
+  }
+}
+
+export async function generateTitles(topic: string) {
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const prompt = `Given the topic: "${topic}", suggest 5 highly viral, click-worthy article titles.
+Return the result strictly as a JSON array of strings. Do not include markdown formatting like \`\`\`json.`;
+
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+  
+  try {
+    const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error('Failed to parse titles JSON', e, responseText);
+    return [];
+  }
+}
+
+export async function generateArticle(topic: string, language: string, promptOverride: string) {
+  // We use gemini-2.5-pro for complex long-form content generation
+  const model = genAI.getGenerativeModel({ 
+    model: 'gemini-2.5-pro',
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: SchemaType.OBJECT,
+        properties: {
+          title: {
+            type: SchemaType.STRING,
+            description: "SEO optimized title"
+          },
+          description: {
+            type: SchemaType.STRING,
+            description: "SEO optimized meta description (max 160 characters)"
+          },
+          content: {
+            type: SchemaType.STRING,
+            description: "The main body of the article in Markdown format (use H2 and H3 tags)"
+          },
+          tags: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: "Array of relevant tags"
+          }
+        },
+        required: ["title", "description", "content", "tags"]
+      }
+    }
+  });
+
+  const systemPrompt = `You are a Senior SEO Content Writer. 
+Write a highly engaging, human-like article about "${topic}" in the ${language} language.
+Use high burstiness and perplexity. Avoid AI cliches (e.g., 'In conclusion', 'Delve into', 'It is important to note').
+Use H2 and H3 markdown tags for structuring the content. 
+Ensure the content is deeply informative, solving a specific problem. Length should be between 1200 and 2000 words.
+${promptOverride ? `\nAdditional Instructions: ${promptOverride}` : ''}
+
+Output must be in JSON matching the specified schema. The "content" field should contain pure Markdown.`;
+
+  const result = await model.generateContent(systemPrompt);
+  const responseText = result.response.text();
+  
+  try {
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error('Failed to parse article JSON', e, responseText);
+    throw new Error('Failed to parse AI response');
+  }
+}
