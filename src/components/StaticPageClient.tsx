@@ -122,7 +122,7 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
         const prefix = pageType === 'terms' ? 'tos' : pageType;
         return (
           <div className="space-y-6">
-            <p className="text-on-surface-variant font-medium">{t(`${prefix}.intro`)}</p>
+            <p className="text-on-surface-variant font-medium" dangerouslySetInnerHTML={{ __html: t(`${prefix}.intro`) }} />
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
               const titleKey = `${prefix}.p${i}.title`;
               const textKey = `${prefix}.p${i}.text`;
@@ -132,7 +132,7 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
               return (
                 <div key={i} className="space-y-2">
                   <h3 className="font-bold text-on-surface text-lg">{title}</h3>
-                  <p className="text-on-surface-variant leading-relaxed">{text}</p>
+                  <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: text }} />
                 </div>
               );
             })}
