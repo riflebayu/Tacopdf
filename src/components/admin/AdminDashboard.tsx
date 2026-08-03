@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight, LogOut, Lock } from 'lucide-react';
+import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight, LogOut, Lock, Trash2, Edit3, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { auth } from '../../utils/firebase';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
@@ -24,6 +24,7 @@ export default function AdminDashboard() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Dashboard state
+  const [activeTab, setActiveTab] = useState<'generate' | 'manage'>('generate');
   const [topic, setTopic] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -38,6 +39,10 @@ export default function AdminDashboard() {
 
   const [generating, setGenerating] = useState(false);
   const [statusMap, setStatusMap] = useState<Record<string, 'pending' | 'loading' | 'success' | 'error'>>({});
+
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loadingArticles, setLoadingArticles] = useState(false);
+  const [deletingArticle, setDeletingArticle] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -166,6 +171,49 @@ export default function AdminDashboard() {
     setGenerating(false);
   };
 
+  const fetchArticles = async () => {
+    setLoadingArticles(true);
+    try {
+      const res = await fetch('/api/list-articles');
+      const data = await res.json();
+      if (res.ok && data.articles) {
+        setArticles(data.articles);
+      }
+    } catch (e) {
+      console.error('Failed to fetch articles', e);
+    } finally {
+      setLoadingArticles(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'manage') {
+      fetchArticles();
+    }
+  }, [activeTab]);
+
+  const handleDeleteArticle = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    setDeletingArticle(id);
+    try {
+      const res = await fetch('/api/delete-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        setArticles(prev => prev.filter(a => a.id !== id));
+      } else {
+        const err = await res.json();
+        alert('Failed to delete: ' + err.error);
+      }
+    } catch (e: any) {
+      alert('Failed to delete: ' + e.message);
+    } finally {
+      setDeletingArticle(null);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -266,6 +314,24 @@ export default function AdminDashboard() {
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {user.email}
             </div>
+            
+            <div className="flex bg-surface-container border border-outline rounded-xl p-1">
+              <button 
+                onClick={() => setActiveTab('generate')}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'generate' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`}
+              >
+                <Edit3 className="w-4 h-4" />
+                Generate
+              </button>
+              <button 
+                onClick={() => setActiveTab('manage')}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'manage' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`}
+              >
+                <Settings className="w-4 h-4" />
+                Manage
+              </button>
+            </div>
+
             <button 
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-surface-container border border-outline hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500 transition-all text-on-surface-variant"
@@ -278,6 +344,7 @@ export default function AdminDashboard() {
       </header>
 
       <main className="relative z-10 max-w-6xl mx-auto px-6 mt-10">
+        {activeTab === 'generate' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column: Form & Inputs */}
@@ -554,6 +621,80 @@ export default function AdminDashboard() {
             </motion.div>
           </div>
         </div>
+        )}
+
+        {activeTab === 'manage' && (
+          <div className="bg-surface-container border border-outline-variant rounded-2xl shadow-md overflow-hidden pb-10">
+            <div className="p-6 border-b border-outline bg-surface-container-low flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-on-surface">Manage Articles</h2>
+                <p className="text-sm text-on-surface-variant">View and delete generated articles</p>
+              </div>
+              <button onClick={fetchArticles} className="px-4 py-2 rounded-xl text-sm font-semibold bg-surface-container-high border border-outline hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+                <Loader2 className={`w-4 h-4 ${loadingArticles ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {loadingArticles && articles.length === 0 ? (
+                <div className="py-20 flex flex-col items-center justify-center text-on-surface-variant">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+                  <p>Loading articles...</p>
+                </div>
+              ) : articles.length === 0 ? (
+                <div className="py-20 flex flex-col items-center justify-center text-on-surface-variant bg-surface-container-high rounded-xl border border-outline-variant border-dashed">
+                  <FileText className="w-10 h-10 mb-4 opacity-50" />
+                  <p className="font-semibold text-lg text-on-surface">No articles found</p>
+                  <p className="text-sm mt-1">Start generating articles from the 'Generate' tab.</p>
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {/* Group articles by language */}
+                  {Object.entries(
+                    articles.reduce((acc, article) => {
+                      if (!acc[article.lang]) acc[article.lang] = [];
+                      acc[article.lang].push(article);
+                      return acc;
+                    }, {} as Record<string, any[]>)
+                  ).map(([lang, langArticles]) => {
+                    const language = LANGUAGES.find(l => l.id === lang) || { label: lang.toUpperCase(), flag: '🌐' };
+                    return (
+                      <div key={lang} className="space-y-4">
+                        <div className="flex items-center gap-2 text-lg font-bold text-on-surface border-b border-outline pb-2">
+                          <span>{language.flag}</span>
+                          <h3>{language.label}</h3>
+                          <span className="ml-2 text-xs font-semibold px-2 py-1 bg-surface-container-high rounded-full text-on-surface-variant">
+                            {(langArticles as any[]).length}
+                          </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {(langArticles as any[]).map(article => (
+                            <div key={article.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-surface-container-highest border border-outline hover:border-outline-variant transition-all">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-bold text-on-surface truncate" title={article.title}>{article.title}</h4>
+                                <p className="text-xs text-on-surface-variant truncate font-mono mt-1">/{article.id}</p>
+                              </div>
+                              <button
+                                onClick={() => handleDeleteArticle(article.id)}
+                                disabled={deletingArticle === article.id}
+                                className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+                              >
+                                {deletingArticle === article.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                                Delete
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
