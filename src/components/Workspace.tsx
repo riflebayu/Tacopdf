@@ -2588,9 +2588,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               {t('workspace.options') || 'Options & Instructions'}
             </h3>
 
-            <div className="mb-6 p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl">
+            <div className={`p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl ${
+              tool.id === 'merge' && uploadedFiles.length === 0 ? 'hidden md:block mb-6' : 'mb-6'
+            }`}>
               {/* Default/Desktop View */}
-              <div className={tool.id === 'merge' && uploadedFiles.length > 0 ? 'hidden md:block space-y-3' : 'space-y-3'}>
+              <div className={tool.id === 'merge' ? 'hidden md:block space-y-3' : 'space-y-3'}>
                 <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
                   {t(`tool.${tool.id}.tip.title`) || '✨ INFO'}
                 </h4>
