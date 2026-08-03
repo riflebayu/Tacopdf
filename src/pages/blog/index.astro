@@ -7,8 +7,8 @@ import { TRANSLATIONS } from '../../data/translations';
 const lang = 'en';
 const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
 
-const title = "Blog | TacoPDF";
-const description = "Read the latest news, guides, and tips on document management, PDF security, and paperless business operations.";
+const title = dict['blog.title' as keyof typeof dict] || "Blog | TacoPDF";
+const description = dict['blog.description' as keyof typeof dict] || "Read the latest news, guides, and tips on document management, PDF security, and paperless business operations.";
 
 // Fetch English posts
 const allPosts = await getCollection('blog', ({ id }) => {
@@ -26,7 +26,7 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.
       {/* Header */}
       <div class="text-center max-w-3xl mx-auto mb-16">
         <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-6">
-          Latest <span class="text-primary">Insights</span>
+          {dict['blog.header.latest' as keyof typeof dict]} <span class="text-primary">{dict['blog.header.insights' as keyof typeof dict]}</span>
         </h1>
         <p class="text-lg text-on-surface-variant leading-relaxed">
           {description}
@@ -36,7 +36,7 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.
       {/* Grid */}
       {posts.length === 0 ? (
         <div class="text-center py-20 bg-surface-container rounded-2xl border border-outline">
-          <p class="text-on-surface-variant text-lg">No articles found yet. Please check back later!</p>
+          <p class="text-on-surface-variant text-lg">{dict['blog.no_articles' as keyof typeof dict]}</p>
         </div>
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -91,7 +91,7 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.
                   </p>
 
                   <div class="flex items-center text-primary text-sm font-bold group-hover:gap-2 transition-all mt-auto">
-                    Read Article <ChevronRight class="w-4 h-4" />
+                    {dict['blog.read_article' as keyof typeof dict]} <ChevronRight class="w-4 h-4" />
                   </div>
                 </div>
               </a>

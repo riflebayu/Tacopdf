@@ -1,6 +1,10 @@
 // @ts-nocheck
 export const TRANSLATIONS = {
   "en": {
+    "blog.header.latest": "Latest ",
+    "blog.header.insights": "Insights",
+    "blog.read_article": "Read Article",
+    "blog.no_articles": "No articles found yet. Please check back later!",
     "contact.title": "Contact Support",
     "contact.direct": "Direct Contact",
     "about.founder.title": "Creator & Founder",
@@ -657,6 +661,10 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Serving the global community with all my might.",
   },
   "id": {
+    "blog.header.latest": "Wawasan ",
+    "blog.header.insights": "Terbaru",
+    "blog.read_article": "Baca Artikel",
+    "blog.no_articles": "Belum ada artikel ditemukan. Silakan periksa kembali nanti!",
     "contact.title": "Hubungi Dukungan",
     "contact.direct": "Kontak Langsung",
     "about.founder.title": "Kreator & Pendiri",
@@ -1306,6 +1314,10 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Melayani masyarakat dunia dengan sekuat tenaga.",
   },
   "es": {
+    "blog.header.latest": "Últimas ",
+    "blog.header.insights": "Perspectivas",
+    "blog.read_article": "Leer Artículo",
+    "blog.no_articles": "Aún no se han encontrado artículos. ¡Vuelve más tarde!",
     "contact.title": "Contactar Soporte",
     "contact.direct": "Contacto Directo",
     "about.founder.title": "Creador y Fundador",
@@ -1938,6 +1950,10 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "blog.header.latest": "最新の",
+    "blog.header.insights": "洞察",
+    "blog.read_article": "記事を読む",
+    "blog.no_articles": "記事がまだ見つかりません。後でもう一度確認してください！",
     "contact.title": "サポートに連絡",
     "contact.direct": "直接の連絡先",
     "about.founder.title": "クリエイター ＆ 創設者",
@@ -2593,6 +2609,10 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "blog.header.latest": "Últimas ",
+    "blog.header.insights": "Ideias",
+    "blog.read_article": "Ler Artigo",
+    "blog.no_articles": "Nenhum artigo encontrado ainda. Por favor, volte mais tarde!",
     "contact.title": "Contatar Suporte",
     "contact.direct": "Contato Direto",
     "about.founder.title": "Criador e Fundador",
@@ -3242,6 +3262,10 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "blog.header.latest": "Neueste ",
+    "blog.header.insights": "Einblicke",
+    "blog.read_article": "Artikel lesen",
+    "blog.no_articles": "Noch keine Artikel gefunden. Bitte schauen Sie später wieder vorbei!",
     "contact.title": "Support Kontaktieren",
     "contact.direct": "Direkter Kontakt",
     "about.founder.title": "Schöpfer & Gründer",
@@ -3899,6 +3923,10 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "blog.header.latest": "Dernières ",
+    "blog.header.insights": "Perspectives",
+    "blog.read_article": "Lire l'article",
+    "blog.no_articles": "Aucun article trouvé pour l'instant. Veuillez revenir plus tard !",
     "contact.title": "Contacter le Support",
     "contact.direct": "Contact Direct",
     "about.founder.title": "Créateur et Fondateur",
