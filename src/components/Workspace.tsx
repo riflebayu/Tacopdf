@@ -2588,13 +2588,28 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               {t('workspace.options') || 'Options & Instructions'}
             </h3>
 
-            <div className="mb-6 space-y-3 p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl">
-              <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
-                {t(`tool.${tool.id}.tip.title`) || '✨ INFO'}
-              </h4>
-              <p className="text-xs text-on-surface-variant leading-relaxed font-medium">
-                {t(`tool.${tool.id}.tip.desc`) || 'Silakan sesuaikan pengaturan di bawah lalu jalankan proses.'}
-              </p>
+            <div className="mb-6 p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl">
+              {/* Default/Desktop View */}
+              <div className={tool.id === 'merge' ? 'hidden md:block space-y-3' : 'space-y-3'}>
+                <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
+                  {t(`tool.${tool.id}.tip.title`) || '✨ INFO'}
+                </h4>
+                <p className="text-xs text-on-surface-variant leading-relaxed font-medium">
+                  {t(`tool.${tool.id}.tip.desc`) || 'Silakan sesuaikan pengaturan di bawah lalu jalankan proses.'}
+                </p>
+              </div>
+
+              {/* Mobile Merge View */}
+              {tool.id === 'merge' && (
+                <div className="block md:hidden space-y-3">
+                  <h4 className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
+                    ✨ INFO
+                  </h4>
+                  <p className="text-xs text-on-surface-variant leading-relaxed font-medium">
+                    {t('tool.merge.tip.mobile.desc') || 'Atur urutannya dengan menyeret kotak pratinjau di atas.'}
+                  </p>
+                </div>
+              )}
             </div>
             
             {tool.id === 'extract-pages' && uploadedFiles.length > 0 && (
