@@ -293,10 +293,11 @@ function NavbarContent({ activeToolId }: NavbarProps) {
               <div className="flex gap-2">
 
                 <LocalizedLink 
-                  to="/#faq"
+                  to="/blog"
+                  onClick={handleGoBlog}
                   className="text-[11px] font-semibold text-primary-container underline cursor-pointer"
                 >
-                  FAQ
+                  {t('nav.blog', 'Blog')}
                 </LocalizedLink>
               </div>
             </div>
