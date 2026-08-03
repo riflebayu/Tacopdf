@@ -54,9 +54,9 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 }
 
 export async function generateArticle(topic: string, language: string, promptOverride: string) {
-  // We use gemini-pro-latest for complex long-form content generation
+  // We use gemini-flash-latest for content generation to stay within free tier limits
   const model = getGenAI().getGenerativeModel({ 
-    model: 'gemini-pro-latest',
+    model: 'gemini-flash-latest',
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {

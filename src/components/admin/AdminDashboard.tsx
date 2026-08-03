@@ -115,8 +115,9 @@ export default function AdminDashboard() {
         }
         
         setStatusMap(prev => ({ ...prev, [lang]: 'success' }));
-      } catch (err) {
+      } catch (err: any) {
         console.error(`Error generating for ${lang}:`, err);
+        alert(`Error for ${lang}: ` + err.message);
         setStatusMap(prev => ({ ...prev, [lang]: 'error' }));
       }
     }
