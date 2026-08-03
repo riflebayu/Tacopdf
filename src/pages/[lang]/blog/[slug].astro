@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   return allPosts
     .filter(post => !post.id.startsWith('en/')) // English is handled at the root /blog
     .map(post => {
-      const [lang, ...slugParts] = post.slug.split('/');
+      const [lang, ...slugParts] = post.id.split('/');
       const slug = slugParts.join('/');
       return {
         params: { lang, slug },
