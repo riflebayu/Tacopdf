@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { Calendar, User, ArrowLeft, Tag } from 'lucide-react';
 import { TRANSLATIONS } from '../../../data/translations';
@@ -11,7 +11,7 @@ export async function getStaticPaths() {
     .filter(post => !(post.id.startsWith('en/') || post.id.startsWith('en\\'))) // English is handled at the root /blog
     .map(post => {
       const [lang, ...slugParts] = post.id.split(/[\/\\]/);
-      const slug = slugParts.join('/');
+      const slug = slugParts.join('/').replace('.md', '');
       return {
         params: { lang, slug },
         props: { post },
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 const { lang } = Astro.params;
 const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];

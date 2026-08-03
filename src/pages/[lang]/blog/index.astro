@@ -48,7 +48,7 @@ const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => {
             // Remove 'lang/' from the slug so the URL is just /[lang]/blog/[slug]
-            const realSlug = post.id.split(/[\/\\]/)[1];
+            const realSlug = post.id.split(/[\/\\]/)[1].replace('.md', '');
             return (
               <a 
                 href={`/${lang}/blog/${realSlug}`} 
