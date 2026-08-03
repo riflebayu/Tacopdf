@@ -121,7 +121,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
 
                       <a 
                         href={lang === 'en' ? `/${tool.id}` : `/${lang}/${tool.id}`}
-                        className="text-on-surface flex items-center gap-1.5 mb-2 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-lg md:text-base w-full"
+                        className="text-primary md:text-on-surface flex items-center gap-1.5 mb-2 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-lg md:text-base w-full"
                       >
                         <span className="hidden md:inline-block">
                           <TacoIcon name={tool.icon} size={24} className="text-primary" />
