@@ -54,27 +54,27 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className="tool-card w-full text-left bg-surface-container/50 border border-outline-variant/60 rounded-xl p-3 flex flex-row items-center cursor-pointer relative hover:border-primary/50 transition-colors group"
+        className="tool-card w-full text-left cursor-pointer flex flex-row md:flex-col items-center md:items-start p-3 md:p-5 bg-[#2A2824]/50 rounded-xl md:rounded-2xl border border-white/10 relative h-full transition-all hover:bg-[#2A2824]/80 group"
       >
         {setting.badge && (
           <span className="absolute -top-2 left-2 bg-error text-on-error text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
             {setting.badge.toUpperCase()}
           </span>
         )}
-        <div className="flex-shrink-0 w-12 h-12 bg-surface-container-highest border border-outline-variant/30 rounded-lg flex items-center justify-center p-2 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
+        <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center p-2 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
           <TacoIcon name={tool.icon} size={28} />
         </div>
-        <div className="flex-grow flex flex-col ml-3 mr-8">
-          <h3 className="text-sm font-bold text-on-surface group-hover:text-primary-container transition-colors duration-150">
+        <div className="flex-grow flex flex-col ml-3 md:ml-0 md:mt-4 mr-8 md:mr-0">
+          <h3 className="text-sm md:text-base font-bold text-white group-hover:text-primary-container transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
-          <p className="text-xs text-on-surface-variant leading-snug mt-0.5">
+          <p className="text-xs md:text-sm text-white/70 leading-snug mt-1 md:mt-2">
             {t(`seo.features.${tool.id.replace(/-/g, '_')}`, tool.description)}
           </p>
         </div>
         <div 
           onClick={(e) => toggleFavorite(e, tool.id)}
-          className={`absolute right-3 top-3 p-1.5 rounded-full cursor-pointer transition-colors ${isFav ? 'text-yellow-500' : 'text-outline-variant hover:text-yellow-500 hover:bg-surface-container-high'}`}
+          className={`absolute right-3 top-3 md:right-5 md:top-5 p-1.5 rounded-full cursor-pointer transition-colors ${isFav ? 'text-yellow-500' : 'text-white/30 hover:text-yellow-500 group-hover:text-yellow-500 hover:bg-surface-container-high'}`}
           title={isFav ? "Remove from Favorites" : "Add to Favorites"}
         >
           <Star size={16} className={isFav ? "fill-yellow-500" : ""} />
@@ -105,7 +105,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
               <Trash2 size={14} /> {t('favorites.reset', 'Reset Favorites')}
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
             {favorites.map(favId => {
               const tool = TOOLS.find(t => t.id === favId);
               return tool ? renderToolCard(tool) : null;
@@ -115,49 +115,43 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
       )}
 
 
-      {/* Row 1: Page Manipulation & Security */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Page Manipulation Column */}
-        <div id="manipulation" className="space-y-4 scroll-mt-20">
-          <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
-            {t('cat.manipulation')}
-          </h2>
-          <div className="grid gap-4">
-            {getToolsByCategory('manipulation').map(renderToolCard)}
-          </div>
-        </div>
-
-        {/* Security Column */}
-        <div id="security" className="space-y-4 scroll-mt-20">
-          <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
-            {t('cat.security')}
-          </h2>
-          <div className="grid gap-4">
-            {getToolsByCategory('security').map(renderToolCard)}
-          </div>
+      {/* Page Manipulation */}
+      <div id="manipulation" className="space-y-4 scroll-mt-20">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+          {t('cat.manipulation')}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
+          {getToolsByCategory('manipulation').map(renderToolCard)}
         </div>
       </div>
 
-      {/* Row 2: Format Conversion & Editing */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Format Conversion Column */}
-        <div id="conversion" className="space-y-4 scroll-mt-20">
-          <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
-            {t('cat.conversion')}
-          </h2>
-          <div className="grid gap-4">
-            {getToolsByCategory('conversion').map(renderToolCard)}
-          </div>
+      {/* Security */}
+      <div id="security" className="space-y-4 scroll-mt-20">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+          {t('cat.security')}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
+          {getToolsByCategory('security').map(renderToolCard)}
         </div>
+      </div>
 
-        {/* Editing Column */}
-        <div id="editing" className="space-y-4 scroll-mt-20">
-          <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
-            {t('cat.editing')}
-          </h2>
-          <div className="grid gap-4">
-            {getToolsByCategory('editing').map(renderToolCard)}
-          </div>
+      {/* Format Conversion */}
+      <div id="conversion" className="space-y-4 scroll-mt-20">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+          {t('cat.conversion')}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
+          {getToolsByCategory('conversion').map(renderToolCard)}
+        </div>
+      </div>
+
+      {/* Editing */}
+      <div id="editing" className="space-y-4 scroll-mt-20">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+          {t('cat.editing')}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
+          {getToolsByCategory('editing').map(renderToolCard)}
         </div>
       </div>
     </section>
