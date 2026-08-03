@@ -36,7 +36,7 @@ interface SEOSectionProps {
 }
 
 export default function SEOSection({ onSelectTool }: SEOSectionProps) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { containerRef: bentoRef, activeIndex: bentoIndex } = useScrollIndicator(3);
   const { containerRef: toolsRef, activeIndex: toolsIndex } = useScrollIndicator(TOOLS.length);
   
