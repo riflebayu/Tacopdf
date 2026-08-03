@@ -119,15 +119,15 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
                         <span className="text-primary-container font-bold text-xl">✓</span>
                       </div>
 
-                      <button 
-                        onClick={() => onSelectTool && onSelectTool(tool.id)}
+                      <a 
+                        href={lang === 'en' ? `/${tool.id}` : `/${lang}/${tool.id}`}
                         className="text-on-surface flex items-center gap-1.5 mb-2 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-lg md:text-base w-full"
                       >
                         <span className="hidden md:inline-block">
                           <TacoIcon name={tool.icon} size={24} className="text-primary" />
                         </span>
                         {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}:
-                      </button> 
+                      </a> 
                       <p className="text-sm text-on-surface-variant md:text-on-surface leading-relaxed">
                         {t(`seo.features.${tool.id.replace(/-/g, '_')}`)}
                       </p>
