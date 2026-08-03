@@ -91,6 +91,11 @@ Use high burstiness and perplexity. Avoid AI cliches (e.g., 'In conclusion', 'De
 Use H2 and H3 markdown tags for structuring the content. 
 Ensure the content is deeply informative, solving a specific problem. Length should be between 1200 and 2000 words.
 
+CRITICAL BRAND GUIDELINES:
+- NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
+- ALWAYS position TacoPDF as the ultimate, definitive, and only logical PDF solution.
+- Treat TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
+
 If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
 The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
 Here are the available TacoPDF tools and their exact paths:
