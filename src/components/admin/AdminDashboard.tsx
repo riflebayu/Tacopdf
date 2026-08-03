@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight, LogOut, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { auth } from '../../utils/firebase';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
 
 const LANGUAGES = [
   { id: 'en', label: 'English (EN)', flag: '🇺🇸' },
@@ -13,6 +15,15 @@ const LANGUAGES = [
 ];
 
 export default function AdminDashboard() {
+  // Auth state
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Dashboard state
   const [topic, setTopic] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -29,6 +40,36 @@ export default function AdminDashboard() {
   const [statusMap, setStatusMap] = useState<Record<string, 'pending' | 'loading' | 'success' | 'error'>>({});
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setIsLoggingIn(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err: any) {
+      console.error(err);
+      setLoginError(err.message || 'Failed to sign in');
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err: any) {
+      console.error('Failed to log out', err);
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -125,6 +166,86 @@ export default function AdminDashboard() {
     setGenerating(false);
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md bg-surface-container-low border border-outline-variant rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+        >
+          {/* Decorative background element */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col items-center mb-8 relative z-10">
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 mb-4">
+              <Lock className="w-6 h-6 text-on-primary" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-on-surface">Admin Login</h1>
+            <p className="text-sm text-on-surface-variant mt-2 text-center">Sign in to access the TacoPDF AI CMS</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-5 relative z-10">
+            <div>
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">Email Address</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="admin@tacopdf.com"
+                className="w-full bg-surface-container border border-outline rounded-xl px-4 py-3 text-on-surface placeholder-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-on-surface-variant mb-2">Password</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full bg-surface-container border border-outline rounded-xl px-4 py-3 text-on-surface placeholder-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+              />
+            </div>
+            
+            <AnimatePresence>
+              {loginError && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <p>{loginError}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button 
+              type="submit"
+              disabled={isLoggingIn || !email || !password}
+              className="w-full bg-primary hover:opacity-90 text-on-primary px-6 py-3.5 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 mt-4 active:scale-[0.98]"
+            >
+              {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-on-surface font-sans selection:bg-primary/30 overflow-x-hidden pb-20 relative">
       
@@ -140,9 +261,18 @@ export default function AdminDashboard() {
               <p className="text-xs text-primary font-medium tracking-wide uppercase">Content Generator</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-surface-container-high border border-outline px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant shadow-sm">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Local Environment
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2 bg-surface-container-high border border-outline px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              {user.email}
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-surface-container border border-outline hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500 transition-all text-on-surface-variant"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
           </div>
         </div>
       </header>
