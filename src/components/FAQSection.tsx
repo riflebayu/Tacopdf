@@ -61,20 +61,23 @@ export function FAQSectionContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.35, delay: index * 0.07, ease: 'easeOut' }}
-            className="group bg-surface-container border border-outline-variant rounded-xl overflow-hidden md:pointer-events-none"
+            className="group bg-surface-container border border-outline-variant rounded-xl overflow-hidden"
           >
-            <summary className="list-none p-6 cursor-pointer md:cursor-auto flex items-center justify-between hover:bg-surface-container-high transition-colors">
-              <div className="flex items-center gap-3 font-semibold text-primary text-base md:text-lg">
-                {faq.icon}
-                <span>{faq.question}</span>
+            <summary className="list-none cursor-pointer md:cursor-auto">
+              <div className="p-6 flex items-center justify-between hover:bg-surface-container-high md:hover:bg-transparent transition-colors">
+                <div className="flex items-center gap-3 font-semibold text-primary text-base md:text-lg">
+                  {faq.icon}
+                  <span>{faq.question}</span>
+                </div>
+                <ChevronDown className="text-on-surface-variant transition-transform group-open:rotate-180 md:hidden" size={20} />
               </div>
-              <ChevronDown className="text-on-surface-variant transition-transform group-open:rotate-180 md:hidden" size={20} />
+              
+              <div className="px-6 pb-6 pt-0 hidden group-open:block md:!block md:h-auto md:opacity-100 cursor-text">
+                <div className="pl-8 text-sm md:text-base text-on-surface-variant leading-relaxed font-sans border-t border-outline-variant pt-4">
+                  {faq.answer}
+                </div>
+              </div>
             </summary>
-            <div className="px-6 pb-6 pt-0 max-md:hidden group-open:block md:!block md:h-auto md:opacity-100">
-              <div className="pl-8 text-sm md:text-base text-on-surface-variant leading-relaxed font-sans border-t border-outline-variant pt-4">
-                {faq.answer}
-              </div>
-            </div>
           </motion.details>
         ))}
       </div>
