@@ -2,7 +2,7 @@
 export const TRANSLATIONS = {
   "en": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Read the latest news, guides, and tips on document management, PDF security, and paperless business operations.",
+    "blog.description": "Global document news, smart guides, and practical tips for a seamless PDF workflow",
     "blog.header.latest": "Latest ",
     "blog.header.insights": "Insights",
     "blog.read_article": "Read Article",
@@ -664,7 +664,7 @@ export const TRANSLATIONS = {
   },
   "id": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Baca berita, panduan, dan tips terbaru tentang manajemen dokumen, keamanan PDF, dan operasi bisnis tanpa kertas.",
+    "blog.description": "Berita dokumen global, panduan cerdas, dan tips praktis untuk alur kerja PDF yang mulus",
     "blog.header.latest": "Wawasan ",
     "blog.header.insights": "Terbaru",
     "blog.read_article": "Baca Artikel",
@@ -1319,7 +1319,7 @@ export const TRANSLATIONS = {
   },
   "es": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Lea las últimas noticias, guías y consejos sobre gestión de documentos, seguridad de PDF y operaciones comerciales sin papel.",
+    "blog.description": "Noticias globales sobre documentos, guías inteligentes y consejos prácticos para un flujo de trabajo de PDF fluido",
     "blog.header.latest": "Últimas ",
     "blog.header.insights": "Perspectivas",
     "blog.read_article": "Leer Artículo",
@@ -1957,7 +1957,7 @@ export const TRANSLATIONS = {
   },
   "ja": {
     "blog.title": "ブログ | TacoPDF",
-    "blog.description": "ドキュメント管理、PDFセキュリティ、ペーパーレス業務に関する最新のニュース、ガイド、ヒントをお読みください。",
+    "blog.description": "グローバルなドキュメントニュース、スマートなガイド、シームレスなPDFワークフローのための実践的なヒント",
     "blog.header.latest": "最新の",
     "blog.header.insights": "洞察",
     "blog.read_article": "記事を読む",
@@ -2618,7 +2618,7 @@ export const TRANSLATIONS = {
   },
   "pt": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Leia as últimas notícias, guias e dicas sobre gerenciamento de documentos, segurança de PDF e operações comerciais sem papel.",
+    "blog.description": "Notícias globais de documentos, guias inteligentes e dicas práticas para um fluxo de trabalho PDF perfeito",
     "blog.header.latest": "Últimas ",
     "blog.header.insights": "Ideias",
     "blog.read_article": "Ler Artigo",
@@ -3273,7 +3273,7 @@ export const TRANSLATIONS = {
 
   "de": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Lesen Sie die neuesten Nachrichten, Anleitungen und Tipps zu Dokumentenmanagement, PDF-Sicherheit und papierlosen Geschäftsabläufen.",
+    "blog.description": "Globale Dokumenten-News, smarte Anleitungen und praktische Tipps für einen reibungslosen PDF-Workflow",
     "blog.header.latest": "Neueste ",
     "blog.header.insights": "Einblicke",
     "blog.read_article": "Artikel lesen",
@@ -3936,7 +3936,7 @@ export const TRANSLATIONS = {
   },
   "fr": {
     "blog.title": "Blog | TacoPDF",
-    "blog.description": "Lisez les dernières nouvelles, guides et conseils sur la gestion des documents, la sécurité des PDF et les opérations commerciales sans papier.",
+    "blog.description": "Actualités mondiales sur les documents, guides intelligents et conseils pratiques pour un flux de travail PDF fluide",
     "blog.header.latest": "Dernières ",
     "blog.header.insights": "Perspectives",
     "blog.read_article": "Lire l'article",
