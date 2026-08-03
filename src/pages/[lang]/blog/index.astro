@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { Calendar, ChevronRight } from 'lucide-react';
+import { TRANSLATIONS } from '../../../data/translations';
+
+export async function getStaticPaths() {
+  const languages = ['id', 'es', 'fr', 'de', 'pt', 'ja'];
+  return languages.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+
+// You can add blog specific translations to your translation dict later
+const title = dict['blog.title' as keyof typeof dict] || "Blog | TacoPDF";
+const description = dict['blog.description' as keyof typeof dict] || "Read the latest news, guides, and tips on document management, PDF security, and paperless business operations.";
+
+// Fetch posts for this specific language
+const allPosts = await getCollection('blog', ({ id }) => {
+  return id.startsWith(`${lang}/`);
+});
+
+// Sort by date (newest first)
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <div className="min-h-screen bg-background pt-24 pb-20">
+    <div className="max-w-6xl mx-auto px-6">
+      
+      {/* Header */}
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-6">
+          Latest <span className="text-primary">Insights</span>
+        </h1>
+        <p className="text-lg text-on-surface-variant leading-relaxed">
+          {description}
+        </p>
+      </div>
+
+      {/* Grid */}
+      {posts.length === 0 ? (
+        <div className="text-center py-20 bg-surface-container rounded-2xl border border-outline">
+          <p className="text-on-surface-variant text-lg">No articles found yet. Please check back later!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => {
+            // Remove 'lang/' from the slug so the URL is just /[lang]/blog/[slug]
+            const realSlug = post.slug.replace(`${lang}/`, '');
+            return (
+              <a 
+                href={`/${lang}/blog/${realSlug}`} 
+                className="group flex flex-col bg-surface-container border border-outline-variant hover:border-primary rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+              >
+                {/* Image */}
+                <div className="relative aspect-video w-full overflow-hidden bg-surface-container-highest">
+                  {post.data.featuredImage ? (
+                    <img 
+                      src={post.data.featuredImage} 
+                      alt={post.data.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-surface-container-high text-outline-variant">
+                      No Image
+                    </div>
+                  )}
+                  {/* Category/Tag Tag */}
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-primary border border-outline">
+                      {post.data.tags[0]}
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-xs font-medium text-on-surface-variant mb-4">
+                    <Calendar className="w-4 h-4" />
+                    <time dateTime={post.data.pubDate.toISOString()}>
+                      {post.data.pubDate.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </time>
+                  </div>
+
+                  <h2 className="text-xl font-bold text-on-surface mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                    {post.data.title}
+                  </h2>
+                  
+                  <p className="text-on-surface-variant text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+                    {post.data.description}
+                  </p>
+
+                  <div className="flex items-center text-primary text-sm font-bold group-hover:gap-2 transition-all mt-auto">
+                    Read Article <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

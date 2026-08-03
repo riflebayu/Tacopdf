@@ -95,7 +95,7 @@ function NavbarContent({ activeToolId }: NavbarProps) {
     setIsMobileMenuOpen(false);
   };
 
-  const handleGoFAQ = (e: React.MouseEvent) => {
+  const handleGoBlog = (e: React.MouseEvent) => {
     setIsMobileMenuOpen(false);
     // Navigation is handled by LocalizedLink
   };
@@ -183,8 +183,8 @@ function NavbarContent({ activeToolId }: NavbarProps) {
           </LocalizedLink>
 
 
-          <LocalizedLink to="/faq" className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer" onClick={handleGoFAQ}>
-            {t('nav.faq')}
+          <LocalizedLink to="/blog" className="text-on-surface-variant hover:text-primary-container hover:underline transition-all text-sm font-semibold cursor-pointer" onClick={handleGoBlog}>
+            {t('nav.blog', 'Blog')}
           </LocalizedLink>
 
 
