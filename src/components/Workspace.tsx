@@ -960,6 +960,13 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   // Auto-scroll to relevant sections on upload
   useEffect(() => {
     if (uploadedFiles.length > 0) {
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
+
+      // Khusus desktop: jika upload 4 file atau kurang, jangan auto scroll ke preview. Jika > 4 file, gulir otomatis.
+      if (isDesktop && uploadedFiles.length <= 4) {
+        return;
+      }
+
       setTimeout(() => {
         const isLocked = uploadedFiles.some(f => lockedFileIds.has(f.id));
         
