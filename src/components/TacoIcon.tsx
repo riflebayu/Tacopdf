@@ -11,14 +11,6 @@ interface TacoIconProps {
 
 export default function TacoIcon({ name, className = '', size = 32 }: TacoIconProps) {
   // We expect 'name' to correspond to the tool id now (e.g. 'merge', 'split', etc)
-  if (name === 'compress-pdf') {
-    return (
-      <div className={`flex items-center justify-center rounded-md shadow-sm bg-surface-container ${className}`} style={{ width: `${size}px`, height: `${size}px` }}>
-        <LucideIcon name="FileArchive" size={size * 0.6} className="text-primary" />
-      </div>
-    );
-  }
-
   if (name === 'help-circle') {
     return <LucideIcon name="HelpCircle" size={size} className={className} />;
   }
