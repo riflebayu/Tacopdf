@@ -45,9 +45,12 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
     return TOOLS.filter((t) => t.category === catId).filter(t => toolSettings?.[t.id]?.enabled !== false);
   };
 
+  const POPULAR_TOOL_IDS = ['merge', 'split', 'protect', 'pdf-to-image'];
+
   const renderToolCard = (tool: typeof TOOLS[0]) => {
     const isFav = favorites.includes(tool.id);
     const setting = toolSettings?.[tool.id] || { enabled: true, badge: '' };
+    const isPopular = POPULAR_TOOL_IDS.includes(tool.id);
     
     return (
       <LocalizedLink
@@ -56,11 +59,15 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
         className="tool-card w-full text-left cursor-pointer flex flex-row md:flex-col items-center md:items-start p-3 md:p-5 bg-[#2A2824]/50 rounded-xl md:rounded-2xl border border-white/10 relative h-full transition-all hover:bg-[#2A2824]/80 group"
       >
-        {setting.badge && (
-          <span className="absolute -top-2 left-2 bg-error text-on-error text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
+        {setting.badge ? (
+          <span className="absolute -top-2.5 left-3 bg-error text-on-error text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-sm z-10">
             {setting.badge.toUpperCase()}
           </span>
-        )}
+        ) : isPopular ? (
+          <span className="absolute -top-2.5 left-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 text-[10px] md:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm backdrop-blur-md z-10 flex items-center gap-1">
+            {t('badge.popular', '🔥 Popular Tool')}
+          </span>
+        ) : null}
         <div className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 md:p-4 lg:p-5 flex-shrink-0 mb-0 md:mb-5 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
           <TacoIcon name={tool.icon} className="!w-full !h-full object-contain drop-shadow-sm" />
         </div>
