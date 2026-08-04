@@ -2600,7 +2600,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             </h3>
 
             <div className={`p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl ${
-              (tool.id === 'merge' && uploadedFiles.length === 0) || tool.id === 'rotate' || tool.id === 'delete-pages' ? 'hidden md:block mb-6' : 'mb-6'
+              (tool.id === 'merge' && uploadedFiles.length === 0) || tool.id === 'rotate' || tool.id === 'delete-pages' || (tool.id === 'redact' && uploadedFiles.length > 0) ? 'hidden md:block mb-6' : 'mb-6'
             }`}>
               {/* Default/Desktop View */}
               <div className={tool.id === 'merge' ? 'hidden md:block space-y-3' : 'space-y-3'}>
