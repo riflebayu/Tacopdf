@@ -2724,7 +2724,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="144"
                       value={watermarkSize}
                       onChange={(e) => setWatermarkSize(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      style={{ touchAction: 'pan-y' }}
                     />
                   </div>
 
@@ -2740,7 +2741,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       step="0.05"
                       value={watermarkOpacity}
                       onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      style={{ touchAction: 'pan-y' }}
                     />
                   </div>
 
@@ -2755,7 +2757,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="360"
                       value={watermarkRotation}
                       onChange={(e) => setWatermarkRotation(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      style={{ touchAction: 'pan-y' }}
                     />
                   </div>
 
@@ -2844,7 +2847,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="48"
                       value={numberSize}
                       onChange={(e) => setNumberSize(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      style={{ touchAction: 'pan-y' }}
                     />
                   </div>
 
