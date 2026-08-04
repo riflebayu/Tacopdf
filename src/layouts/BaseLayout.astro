@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title?: string;
@@ -20,6 +21,7 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <meta name="description" content={description} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <GoogleAnalytics />
+    <Analytics />
   </head>
   <body class="antialiased text-on-surface bg-background overflow-x-hidden min-h-screen flex flex-col">
     <Navbar client:load initialLang={lang} />
