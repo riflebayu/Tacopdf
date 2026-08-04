@@ -42,6 +42,14 @@ export const trackPageView = async () => {
 
 // Call this when a user clicks 'Process' on a tool
 export const trackToolUsage = async (toolId: string) => {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    try {
+      (window as any).gtag('event', 'use_tool', { tool_name: toolId });
+    } catch (e) {
+      // Ignore GA error if ad-blocker interferes
+    }
+  }
+
   try {
     const statsRef = doc(db, 'analytics', 'tool_stats');
     const statsSnap = await getDoc(statsRef);
