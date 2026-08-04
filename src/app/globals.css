@@ -7,7 +7,7 @@
   --color-surf-low: #201b11;
   --color-surf-high: #2f291f;
   --color-surf-highest: #3a3429;
-  
+
   --color-prim: #ffe1a7;
   --color-on-prim: #3c2400;
   --color-prim-container: #fbbf24;
@@ -25,7 +25,7 @@
   --color-surf-low: #201b11;
   --color-surf-high: #2f291f;
   --color-surf-highest: #3a3429;
-  
+
   --color-prim: #ffe1a7;
   --color-on-prim: #3c2400;
   --color-prim-container: #fbbf24;
@@ -46,7 +46,7 @@
   --color-surface-container-low: var(--color-surf-low);
   --color-surface-container-high: var(--color-surf-high);
   --color-surface-container-highest: var(--color-surf-highest);
-  
+
   --color-primary: var(--color-prim);
   --color-on-primary: var(--color-on-prim);
   --color-primary-container: var(--color-prim-container);
@@ -96,4 +96,20 @@ img {
   transform: translateY(-4px);
   border-color: var(--color-primary-container);
   box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.15);
+}
+
+/* HTML-to-PDF live preview: responsive scaling so it fits mobile screens */
+#html-to-pdf-render-target {
+  --preview-scale: 0.8;
+  --preview-mb: -220px;
+  transform: scale(var(--preview-scale));
+  transform-origin: top center;
+  margin-bottom: var(--preview-mb);
+}
+
+@media (max-width: 640px) {
+  #html-to-pdf-render-target {
+    --preview-scale: 0.35;
+    --preview-mb: -730px;
+  }
 }

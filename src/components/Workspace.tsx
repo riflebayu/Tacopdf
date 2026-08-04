@@ -2008,25 +2008,25 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               <textarea
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
-                rows={8}
-                className="w-full bg-background border border-outline-variant rounded-lg p-4 font-mono text-xs text-on-surface focus:border-primary-container focus:outline-none leading-relaxed"
+                rows={6}
+                className="w-full bg-background border border-outline-variant rounded-lg p-4 font-mono text-xs text-on-surface focus:border-primary-container focus:outline-none leading-relaxed h-36 sm:h-64"
                 placeholder={t('workspace.html.placeholder')}
               />
               <div className="border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest mt-4">
                  <div className="bg-surface-container-high px-4 py-2 border-b border-outline-variant text-xs font-bold text-on-surface-variant flex items-center gap-2">
                    <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
                  </div>
-                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-center max-h-[500px]">
-                    <div 
+                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-start sm:justify-center max-h-[500px]">
+                    <div
                       id="html-to-pdf-render-target"
                       className="bg-white text-black shadow-sm ring-1 ring-gray-900/5"
-                      style={{ 
-                        width: '794px', 
-                        minHeight: '1123px', 
+                      style={{
+                        width: '794px',
+                        minHeight: '1123px',
                         padding: '40px',
-                        transform: 'scale(0.8)',
+                        transform: 'scale(var(--preview-scale, 0.8))',
                         transformOrigin: 'top center',
-                        marginBottom: '-220px' // offset the scale height reduction
+                        marginBottom: 'var(--preview-mb, -220px)' // offset the scale height reduction
                       }}
                       dangerouslySetInnerHTML={{ __html: htmlContent }}
                     />
