@@ -57,14 +57,22 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className="tool-card w-full text-left cursor-pointer flex flex-row md:flex-col items-center md:items-start p-3 md:p-5 bg-[#2A2824]/50 rounded-xl md:rounded-2xl border border-white/10 relative h-full transition-all hover:bg-[#2A2824]/80 group"
+        className={`tool-card w-full text-left cursor-pointer flex flex-row md:flex-col items-center md:items-start p-3 md:p-5 rounded-xl md:rounded-2xl border relative h-full transition-all group ${
+          isPopular
+            ? 'popular-glow-card'
+            : 'bg-[#2A2824]/50 border-white/10 hover:bg-[#2A2824]/80'
+        }`}
       >
         {setting.badge ? (
           <span className="absolute -top-2.5 left-3 bg-error text-on-error text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-sm z-10">
             {setting.badge.toUpperCase()}
           </span>
         ) : isPopular ? (
-          <span className="absolute -top-2.5 left-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 text-[10px] md:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm backdrop-blur-md z-10 flex items-center gap-1">
+          <span className="absolute -top-2.5 left-3 bg-gradient-to-r from-amber-500/30 via-orange-500/20 to-amber-500/30 text-amber-300 border border-amber-500/50 text-[10px] md:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-md backdrop-blur-md z-10 flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
             {t('badge.popular', '🔥 Popular Tool')}
           </span>
         ) : null}

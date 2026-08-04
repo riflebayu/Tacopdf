@@ -98,3 +98,27 @@ img {
   border-color: var(--color-primary-container);
   box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.15);
 }
+
+/* Calm glowing animation for popular tool cards */
+@keyframes calmGlow {
+  0%, 100% {
+    border-color: rgba(251, 191, 36, 0.3);
+    box-shadow: 0 0 14px 2px rgba(251, 191, 36, 0.12);
+  }
+  50% {
+    border-color: rgba(245, 158, 11, 0.65);
+    box-shadow: 0 0 24px 6px rgba(245, 158, 11, 0.26);
+  }
+}
+
+.popular-glow-card {
+  position: relative;
+  animation: calmGlow 4s infinite ease-in-out;
+  background: linear-gradient(135deg, rgba(42, 40, 36, 0.7) 0%, rgba(30, 26, 18, 0.6) 100%) !important;
+}
+
+.popular-glow-card:hover {
+  animation: none !important;
+  border-color: rgba(251, 191, 36, 0.9) !important;
+  box-shadow: 0 12px 30px -5px rgba(251, 191, 36, 0.35) !important;
+}
