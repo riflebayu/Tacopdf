@@ -1996,6 +1996,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       } else if (tool.id === 'html-to-pdf') {
         setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html') || 'Rendering HTML view...' });
         
+        // Yield to the main thread so the browser can paint the processing overlay before html2canvas blocks the thread
+        await yieldToMain();
+        // Additional 50ms delay to guarantee mobile browsers have time to render the UI updates
+        await new Promise(r => setTimeout(r, 50));
+        
         const element = document.getElementById('html-to-pdf-render-target');
         if (!element) throw new Error('Render target not found');
 
