@@ -758,6 +758,14 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   
   // File locked detection state
   const [lockedFileIds, setLockedFileIds] = useState<Set<string>>(new Set());
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // Per-file preview state
   const [previewFileUrl, setPreviewFileUrl] = useState<string | null>(null);
   const [previewFileName, setPreviewFileName] = useState<string>('');
@@ -2231,12 +2239,12 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         return (
                           <div 
                             key={file.id}
-                            draggable={!isLocked}
+                            draggable={!isLocked && !isMobile}
                             onDragStart={(e) => handleCardDragStart(e, file.id)}
                             onDragEnd={handleCardDragEnd}
                             onDragOver={(e) => handleCardDragOver(e, file.id)}
                             onDrop={(e) => handleCardDrop(e, file.id)}
-                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-all ${isLocked ? 'border-red-500/30' : 'border-outline-variant hover:border-primary/50 cursor-move'} ${dragOverFileId === file.id ? 'scale-105 border-primary shadow-lg ring-2 ring-primary/50 ring-offset-2 ring-offset-surface' : ''}`}
+                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-all ${isLocked ? 'border-red-500/30' : `border-outline-variant hover:border-primary/50 ${isMobile ? '' : 'cursor-move'}`} ${dragOverFileId === file.id ? 'scale-105 border-primary shadow-lg ring-2 ring-primary/50 ring-offset-2 ring-offset-surface' : ''}`}
                           >
                             <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden">
                               {fileThumbnails[file.id] ? (
@@ -2275,6 +2283,39 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                     <LucideIcon name="X" size={14} />
                                   </button>
                                 </div>
+
+                                {isMobile && uploadedFiles.length > 1 && (
+                                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 opacity-100 transition-opacity z-10">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (i > 0) {
+                                          const newFiles = [...uploadedFiles];
+                                          [newFiles[i-1], newFiles[i]] = [newFiles[i], newFiles[i-1]];
+                                          setUploadedFiles(newFiles);
+                                        }
+                                      }}
+                                      disabled={i === 0}
+                                      className={`p-2 rounded-lg shadow-md transition-colors ${i === 0 ? 'bg-surface-container-high/90 text-on-surface/30 cursor-not-allowed' : 'bg-primary/95 hover:bg-primary text-on-primary active:scale-95'}`}
+                                    >
+                                      <LucideIcon name="ArrowLeft" size={16} />
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (i < uploadedFiles.length - 1) {
+                                          const newFiles = [...uploadedFiles];
+                                          [newFiles[i], newFiles[i+1]] = [newFiles[i+1], newFiles[i]];
+                                          setUploadedFiles(newFiles);
+                                        }
+                                      }}
+                                      disabled={i === uploadedFiles.length - 1}
+                                      className={`p-2 rounded-lg shadow-md transition-colors ${i === uploadedFiles.length - 1 ? 'bg-surface-container-high/90 text-on-surface/30 cursor-not-allowed' : 'bg-primary/95 hover:bg-primary text-on-primary active:scale-95'}`}
+                                    >
+                                      <LucideIcon name="ArrowRight" size={16} />
+                                    </button>
+                                  </div>
+                                )}
                             </div>
                             
                             <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px]">
