@@ -2401,16 +2401,41 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         </div>
                       </motion.div>
                     )}
-                    <Reorder.Group 
-                      id="file-list-container"
-                      axis="y"
-                      values={uploadedFiles}
-                      onReorder={setUploadedFiles}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 flex flex-col sm:grid sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 flex flex-col gap-3 mt-6"}
-                    >
+                    <div className="relative w-full">
+                      {tool.id === 'merge' && uploadedFiles.length === 1 && (
+                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm rounded-3xl border border-outline-variant/30 mt-6 min-h-[300px]">
+                          <div className="bg-surface-container-high border border-outline-variant rounded-2xl p-6 shadow-2xl text-center max-w-[90%] w-80 mx-auto">
+                            <AlertCircle className="w-12 h-12 text-primary mx-auto mb-3" />
+                            <h3 className="text-lg font-bold text-on-surface mb-2">
+                              {t('workspace.merge.need_more') || 'Upload minimal 2 file'}
+                            </h3>
+                            <p className="text-on-surface-variant text-sm mb-5 leading-relaxed">
+                              {t('workspace.merge.need_more_desc') || 'Alat ini membutuhkan setidaknya dua file PDF untuk digabungkan.'}
+                            </p>
+                            <label className="inline-flex items-center justify-center gap-2 w-full py-3 bg-primary text-on-primary font-bold rounded-xl cursor-pointer hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95 shadow-md">
+                              <Upload className="w-5 h-5" />
+                              <span>{t('workspace.merge.upload_more') || 'Upload lagi?'}</span>
+                              <input 
+                                type="file" 
+                                className="hidden" 
+                                accept=".pdf,application/pdf"
+                                multiple
+                                onChange={handleFileChange}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      )}
+                      <Reorder.Group 
+                        id="file-list-container"
+                        axis="y"
+                        values={uploadedFiles}
+                        onReorder={setUploadedFiles}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 flex flex-col sm:grid sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 flex flex-col gap-3 mt-6"}
+                      >
                     {uploadedFiles.map((file, i) => {
                       const isLocked = lockedFileIds.has(file.id);
                       
@@ -2497,6 +2522,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       );
                     })}
                   </Reorder.Group>
+                  </div>
                   </>
                 )}
               </AnimatePresence>

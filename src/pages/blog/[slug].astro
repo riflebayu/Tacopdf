@@ -67,11 +67,11 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
 
       {/* Featured Image */}
       {post.data.featuredImage && (
-        <div class="relative aspect-[21/9] w-full rounded-3xl overflow-hidden mb-16 shadow-2xl border border-outline">
+        <div class="relative w-full rounded-3xl mb-16 shadow-2xl border border-outline flex justify-center bg-surface-container-lowest">
           <img 
             src={post.data.featuredImage} 
             alt={post.data.title}
-            class="w-full h-auto object-contain rounded-lg"
+            class="w-full h-auto object-contain rounded-3xl max-h-[600px]"
           />
         </div>
       )}
