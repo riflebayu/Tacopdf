@@ -2024,20 +2024,22 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  <div className="bg-surface-container-high px-4 py-2 border-b border-outline-variant text-xs font-bold text-on-surface-variant flex items-center gap-2">
                    <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
                  </div>
-                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-start sm:justify-center max-h-[500px] w-full max-w-full">
-                    <div
-                      id="html-to-pdf-render-target"
-                      className="bg-white text-black shadow-sm ring-1 ring-gray-900/5"
-                      style={{
-                        width: '794px',
-                        minHeight: '1123px',
-                        padding: '40px',
-                        transform: 'scale(var(--preview-scale, 0.8))',
-                        transformOrigin: 'top center',
-                        marginBottom: 'var(--preview-mb, -220px)' // offset the scale height reduction
-                      }}
-                      dangerouslySetInnerHTML={{ __html: htmlContent }}
-                    />
+                 <div className="overflow-y-auto overflow-x-hidden flex justify-center bg-gray-100/50 dark:bg-black/20 w-full max-w-full h-[500px]">
+                    <div style={{ width: 0, display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        id="html-to-pdf-render-target"
+                        className="bg-white text-black shadow-sm ring-1 ring-gray-900/5 mt-4"
+                        style={{
+                          width: '794px',
+                          minHeight: '1123px',
+                          padding: '40px',
+                          transform: 'scale(var(--preview-scale, 0.8))',
+                          transformOrigin: 'top center',
+                          marginBottom: 'var(--preview-mb, -220px)'
+                        }}
+                        dangerouslySetInnerHTML={{ __html: htmlContent }}
+                      />
+                    </div>
                  </div>
               </div>
             </div>
@@ -2232,12 +2234,12 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 flex flex-col gap-3 mt-6"}
+                      className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 flex flex-col sm:grid sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 flex flex-col gap-3 mt-6"}
                     >
                     {uploadedFiles.map((file, i) => {
                       const isLocked = lockedFileIds.has(file.id);
                       
-                      if (tool.id === 'merge' || tool.id === 'image-to-pdf') {
+                      if ((tool.id === 'merge' || tool.id === 'image-to-pdf') && !isMobile) {
                         // Merge or Image-to-PDF Tool Visual Grid Item
                         return (
                           <Reorder.Item 
@@ -2293,12 +2295,17 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         );
                       }
 
-                      // Default Vertical List Item (for all other tools)
+                      // Default Vertical List Item (for all other tools + Mobile Merge)
+                      const isDraggableList = (tool.id === 'merge' || tool.id === 'image-to-pdf') && isMobile;
                       return (
-                        <Reorder.Item key={file.id} value={file} dragListener={false}>
-                          <div className={`flex items-center gap-3 p-3 border rounded-xl group transition-colors ${isLocked ? 'bg-red-500/5 border-red-500/30' : 'bg-surface-container-low border-outline-variant hover:border-primary/30'}`}>
-                            <div className={`p-2 rounded-lg ${isLocked ? 'bg-red-500/20 text-red-500' : 'bg-primary-container/20 text-primary'}`}>
-                              <LucideIcon name={isLocked ? 'Lock' : 'File'} size={20} />
+                        <Reorder.Item key={file.id} value={file} dragListener={isDraggableList && !isLocked}>
+                          <div className={`flex items-center gap-3 p-3 border rounded-xl group transition-colors ${isLocked ? 'bg-red-500/5 border-red-500/30' : 'bg-surface-container-low border-outline-variant hover:border-primary/30'} ${isDraggableList ? 'cursor-grab active:cursor-grabbing' : ''}`}>
+                            <div className={`w-10 h-10 flex shrink-0 items-center justify-center rounded-lg overflow-hidden ${isLocked ? 'bg-red-500/20 text-red-500' : 'bg-primary-container/20 text-primary'}`}>
+                              {fileThumbnails[file.id] ? (
+                                <img src={fileThumbnails[file.id]} className="w-full h-full object-cover pointer-events-none" alt="" />
+                              ) : (
+                                <LucideIcon name={isLocked ? 'Lock' : 'File'} size={20} />
+                              )}
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-semibold text-on-surface truncate" title={file.file.name}>{file.file.name}</p>
