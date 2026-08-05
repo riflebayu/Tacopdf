@@ -2283,8 +2283,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                     <LucideIcon name="X" size={14} />
                                   </button>
                                 </div>
-
-                                </div>
                             </div>
                             
                             <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px] pointer-events-none">
