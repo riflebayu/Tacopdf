@@ -23,27 +23,22 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
 ---
 
 <BaseLayout title={`${post.data.title} | TacoPDF`} description={post.data.description} lang={lang}>
-  <article class="min-h-screen bg-background pt-20 md:pt-28 pb-20 selection:bg-primary/30">
+  <article class="min-h-screen bg-background pt-16 md:pt-24 pb-20 selection:bg-primary/30">
     <div class="max-w-4xl mx-auto px-4 md:px-6">
       
       {/* Back Button */}
-      <a href="/blog" class="inline-flex items-center gap-2 text-primary hover:text-on-primary-container font-semibold mb-8 transition-colors">
+      <a href="/blog" class="inline-flex items-center gap-2 text-primary hover:text-on-primary-container font-semibold mb-4 md:mb-6 transition-colors">
         <ArrowLeft class="w-4 h-4" /> Back to Blog
       </a>
 
       {/* Header */}
       <header class="mb-8 md:mb-12">
-        {/* 1. Category/Tags (Eyebrow style) */}
+        {/* 1. Primary Category Badge */}
         {post.data.tags && post.data.tags.length > 0 && (
-          <div class="flex flex-wrap items-center gap-2 mb-4">
-            {post.data.tags.map((tag: string, index: number) => (
-              <>
-                <span class="text-xs md:text-sm font-bold tracking-widest uppercase text-primary">
-                  {tag}
-                </span>
-                {index < post.data.tags.length - 1 && <span class="text-primary/40 text-xs">•</span>}
-              </>
-            ))}
+          <div class="mb-3">
+            <span class="inline-block bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+              {post.data.tags[0]}
+            </span>
           </div>
         )}
 
@@ -87,6 +82,23 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
       <article class="prose max-w-none mx-auto lg:prose-lg dark:prose-invert prose-img:rounded-xl md:prose-img:rounded-2xl prose-img:w-full prose-img:h-auto prose-img:object-contain prose-p:text-[17px] prose-p:leading-relaxed md:prose-p:text-lg">
         <Content />
       </article>
+
+      {/* Tags Footer Section */}
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="mt-12 pt-6 border-t border-outline-variant/30">
+          <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-on-surface-variant">
+            <Tag class="w-4 h-4 text-primary" />
+            <span>Related Topics:</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {post.data.tags.map((tag: string) => (
+              <span class="bg-surface-container-high border border-outline-variant px-3 py-1.5 rounded-xl text-xs font-medium text-on-surface hover:border-primary/50 transition-colors">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   </article>
