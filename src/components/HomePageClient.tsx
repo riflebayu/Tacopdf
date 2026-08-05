@@ -15,7 +15,7 @@ function HomePageContent() {
 
       {/* Hero Section — uses useLanguage() so all 7 languages render correctly */}
       <section
-        className="relative pt-10 pb-10 md:pt-16 md:pb-20 px-4 text-center w-full flex flex-col items-center justify-center overflow-hidden max-md:bg-[#0B0F19]"
+        className="relative pt-10 pb-10 md:pt-16 md:pb-20 px-4 text-center w-full flex flex-col items-center justify-center overflow-hidden max-md:bg-gradient-to-b max-md:from-primary/10 max-md:to-background max-md:border-b max-md:border-outline-variant/30"
         id="beranda-atas"
       >
         {/* Subtle Radial Glow */}

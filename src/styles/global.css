@@ -108,8 +108,14 @@ img {
 
 .popular-glow-card {
   position: relative;
-  animation: calmGlow 4s infinite ease-in-out;
   background: linear-gradient(135deg, rgba(42, 40, 36, 0.7) 0%, rgba(30, 26, 18, 0.6) 100%) !important;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+@media (min-width: 768px) {
+  .popular-glow-card {
+    animation: calmGlow 4s infinite ease-in-out;
+  }
 }
 
 .popular-glow-card:hover {

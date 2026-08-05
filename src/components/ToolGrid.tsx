@@ -68,11 +68,8 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
             {setting.badge.toUpperCase()}
           </span>
         ) : isPopular ? (
-          <span className="absolute -top-2.5 left-3 bg-gradient-to-r from-amber-500/30 via-orange-500/20 to-amber-500/30 text-amber-300 border border-amber-500/50 text-[10px] md:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-md md:backdrop-blur-md z-10 flex items-center gap-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-            </span>
-            {t('badge.popular', '🔥 Popular Tool')}
+          <span className="absolute -top-3 left-4 bg-amber-500 text-amber-950 border border-amber-400 text-[10px] md:text-[11px] font-extrabold px-3 py-0.5 rounded-full shadow-sm z-10 flex items-center gap-1.5 uppercase tracking-wide">
+            🔥 {t('badge.popular', 'Popular Tool')}
           </span>
         ) : null}
         <div className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 md:p-4 lg:p-5 flex-shrink-0 mb-0 md:mb-5 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
