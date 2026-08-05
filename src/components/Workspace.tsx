@@ -2619,19 +2619,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   </div>
 
                   <div id="signature-pad-container" className="space-y-4 scroll-mt-28">
-                    {/* MOBILE ONLY RUN BUTTON */}
-                    <div className="lg:hidden w-full mb-4">
-                      {processingState.status !== 'processing' && processingState.status !== 'success' && (
-                        <button
-                          onClick={handleProcess}
-                          disabled={(uploadedFiles.length === 0) || (uploadedFiles.some(f => lockedFileIds.has(f.id)))}
-                          className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          <TacoIcon name={tool.icon} size={24} />
-                          {`${t('workspace.btn.run')} ${t(`tool_name.sign`, tool.name)}`}
-                        </button>
-                      )}
-                    </div>
                     <SignaturePad onSave={setSignatureData} />
                   </div>
 
@@ -3188,7 +3175,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     <button
                       onClick={handleProcess}
                       disabled={(uploadedFiles.length === 0 && tool.id !== 'html-to-pdf') || (tool.id === 'unlock' && uploadedFiles.some(f => !lockedFileIds.has(f.id))) || (tool.id !== 'unlock' && uploadedFiles.some(f => lockedFileIds.has(f.id)))}
-                      className={`w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${tool.id === 'sign' ? 'hidden lg:flex' : ''}`}
+                      className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <TacoIcon name={tool.icon} size={32} />
                       {tool.id === 'html-to-pdf' ? t('workspace.btn.compile') : tool.id === 'add-watermark' ? (t('workspace.btn.save_download') || 'Save & Download PDF') : `${t('workspace.btn.run')} ${t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}`}
