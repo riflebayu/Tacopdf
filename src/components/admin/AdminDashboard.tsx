@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight, LogOut, Lock, Trash2, Edit3, Settings } from 'lucide-react';
+import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, X, Search, FileText, Globe2, LayoutDashboard, ChevronRight, LogOut, Lock, Trash2, Edit3, Settings, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { auth } from '../../utils/firebase';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
@@ -44,12 +44,49 @@ export default function AdminDashboard() {
   const [loadingArticles, setLoadingArticles] = useState(false);
   const [deletingArticle, setDeletingArticle] = useState<string | null>(null);
 
+  // API Key Pool State
+  const [apiKeys, setApiKeys] = useState<any[]>([]);
+  const [loadingApiKeys, setLoadingApiKeys] = useState(false);
+
+  const fetchApiKeys = async () => {
+    setLoadingApiKeys(true);
+    try {
+      const res = await fetch('/api/api-status');
+      const data = await res.json();
+      if (data.keys) setApiKeys(data.keys);
+    } catch (err) {
+      console.error('Failed to fetch API key status', err);
+    } finally {
+      setLoadingApiKeys(false);
+    }
+  };
+
+  const resetApiKeys = async () => {
+    setLoadingApiKeys(true);
+    try {
+      const res = await fetch('/api/api-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset' })
+      });
+      const data = await res.json();
+      if (data.keys) setApiKeys(data.keys);
+    } catch (err) {
+      console.error('Failed to reset API keys', err);
+    } finally {
+      setLoadingApiKeys(false);
+    }
+  };
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
+      if (currentUser) {
+        fetchApiKeys();
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -343,7 +380,79 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-6xl mx-auto px-6 mt-10">
+      <main className="relative z-10 max-w-6xl mx-auto px-6 mt-8">
+        {/* Gemini API Key Pool Health Widget */}
+        <div className="bg-surface-container border border-outline-variant rounded-2xl p-5 mb-8 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-on-surface">Gemini API Key Pool (Auto-Fallback System)</h3>
+                <p className="text-xs text-on-surface-variant">Real-time status of your API Keys for article generation</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={fetchApiKeys}
+                disabled={loadingApiKeys}
+                className="text-xs px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant transition-all flex items-center gap-1.5 font-medium border border-outline-variant"
+                title="Refresh Status"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingApiKeys ? 'animate-spin' : ''}`} />
+                <span>Refresh</span>
+              </button>
+              <button 
+                onClick={resetApiKeys}
+                disabled={loadingApiKeys}
+                className="text-xs px-3 py-1.5 rounded-xl bg-primary/15 hover:bg-primary/25 text-primary transition-all font-semibold border border-primary/30"
+                title="Reset Limit Flags"
+              >
+                Reset Limits
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            {apiKeys.length > 0 ? (
+              apiKeys.map((item) => (
+                <div 
+                  key={item.id} 
+                  className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${
+                    item.status === 'ACTIVE'
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                      : item.status === 'LIMIT'
+                      ? 'bg-red-500/10 border-red-500/30 text-red-400'
+                      : 'bg-surface-container-low border-outline-variant/40 text-on-surface-variant'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs font-bold mb-1">
+                    <span>API #{item.id}</span>
+                    <span className={`w-2 h-2 rounded-full ${
+                      item.status === 'ACTIVE'
+                        ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+                        : item.status === 'LIMIT'
+                        ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+                        : 'bg-zinc-500'
+                    }`} />
+                  </div>
+                  <div className="text-[10px] opacity-75 font-mono truncate mb-1">
+                    {item.maskedKey}
+                  </div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider">
+                    {item.status === 'ACTIVE' ? '🟢 Active' : item.status === 'LIMIT' ? '🔴 Limit' : '⚪ Standby'}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-xs text-on-surface-variant py-3 bg-surface-container-low rounded-xl border border-dashed border-outline-variant">
+                Standard single API Key mode active. Set <code className="text-primary font-mono bg-primary/10 px-1.5 py-0.5 rounded">GEMINI_API_KEYS="key1,key2,key3..."</code> in <code className="text-primary font-mono">.env</code> to activate 6-Key Pool.
+              </div>
+            )}
+          </div>
+        </div>
+
         {activeTab === 'generate' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
