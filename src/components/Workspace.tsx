@@ -45,11 +45,15 @@ const MobileDraggableItem = ({
         {/* DRAG HANDLE */}
         {isDraggableList && !isLocked && (
           <div
-            onPointerDown={(e) => controls.start(e)}
+            onPointerDown={(e) => {
+              // Ensure we stop propagation so other handlers don't swallow the event
+              e.stopPropagation();
+              controls.start(e);
+            }}
             style={{ touchAction: 'none' }}
-            className="p-3 -ml-2 text-on-surface-variant/70 cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface-variant rounded touch-none flex items-center justify-center"
+            className="p-3 -ml-2 text-on-surface-variant cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface rounded-lg touch-none flex items-center justify-center bg-surface-variant/30"
           >
-            <GripVertical size={24} />
+            <GripVertical size={24} className="pointer-events-none" />
           </div>
         )}
 
