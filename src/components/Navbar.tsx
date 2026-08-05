@@ -110,7 +110,7 @@ function NavbarContent({ activeToolId }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#14120E]/95 sm:bg-[#14120E]/70 sm:backdrop-blur-md border-b border-white/10 transition-colors duration-300 w-full">
+    <header className="sticky top-0 z-50 bg-[#14120E]/95 sm:bg-[#14120E]/70 sm:backdrop-blur-md border-b border-white/10 w-full">
       <div className="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">
         {/* Logo */}
         <LocalizedLink to="/" className="flex items-center gap-2 md:gap-3 cursor-pointer group hover:opacity-90 transition-opacity" onClick={handleGoHome}>
