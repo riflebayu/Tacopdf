@@ -389,8 +389,15 @@ export default function AdminDashboard() {
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-on-surface">Gemini API Key Pool (Auto-Fallback System)</h3>
-                <p className="text-xs text-on-surface-variant">Real-time status of your API Keys for article generation</p>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-on-surface">Gemini API Key Pool</h3>
+                  {apiKeys.length > 0 && (
+                    <span className="bg-primary/15 text-primary border border-primary/30 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">
+                      {apiKeys.length} Keys Active
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-on-surface-variant mt-0.5">Real-time status of your API Keys for automatic article failover</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
