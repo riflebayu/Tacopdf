@@ -2404,7 +2404,18 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     <div className="relative w-full">
                       {tool.id === 'merge' && uploadedFiles.length === 1 && (
                         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/80 backdrop-blur-md">
-                          <div className="bg-surface-container-high border border-outline-variant rounded-3xl p-8 shadow-2xl text-center max-w-[90%] w-96 mx-auto animate-in fade-in zoom-in duration-300">
+                          <div className="relative bg-surface-container-high border border-outline-variant rounded-3xl p-8 shadow-2xl text-center max-w-[90%] w-96 mx-auto animate-in fade-in zoom-in duration-300">
+                            {/* Hidden file input wrapped in the X button to act exactly like 'Upload lagi?' */}
+                            <label className="absolute top-4 right-4 p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-full cursor-pointer transition-colors active:scale-95">
+                              <X className="w-5 h-5" />
+                              <input 
+                                type="file" 
+                                className="hidden" 
+                                accept=".pdf,application/pdf"
+                                multiple
+                                onChange={handleFileChange}
+                              />
+                            </label>
                             <AlertCircle className="w-12 h-12 text-primary mx-auto mb-3" />
                             <h3 className="text-lg font-bold text-on-surface mb-2">
                               {t('workspace.merge.need_more') || 'Upload minimal 2 file'}
