@@ -2190,22 +2190,20 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  <div className="bg-surface-container-high px-4 py-2 border-b border-outline-variant text-xs font-bold text-on-surface-variant flex items-center gap-2">
                    <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
                  </div>
-                 <div className="overflow-y-auto overflow-x-hidden flex justify-center bg-gray-100/50 dark:bg-black/20 w-full max-w-full h-[500px]">
-                    <div style={{ width: 0, display: 'flex', justifyContent: 'center' }}>
+                 <div className="overflow-y-auto overflow-x-auto flex justify-start sm:justify-center bg-gray-100/50 dark:bg-black/20 w-full max-w-full h-[500px] p-4 sm:p-8">
                       <div
                         id="html-to-pdf-render-target"
-                        className="bg-white text-black shadow-sm ring-1 ring-gray-900/5 mt-4"
+                        className="bg-white text-black shadow-sm ring-1 ring-gray-900/5 shrink-0"
                         style={{
                           width: '794px',
                           minHeight: '1123px',
                           padding: '40px',
-                          transform: 'scale(var(--preview-scale, 0.8))',
-                          transformOrigin: 'top center',
-                          marginBottom: 'var(--preview-mb, -220px)'
+                          transform: isMobile ? 'scale(0.8)' : 'scale(1)',
+                          transformOrigin: 'top left',
+                          marginBottom: isMobile ? '-220px' : '0'
                         }}
                         dangerouslySetInnerHTML={{ __html: htmlContent }}
                       />
-                    </div>
                  </div>
               </div>
             </div>
