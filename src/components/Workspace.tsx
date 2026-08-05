@@ -1985,6 +1985,19 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
   return (
     <div className="w-full">
+      <style>{`
+        .slider-thumb-only {
+          pointer-events: none !important;
+        }
+        .slider-thumb-only::-webkit-slider-thumb {
+          pointer-events: auto !important;
+          pointer-events: all !important;
+        }
+        .slider-thumb-only::-moz-range-thumb {
+          pointer-events: auto !important;
+          pointer-events: all !important;
+        }
+      `}</style>
 
       <div className={`flex ${tool.id === 'sign' && uploadedFiles.length > 0 ? 'flex-col-reverse' : 'flex-col'} lg:grid lg:grid-cols-12 gap-8 items-start w-full min-w-0 max-w-full overflow-hidden`}>
         <div className="lg:col-span-7 space-y-6 w-full min-w-0 max-w-full">
@@ -2772,7 +2785,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="360"
                       value={watermarkRotation}
                       onChange={(e) => setWatermarkRotation(Number(e.target.value))}
-                      className="w-[80%] h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -2862,7 +2875,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="48"
                       value={numberSize}
                       onChange={(e) => setNumberSize(Number(e.target.value))}
-                      className="w-[80%] h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
