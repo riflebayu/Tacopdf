@@ -160,14 +160,22 @@ async function runWithApiFallback<T>(fn: (genAI: GoogleGenerativeAI) => Promise<
       return result;
     } catch (err: any) {
       const errorMessage = err?.message || String(err);
+      console.warn(`[AI Pool] API #${activeKeyItem.id} threw an error: ${errorMessage}`);
+      
       const isQuotaError = 
         errorMessage.includes('429') || 
+        errorMessage.includes('503') || 
+        errorMessage.includes('403') || 
+        errorMessage.includes('500') || 
         errorMessage.includes('RESOURCE_EXHAUSTED') || 
         errorMessage.toLowerCase().includes('quota') ||
-        errorMessage.toLowerCase().includes('rate limit');
+        errorMessage.toLowerCase().includes('rate limit') ||
+        errorMessage.toLowerCase().includes('overloaded') ||
+        errorMessage.toLowerCase().includes('fetch failed') ||
+        errorMessage.toLowerCase().includes('internal error');
 
       if (isQuotaError) {
-        console.error(`[AI Pool] API #${activeKeyItem.id} hit quota/rate limit! Marking as LIMIT and falling back to next key...`);
+        console.error(`[AI Pool] API #${activeKeyItem.id} hit quota/server error! Marking as LIMIT and falling back...`);
         activeKeyItem.status = 'LIMIT';
         activeKeyItem.lastLimitTime = Date.now();
         attempts++;
@@ -227,7 +235,7 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 export async function generateArticle(topic: string, language: string, promptOverride: string) {
   return runWithApiFallback(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-pro-latest',
+      model: 'gemini-flash-latest',
       generationConfig: {
         temperature: 0.95,
         responseMimeType: "application/json",
