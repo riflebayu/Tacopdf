@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw, GripVertical } from 'lucide-react';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import JSZip from 'jszip';
 import html2canvas from 'html2canvas';
@@ -12,7 +12,7 @@ import LucideIcon from './LucideIcon';
 import SignaturePad from './SignaturePad';
 import { useLanguage } from '../context/LanguageContext';
 import { createBrowserQpdfRunner } from 'qpdf-run';
-import { motion, AnimatePresence, Reorder, useMotionValue } from 'motion/react';
+import { motion, AnimatePresence, Reorder, useMotionValue, useDragControls } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
 
@@ -20,6 +20,119 @@ const qpdfWasmUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.wasm'
 const qpdfJsUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.js';
 const qpdfWorkerCode = `importScripts('https://unpkg.com/qpdf-run@0.2.1/src/worker.js');`;
 const qpdfWorkerUrl = typeof window !== 'undefined' ? URL.createObjectURL(new Blob([qpdfWorkerCode], { type: 'application/javascript' })) : '';
+
+const MobileDraggableItem = ({
+  file,
+  i,
+  isLocked,
+  isDraggableList,
+  fileThumbnails,
+  t,
+  formatBytes,
+  setPreviewFileUrl,
+  setPreviewFileName,
+  uploadedFiles,
+  setUploadedFiles,
+  removeFile,
+  tool
+}: any) => {
+  const controls = useDragControls();
+
+  return (
+    <Reorder.Item key={file.id} value={file} dragListener={false} dragControls={controls}>
+      <div className={`flex items-center gap-2 sm:gap-3 p-3 border rounded-xl group transition-colors ${isLocked ? 'bg-red-500/5 border-red-500/30' : 'bg-surface-container-low border-outline-variant hover:border-primary/30'}`}>
+        
+        {/* DRAG HANDLE */}
+        {isDraggableList && !isLocked && (
+          <div
+            onPointerDown={(e) => controls.start(e)}
+            style={{ touchAction: 'none' }}
+            className="p-1.5 -ml-1.5 text-on-surface-variant/50 cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface-variant rounded touch-none"
+          >
+            <GripVertical size={18} />
+          </div>
+        )}
+
+        <div className={`w-10 h-10 flex shrink-0 items-center justify-center rounded-lg overflow-hidden ${isLocked ? 'bg-red-500/20 text-red-500' : 'bg-primary-container/20 text-primary'}`}>
+          {fileThumbnails[file.id] ? (
+            <img src={fileThumbnails[file.id]} className="w-full h-full object-cover pointer-events-none" alt="" />
+          ) : (
+            <LucideIcon name={isLocked ? 'Lock' : 'File'} size={20} />
+          )}
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-on-surface truncate" title={file.file.name}>{file.file.name}</p>
+          <p className="text-[10px] text-on-surface-variant flex items-center gap-1">
+            {formatBytes(file.file.size)}
+            {isLocked && <span className="text-red-500 font-bold">🔒 {t('file.locked') || 'Locked'}</span>}
+          </p>
+        </div>
+        
+        <div className="flex gap-0.5 sm:gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+          {file.type === 'application/pdf' && !isLocked && (
+            <button
+              title={t('workspace.file.preview') || 'Preview File'}
+              onClick={async () => {
+                const bytes = await file.file.arrayBuffer();
+                const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                setPreviewFileUrl(url);
+                setPreviewFileName(file.file.name);
+              }}
+              className="p-1.5 hover:bg-primary-container/20 rounded-lg text-primary-container transition-colors"
+            >
+              <LucideIcon name="Eye" size={15} />
+            </button>
+          )}
+          {uploadedFiles.length > 1 && i > 0 && (
+            <button onClick={() => {
+              const newFiles = [...uploadedFiles];
+              [newFiles[i-1], newFiles[i]] = [newFiles[i], newFiles[i-1]];
+              setUploadedFiles(newFiles);
+            }} className="p-1.5 hover:bg-surface-variant rounded-lg text-on-surface-variant">
+              <LucideIcon name="ArrowUp" size={15} />
+            </button>
+          )}
+          <button onClick={() => removeFile(file.id)} className="p-1.5 hover:bg-red-500/10 rounded-lg text-red-400">
+            <LucideIcon name="X" size={15} />
+          </button>
+        </div>
+      </div>
+      
+      {isLocked && tool.id !== 'unlock' && (
+        <div className="mt-1 mx-1 px-3 py-2 bg-red-500/10 border border-red-500/50 rounded-lg shadow-[0_0_10px_rgba(239,68,68,0.4)] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]">
+          <div className="flex items-start gap-1.5 text-red-500">
+            <LucideIcon name="AlertTriangle" size={14} className="shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed font-medium">
+              {t('file.locked.notice') || 'File encrypted. Please decrypt it using the Unlock PDF tool first.'}
+            </p>
+          </div>
+        </div>
+      )}
+      {!isLocked && tool.id === 'unlock' && (
+        <div className="mt-1 mx-1 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div className="flex items-start gap-1.5 text-red-500">
+            <LucideIcon name="AlertCircle" size={14} className="shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed font-medium">
+              {t('file.not_locked.notice', 'File ini tidak bersandi dan tidak dapat diproses.')}
+            </p>
+          </div>
+        </div>
+      )}
+      {isLocked && tool.id === 'unlock' && (
+        <div className="mt-1 mx-1 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg">
+          <div className="flex items-start gap-1.5 text-green-600 dark:text-green-400">
+            <LucideIcon name="ShieldCheck" size={14} className="shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed font-medium">
+              {t('file.ready_unlock.notice', 'File bersandi terdeteksi. Siap untuk diproses.')}
+            </p>
+          </div>
+        </div>
+      )}
+    </Reorder.Item>
+  );
+};
 
 const WatermarkPreview = ({
   thumbnailUrl,
@@ -837,6 +950,12 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 if (tool.id === 'image-to-pdf') {
                   newFileThumbnails[fileObj.id] = URL.createObjectURL(fileObj.file);
                 } else {
+                  // Quick skip for mobile merge when there are many files (prevents 10s lag)
+                  if (tool.id === 'merge' && isMobile && uploadedFiles.length > 3) {
+                     // We intentionally leave it blank. The UI will fall back to a generic file icon instantly.
+                     continue;
+                  }
+
                   const pdfBytes = await fileObj.file.arrayBuffer();
                   const loadParams: any = { data: new Uint8Array(pdfBytes) };
                   const loadingTask = pdfjsLib.getDocument(loadParams);
@@ -2334,87 +2453,22 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       // Default Vertical List Item (for all other tools + Mobile Merge)
                       const isDraggableList = (tool.id === 'merge' || tool.id === 'image-to-pdf') && isMobile;
                       return (
-                        <Reorder.Item key={file.id} value={file} dragListener={isDraggableList && !isLocked}>
-                          <div className={`flex items-center gap-3 p-3 border rounded-xl group transition-colors ${isLocked ? 'bg-red-500/5 border-red-500/30' : 'bg-surface-container-low border-outline-variant hover:border-primary/30'} ${isDraggableList ? 'cursor-grab active:cursor-grabbing' : ''}`}>
-                            <div className={`w-10 h-10 flex shrink-0 items-center justify-center rounded-lg overflow-hidden ${isLocked ? 'bg-red-500/20 text-red-500' : 'bg-primary-container/20 text-primary'}`}>
-                              {fileThumbnails[file.id] ? (
-                                <img src={fileThumbnails[file.id]} className="w-full h-full object-cover pointer-events-none" alt="" />
-                              ) : (
-                                <LucideIcon name={isLocked ? 'Lock' : 'File'} size={20} />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-on-surface truncate" title={file.file.name}>{file.file.name}</p>
-                              <p className="text-[10px] text-on-surface-variant flex items-center gap-1">
-                                {formatBytes(file.file.size)}
-                                {isLocked && <span className="text-red-500 font-bold">🔒 {t('file.locked') || 'Locked'}</span>}
-                              </p>
-                            </div>
-                            <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                              {/* Eye button -> preview PDF */}
-                              {file.type === 'application/pdf' && !isLocked && (
-                                <button
-                                  title={t('workspace.file.preview') || 'Preview File'}
-                                  onClick={async () => {
-                                    const bytes = await file.file.arrayBuffer();
-                                    const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
-                                    const url = URL.createObjectURL(blob);
-                                    setPreviewFileUrl(url);
-                                    setPreviewFileName(file.file.name);
-                                  }}
-                                  className="p-1.5 hover:bg-primary-container/20 rounded-lg text-primary-container transition-colors"
-                                >
-                                  <LucideIcon name="Eye" size={15} />
-                                </button>
-                              )}
-                              {uploadedFiles.length > 1 && i > 0 && (
-                                <button onClick={() => {
-                                  const newFiles = [...uploadedFiles];
-                                  [newFiles[i-1], newFiles[i]] = [newFiles[i], newFiles[i-1]];
-                                  setUploadedFiles(newFiles); // Changed this to setUploadedFiles directly instead of addFiles!
-                                }} className="p-1.5 hover:bg-surface-variant rounded-lg text-on-surface-variant">
-                                  <LucideIcon name="ArrowUp" size={15} />
-                                </button>
-                              )}
-                              {((tool.id !== 'merge' && tool.id !== 'image-to-pdf' && tool.id !== 'html-to-pdf') || 
-                              ((tool.id === 'merge' || tool.id === 'image-to-pdf') && uploadedFiles.length >= 1)) && (
-                                <button onClick={() => removeFile(file.id)} className="p-1.5 hover:bg-red-500/10 rounded-lg text-red-400">
-                                  <LucideIcon name="X" size={15} />
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          {isLocked && tool.id !== 'unlock' && (
-                            <div className="mt-1 mx-1 px-3 py-2 bg-red-500/10 border border-red-500/50 rounded-lg shadow-[0_0_10px_rgba(239,68,68,0.4)] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]">
-                              <div className="flex items-start gap-1.5 text-red-500">
-                                <LucideIcon name="AlertTriangle" size={14} className="shrink-0 mt-0.5" />
-                                <p className="text-xs leading-relaxed font-medium">
-                                  {t('file.locked.notice') || 'File encrypted. Please decrypt it using the Unlock PDF tool first.'}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                          {!isLocked && tool.id === 'unlock' && (
-                            <div className="mt-1 mx-1 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-lg">
-                              <div className="flex items-start gap-1.5 text-red-500">
-                                <LucideIcon name="AlertCircle" size={14} className="shrink-0 mt-0.5" />
-                                <p className="text-xs leading-relaxed font-medium">
-                                  {t('file.not_locked.notice', 'File ini tidak bersandi dan tidak dapat diproses.')}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                          {isLocked && tool.id === 'unlock' && (
-                            <div className="mt-1 mx-1 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg">
-                              <div className="flex items-start gap-1.5 text-green-600 dark:text-green-400">
-                                <LucideIcon name="ShieldCheck" size={14} className="shrink-0 mt-0.5" />
-                                <p className="text-xs leading-relaxed font-medium">
-                                  {t('file.ready_unlock.notice', 'File bersandi terdeteksi. Siap untuk diproses.')}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </Reorder.Item>
+                        <MobileDraggableItem
+                          key={file.id}
+                          file={file}
+                          i={i}
+                          isLocked={isLocked}
+                          isDraggableList={isDraggableList}
+                          fileThumbnails={fileThumbnails}
+                          t={t}
+                          formatBytes={formatBytes}
+                          setPreviewFileUrl={setPreviewFileUrl}
+                          setPreviewFileName={setPreviewFileName}
+                          uploadedFiles={uploadedFiles}
+                          setUploadedFiles={setUploadedFiles}
+                          removeFile={removeFile}
+                          tool={tool}
+                        />
                       );
                     })}
                   </Reorder.Group>
