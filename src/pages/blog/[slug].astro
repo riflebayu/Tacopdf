@@ -33,10 +33,10 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
 
       {/* Header */}
       <header class="mb-8 md:mb-12">
-        {/* 1. Primary Category Badge */}
+        {/* 1. Primary Category Badge (Right Aligned & Small) */}
         {post.data.tags && post.data.tags.length > 0 && (
-          <div class="mb-3">
-            <span class="inline-block bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+          <div class="flex justify-end mb-3">
+            <span class="inline-block bg-primary/10 text-primary border border-primary/20 text-[10px] md:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
               {post.data.tags[0]}
             </span>
           </div>
