@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw, GripVertical } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw, ArrowUpDown } from 'lucide-react';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import JSZip from 'jszip';
 import html2canvas from 'html2canvas';
@@ -51,9 +51,9 @@ const MobileDraggableItem = ({
               controls.start(e);
             }}
             style={{ touchAction: 'none' }}
-            className="p-3 -ml-2 text-on-surface-variant cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface rounded-lg touch-none flex items-center justify-center bg-surface-variant/30"
+            className="p-3 -ml-2 text-amber-500 cursor-grab active:cursor-grabbing hover:bg-amber-500/20 rounded-lg touch-none flex items-center justify-center bg-amber-500/10 shadow-[0_0_12px_rgba(245,158,11,0.25)] animate-pulse"
           >
-            <GripVertical size={24} className="pointer-events-none" />
+            <ArrowUpDown size={24} className="pointer-events-none" />
           </div>
         )}
 
