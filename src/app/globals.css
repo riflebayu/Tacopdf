@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .slider-thumb-only {
+    pointer-events: none;
+  }
+  .slider-thumb-only::-webkit-slider-thumb {
+    pointer-events: auto;
+  }
+  .slider-thumb-only::-moz-range-thumb {
+    pointer-events: auto;
+  }
+}
+
 :root {
   /* Default Colors (Taco Dark Warm Theme) */
   --color-bg-base: #17130a;

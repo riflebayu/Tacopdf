@@ -1990,7 +1990,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         <div className="lg:col-span-7 space-y-6">
           {tool.id === 'html-to-pdf' ? (
             /* HTML Editor Block */
-            <div className="bg-surface-container border border-outline-variant rounded-xl p-6 space-y-4">
+            <div className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 space-y-4 w-full overflow-hidden">
               <div className="flex justify-between items-center">
                 <label className="text-sm font-semibold text-on-surface">{t('workspace.html.title')}</label>
                 <select
@@ -2024,7 +2024,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  <div className="bg-surface-container-high px-4 py-2 border-b border-outline-variant text-xs font-bold text-on-surface-variant flex items-center gap-2">
                    <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
                  </div>
-                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-start sm:justify-center max-h-[500px]">
+                 <div className="overflow-x-auto p-4 bg-gray-100/50 dark:bg-black/20 flex justify-start sm:justify-center max-h-[500px] w-full max-w-full">
                     <div
                       id="html-to-pdf-render-target"
                       className="bg-white text-black shadow-sm ring-1 ring-gray-900/5"
@@ -2224,12 +2224,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         </div>
                       </motion.div>
                     )}
-                    <motion.div 
+                    <Reorder.Group 
                       id="file-list-container"
+                      axis="y"
+                      values={uploadedFiles}
+                      onReorder={setUploadedFiles}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 grid grid-cols-1 gap-3 mt-6"}
+                      className={(tool.id === 'merge' || tool.id === 'image-to-pdf') ? "scroll-mt-28 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6" : "scroll-mt-28 flex flex-col gap-3 mt-6"}
                     >
                     {uploadedFiles.map((file, i) => {
                       const isLocked = lockedFileIds.has(file.id);
@@ -2237,16 +2240,13 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       if (tool.id === 'merge' || tool.id === 'image-to-pdf') {
                         // Merge or Image-to-PDF Tool Visual Grid Item
                         return (
-                          <div 
+                          <Reorder.Item 
                             key={file.id}
-                            draggable={!isLocked && !isMobile}
-                            onDragStart={(e) => handleCardDragStart(e, file.id)}
-                            onDragEnd={handleCardDragEnd}
-                            onDragOver={(e) => handleCardDragOver(e, file.id)}
-                            onDrop={(e) => handleCardDrop(e, file.id)}
-                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-all ${isLocked ? 'border-red-500/30' : `border-outline-variant hover:border-primary/50 ${isMobile ? '' : 'cursor-move'}`} ${dragOverFileId === file.id ? 'scale-105 border-primary shadow-lg ring-2 ring-primary/50 ring-offset-2 ring-offset-surface' : ''}`}
+                            value={file}
+                            dragListener={!isLocked}
+                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-colors ${isLocked ? 'border-red-500/30' : 'border-outline-variant hover:border-primary/50 cursor-grab active:cursor-grabbing'}`}
                           >
-                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden">
+                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden pointer-events-none">
                               {fileThumbnails[file.id] ? (
                                 <img src={fileThumbnails[file.id]} alt={file.file.name} className="w-full h-full object-contain pointer-events-none" />
                               ) : (
@@ -2284,51 +2284,20 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                   </button>
                                 </div>
 
-                                {isMobile && uploadedFiles.length > 1 && (
-                                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 opacity-100 transition-opacity z-10">
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (i > 0) {
-                                          const newFiles = [...uploadedFiles];
-                                          [newFiles[i-1], newFiles[i]] = [newFiles[i], newFiles[i-1]];
-                                          setUploadedFiles(newFiles);
-                                        }
-                                      }}
-                                      disabled={i === 0}
-                                      className={`p-2 rounded-lg shadow-md transition-colors ${i === 0 ? 'bg-surface-container-high/90 text-on-surface/30 cursor-not-allowed' : 'bg-primary/95 hover:bg-primary text-on-primary active:scale-95'}`}
-                                    >
-                                      <LucideIcon name="ArrowLeft" size={16} />
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (i < uploadedFiles.length - 1) {
-                                          const newFiles = [...uploadedFiles];
-                                          [newFiles[i], newFiles[i+1]] = [newFiles[i+1], newFiles[i]];
-                                          setUploadedFiles(newFiles);
-                                        }
-                                      }}
-                                      disabled={i === uploadedFiles.length - 1}
-                                      className={`p-2 rounded-lg shadow-md transition-colors ${i === uploadedFiles.length - 1 ? 'bg-surface-container-high/90 text-on-surface/30 cursor-not-allowed' : 'bg-primary/95 hover:bg-primary text-on-primary active:scale-95'}`}
-                                    >
-                                      <LucideIcon name="ArrowRight" size={16} />
-                                    </button>
-                                  </div>
-                                )}
+                                </div>
                             </div>
                             
-                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px]">
+                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px] pointer-events-none">
                               <p className="text-[11px] font-semibold text-on-surface truncate w-full px-1" title={file.file.name}>{file.file.name}</p>
                               {isLocked && <p className="text-[9px] text-red-500 font-bold">{t('file.locked') || 'Locked'}</p>}
                             </div>
-                          </div>
+                          </Reorder.Item>
                         );
                       }
 
                       // Default Vertical List Item (for all other tools)
                       return (
-                        <div key={file.id}>
+                        <Reorder.Item key={file.id} value={file} dragListener={false}>
                           <div className={`flex items-center gap-3 p-3 border rounded-xl group transition-colors ${isLocked ? 'bg-red-500/5 border-red-500/30' : 'bg-surface-container-low border-outline-variant hover:border-primary/30'}`}>
                             <div className={`p-2 rounded-lg ${isLocked ? 'bg-red-500/20 text-red-500' : 'bg-primary-container/20 text-primary'}`}>
                               <LucideIcon name={isLocked ? 'Lock' : 'File'} size={20} />
@@ -2366,7 +2335,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                   <LucideIcon name="ArrowUp" size={15} />
                                 </button>
                               )}
-                              {((tool.id !== 'merge' && tool.id !== 'image-to-pdf' && tool.id !== 'html-to-pdf' && tool.id !== 'sign') || 
+                              {((tool.id !== 'merge' && tool.id !== 'image-to-pdf' && tool.id !== 'html-to-pdf') || 
                               ((tool.id === 'merge' || tool.id === 'image-to-pdf') && uploadedFiles.length >= 1)) && (
                                 <button onClick={() => removeFile(file.id)} className="p-1.5 hover:bg-red-500/10 rounded-lg text-red-400">
                                   <LucideIcon name="X" size={15} />
@@ -2404,10 +2373,10 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                               </div>
                             </div>
                           )}
-                        </div>
+                        </Reorder.Item>
                       );
                     })}
-                  </motion.div>
+                  </Reorder.Group>
                   </>
                 )}
               </AnimatePresence>
@@ -2468,7 +2437,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                     className="absolute inset-0 bg-white/40 z-20 flex items-center justify-center cursor-pointer backdrop-blur-[1px] transition-all hover:bg-white/20"
                                     onClick={() => setActiveRedactPage(pageNum)}
                                   >
-                                    <div className="bg-surface shadow-lg text-on-surface text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2 pointer-events-none">
+                                    <div className="bg-gray-900 text-white dark:bg-black shadow-lg text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2 pointer-events-none">
                                       <LucideIcon name="PenTool" size={16} /> {t('tool.redact.edit_page') || 'Edit Page'}
                                     </div>
                                   </div>
@@ -2765,7 +2734,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="144"
                       value={watermarkSize}
                       onChange={(e) => setWatermarkSize(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -2782,7 +2751,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       step="0.05"
                       value={watermarkOpacity}
                       onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -2798,7 +2767,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="360"
                       value={watermarkRotation}
                       onChange={(e) => setWatermarkRotation(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -2888,7 +2857,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="48"
                       value={numberSize}
                       onChange={(e) => setNumberSize(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
+                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
