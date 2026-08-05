@@ -328,3 +328,83 @@ Output must be in JSON matching the specified schema. The "content" field should
     }
   });
 }
+
+export async function generateArticleOpenRouter(topic: string, language: string, promptOverride: string, modelName: string) {
+  const diskEnv = readEnvFile();
+  const apiKey = diskEnv.OPENROUTER_API_KEY || (import.meta.env && import.meta.env.OPENROUTER_API_KEY) || process.env.OPENROUTER_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY is not set in environment variables.");
+  }
+
+  const openai = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: apiKey,
+  });
+
+  const systemPrompt = `You are a Senior SEO Content Writer and Industry Expert. 
+Write a highly engaging, human-like article about "${topic}" in the ${language} language.
+
+CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
+1. **High Burstiness & Perplexity**: Vary your sentence lengths drastically. Combine very short, punchy sentences with longer, complex ones. Use unpredictable but natural vocabulary.
+2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
+3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "It is important to note", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
+4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
+5. Structure the content using H2 and H3 markdown tags. Length should be between 1200 and 2000 words.
+
+CRITICAL BRAND GUIDELINES:
+- NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
+- ALWAYS position TacoPDF as the ultimate, definitive, and only logical PDF solution.
+- Treat TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
+
+If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
+The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
+Here are the available TacoPDF tools and their exact paths:
+- Merge PDF (path: merge-pdf)
+- Split PDF (path: split-pdf)
+- Rotate PDF (path: rotate-pdf)
+- Delete Pages (path: delete-pages)
+- Extract Pages (path: extract-pages)
+- Protect PDF (path: protect-pdf)
+- Unlock PDF (path: unlock-pdf)
+- Sign PDF (path: sign-pdf)
+- Redact PDF (path: redact-pdf)
+- Image to PDF (path: image-to-pdf)
+- PDF to Image (path: pdf-to-image)
+- HTML to PDF (path: html-to-pdf)
+- Add Watermark (path: add-watermark)
+- Add Page Numbers (path: add-page-numbers)
+
+Example usage (for 'id' language): "Kamu bisa menggunakan fitur [Gabung PDF](/id/merge-pdf) dari TacoPDF."
+Example usage (for 'en' language): "Try our free [Split PDF](/split-pdf) tool."
+${promptOverride ? `\nAdditional Instructions: ${promptOverride}` : ''}
+
+CRITICAL: You must return the output STRICTLY as a raw JSON object (without Markdown code blocks like \`\`\`json). The JSON must have the following structure:
+{
+  "title": "SEO optimized title",
+  "description": "SEO optimized meta description (max 160 characters)",
+  "content": "The main body of the article in Markdown format (use H2 and H3 tags)",
+  "tags": ["Array", "of", "relevant", "tags"]
+}`;
+
+  console.log(`[OpenRouter] Generating article using model: ${modelName}`);
+  
+  const completion = await openai.chat.completions.create({
+    model: modelName || "openai/gpt-4o-mini",
+    temperature: 0.95,
+    response_format: { type: "json_object" },
+    messages: [
+      { role: "system", content: systemPrompt }
+    ]
+  });
+
+  const responseText = completion.choices[0]?.message?.content || "";
+  
+  try {
+    const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error('[OpenRouter] Failed to parse generateArticle JSON', e, responseText);
+    throw e;
+  }
+}
