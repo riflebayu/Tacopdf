@@ -53,21 +53,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode, initialLang
     try {
       localStorage.setItem('tacopdf-language', code);
     } catch (_) {}
-
-    let newPath = location.pathname;
     
-    // Strip current lang prefix if exists
-    if (lang !== 'en') {
-      newPath = newPath.replace(new RegExp(`^/${lang}`), '') || '/';
-    }
-    
-
-    // Prepend new lang prefix if it's not English
-    if (code !== 'en') {
-      newPath = `/${code}${newPath === '/' ? '' : newPath}`;
-    }
-    
-    navigate(newPath + location.search + location.hash);
+    // Navigation is handled natively by the <a> tag href (getLanguageHref in Navbar)
+    // to prevent race conditions and ensure correct SEO hydration.
   };
 
   const t = (key: string, fallback?: string): string => {

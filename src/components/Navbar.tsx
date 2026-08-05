@@ -10,9 +10,10 @@ import { LanguageProvider, useLanguage, LANGUAGES } from '../context/LanguageCon
 
 interface NavbarProps {
   activeToolId?: string | null;
+  currentPath?: string;
 }
 
-function NavbarContent({ activeToolId }: NavbarProps) {
+function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
   const { lang, t, setLang, currentLanguage } = useLanguage();
   const location = useLocation();
   const [isToolsOpen, setIsToolsOpen] = useState(false);
@@ -21,16 +22,16 @@ function NavbarContent({ activeToolId }: NavbarProps) {
 
   // Build proper <a> href for each language (for SEO crawlability)
   const getLanguageHref = (targetLangCode: string) => {
-    let currentPath = location.pathname;
+    let path = currentPath || location.pathname;
     // Strip current language prefix if present
     if (lang !== 'en') {
-      currentPath = currentPath.replace(new RegExp(`^/${lang}`), '') || '/';
+      path = path.replace(new RegExp(`^/${lang}`), '') || '/';
     }
     // Prepend target language prefix
     if (targetLangCode === 'en') {
-      return currentPath || '/';
+      return path || '/';
     }
-    return `/${targetLangCode}${currentPath === '/' ? '' : currentPath}`;
+    return `/${targetLangCode}${path === '/' ? '' : path}`;
   };
 
   // Close dropdowns only on significant scroll (mobile UX fix for touch wobble)

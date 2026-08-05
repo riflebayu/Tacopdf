@@ -7,7 +7,8 @@ import LocalizedLink from './LocalizedLink';
 import { getToolSeoPath } from '../data/tools';
 
 interface FooterProps {
-  // Navigation is handled natively by LocalizedLink
+  initialLang?: string;
+  currentPath?: string;
 }
 
 function FooterContent(props: FooterProps) {
