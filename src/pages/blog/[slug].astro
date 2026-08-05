@@ -43,9 +43,16 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
         )}
 
         {/* 2. Main Title */}
-        <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-on-surface mb-6 leading-tight">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-4 leading-tight">
           {post.data.title}
         </h1>
+
+        {/* 2b. Subtitle / Description (Informatif) */}
+        {post.data.description && (
+          <p class="text-base md:text-lg text-on-surface-variant/90 font-normal leading-relaxed mb-6">
+            {post.data.description}
+          </p>
+        )}
 
         {/* 3. Metadata (Author & Date) */}
         <div class="flex flex-wrap items-center gap-3 text-sm md:text-base font-medium text-on-surface-variant">
