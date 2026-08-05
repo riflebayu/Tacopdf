@@ -1294,6 +1294,9 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Melayani masyarakat dunia dengan sekuat tenaga.",
   },
   "es": {
+    "workspace.merge.need_more": "Sube al menos 2 archivos",
+    "workspace.merge.need_more_desc": "Esta herramienta requiere un mínimo de dos archivos PDF para fusionar.",
+    "workspace.merge.upload_more": "¿Subir más?",
     "blog.title": "Blog | TacoPDF",
     "badge.popular": "🔥 Herramienta Popular",
     "blog.description": "Noticias globales sobre documentos, guías inteligentes y consejos prácticos para un flujo de trabajo de PDF fluido",
@@ -1917,6 +1920,9 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "workspace.merge.need_more": "少なくとも2つのファイルをアップロードしてください",
+    "workspace.merge.need_more_desc": "このツールは、マージするために少なくとも2つのPDFファイルを必要とします。",
+    "workspace.merge.upload_more": "さらにアップロードしますか？",
     "blog.title": "ブログ | TacoPDF",
     "blog.description": "グローバルなドキュメントニュース、スマートなガイド、シームレスなPDFワークフローのための実践的なヒント",
     "blog.header.latest": "最新の",
@@ -2563,6 +2569,9 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "workspace.merge.need_more": "Faça o upload de pelo menos 2 arquivos",
+    "workspace.merge.need_more_desc": "Esta ferramenta requer no mínimo dois arquivos PDF para mesclar.",
+    "workspace.merge.upload_more": "Fazer upload de mais?",
     "blog.title": "Blog | TacoPDF",
     "badge.popular": "🔥 Ferramenta Popular",
     "blog.description": "Notícias globais de documentos, guias inteligentes e dicas práticas para um fluxo de trabalho PDF perfeito",
@@ -3203,6 +3212,9 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "workspace.merge.need_more": "Bitte laden Sie mindestens 2 Dateien hoch",
+    "workspace.merge.need_more_desc": "Dieses Tool benötigt mindestens zwei PDF-Dateien zum Zusammenführen.",
+    "workspace.merge.upload_more": "Mehr hochladen?",
     "blog.title": "Blog | TacoPDF",
     "blog.description": "Globale Dokumenten-News, smarte Anleitungen und praktische Tipps für einen reibungslosen PDF-Workflow",
     "blog.header.latest": "Neueste ",
@@ -3851,6 +3863,9 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "workspace.merge.need_more": "Veuillez télécharger au moins 2 fichiers",
+    "workspace.merge.need_more_desc": "Cet outil nécessite un minimum de deux fichiers PDF à fusionner.",
+    "workspace.merge.upload_more": "Télécharger plus ?",
     "blog.title": "Blog | TacoPDF",
     "blog.description": "Actualités mondiales sur les documents, guides intelligents et conseils pratiques pour un flux de travail PDF fluide",
     "blog.header.latest": "Dernières ",
