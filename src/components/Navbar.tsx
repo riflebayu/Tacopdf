@@ -292,10 +292,10 @@ function NavbarContent({ activeToolId }: NavbarProps) {
       </div>
 
       {/* Mobile Drawer — always in DOM for SEO crawlability */}
-      <div className={`md:hidden bg-surface-container-low overflow-hidden transition-all duration-200 ${
-        isMobileMenuOpen ? 'max-h-[80vh] opacity-100 border-t border-outline-variant' : 'max-h-0 opacity-0'
+      <div className={`md:hidden absolute top-full left-0 right-0 bg-surface-container-low border-b border-outline-variant/30 shadow-2xl overflow-hidden origin-top transition-all duration-200 ease-out z-[90] ${
+        isMobileMenuOpen ? 'opacity-100 visible scale-y-100 pointer-events-auto' : 'opacity-0 invisible scale-y-95 pointer-events-none'
       }`}>
-        <div className="p-3 space-y-3">
+        <div className="p-4 space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between items-center pb-1.5 border-b border-outline-variant/50">
               <span className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{t('nav.tools')}</span>
