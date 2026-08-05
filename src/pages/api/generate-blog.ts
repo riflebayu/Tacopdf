@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { generateArticle } from '../../utils/ai';
+import { generateArticle, generateArticleOpenRouter } from '../../utils/ai';
 import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
@@ -21,6 +21,8 @@ export const POST: APIRoute = async ({ request }) => {
     const image = formData.get('image') as File;
     const prompt = formData.get('prompt') as string;
     const language = formData.get('language') as string;
+    const provider = formData.get('provider') as string || 'gemini';
+    const openrouterModel = formData.get('openrouterModel') as string || 'openai/gpt-4o-mini';
 
     if (!topic || !image || !language) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -47,9 +49,14 @@ export const POST: APIRoute = async ({ request }) => {
     const imageWebPath = `/images/blog/${imageFilename}`;
 
     // 2. Generate Content via AI
-    const articleData = await generateArticle(topic, language, prompt);
+    let articleData;
+    if (provider === 'openrouter') {
+      articleData = await generateArticleOpenRouter(topic, language, prompt, openrouterModel);
+    } else {
+      articleData = await generateArticle(topic, language, prompt);
+    }
     
-    if (!articleData.title || !articleData.content) {
+    if (!articleData || !articleData.title || !articleData.content) {
        throw new Error('AI returned invalid format.');
     }
 

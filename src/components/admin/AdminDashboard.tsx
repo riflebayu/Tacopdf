@@ -30,6 +30,8 @@ export default function AdminDashboard() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(['en']);
+  const [provider, setProvider] = useState<'gemini' | 'openrouter'>('gemini');
+  const [openrouterModel, setOpenrouterModel] = useState<string>('openai/gpt-4o-mini');
   
   const [ideasLoading, setIdeasLoading] = useState(false);
   const [ideas, setIdeas] = useState<string[]>([]);
@@ -74,6 +76,24 @@ export default function AdminDashboard() {
       if (data.keys) setApiKeys(data.keys);
     } catch (err) {
       console.error('Failed to reset API keys', err);
+    } finally {
+      setLoadingApiKeys(false);
+    }
+  };
+
+  const handleSetActiveApi = async (id: number) => {
+    if (loadingApiKeys) return;
+    setLoadingApiKeys(true);
+    try {
+      const res = await fetch('/api/api-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set-active', id })
+      });
+      const data = await res.json();
+      if (data.keys) setApiKeys(data.keys);
+    } catch (err) {
+      console.error('Failed to set active API key', err);
     } finally {
       setLoadingApiKeys(false);
     }
@@ -187,6 +207,8 @@ export default function AdminDashboard() {
       formData.append('image', image);
       formData.append('prompt', prompt);
       formData.append('language', lang);
+      formData.append('provider', provider);
+      formData.append('openrouterModel', openrouterModel);
 
       try {
         const res = await fetch('/api/generate-blog', {
@@ -470,7 +492,7 @@ export default function AdminDashboard() {
                 <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">Special Supporter</span>
               </div>
               <p className="text-xs text-on-surface-variant/90 mt-1 italic leading-relaxed">
-                "Semangat terus kodingnya ya! Tika selalu mendukung & bangga sama kamu. Bikin proyek TacoPDF makin hebat! ✨"
+                "Semangat terus kodingnya masbayu! aku selalu mendukung & bangga sama kamu mas. lopyuu Bikin proyek TacoPDF makin hebat! ✨"
               </p>
             </div>
           </div>
@@ -541,8 +563,11 @@ export default function AdminDashboard() {
             {apiKeys.length > 0 ? (
               apiKeys.map((item) => (
                 <div 
-                  key={item.id} 
-                  className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${
+                  key={item.id}
+                  onClick={() => item.status !== 'ACTIVE' && handleSetActiveApi(item.id)}
+                  className={`p-3 rounded-xl border flex flex-col justify-between transition-all group ${
+                    item.status !== 'ACTIVE' ? 'cursor-pointer hover:border-primary/50 hover:bg-primary/5' : ''
+                  } ${
                     item.status === 'ACTIVE'
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                       : item.status === 'LIMIT'
@@ -741,6 +766,58 @@ export default function AdminDashboard() {
           {/* Right Column: Execution */}
           <div className="lg:col-span-5 space-y-6">
             
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="bg-surface-container border border-outline-variant rounded-2xl p-6 shadow-md mb-6"
+            >
+              <h2 className="text-lg font-semibold flex items-center gap-2 text-on-surface mb-5">
+                <Sparkles className="w-5 h-5 text-primary" />
+                AI Provider Setup
+              </h2>
+
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 gap-3">
+                  <label 
+                    className={`relative flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-all border text-sm font-bold
+                      ${provider === 'gemini' ? 'bg-primary-container border-primary text-on-primary-container' : 'bg-surface-container-high border-outline text-on-surface-variant hover:border-outline-variant'}`}
+                  >
+                    <input type="radio" name="provider" value="gemini" checked={provider === 'gemini'} onChange={() => setProvider('gemini')} className="hidden" />
+                    Gemini (Pool)
+                  </label>
+                  <label 
+                    className={`relative flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-all border text-sm font-bold
+                      ${provider === 'openrouter' ? 'bg-primary-container border-primary text-on-primary-container' : 'bg-surface-container-high border-outline text-on-surface-variant hover:border-outline-variant'}`}
+                  >
+                    <input type="radio" name="provider" value="openrouter" checked={provider === 'openrouter'} onChange={() => setProvider('openrouter')} className="hidden" />
+                    OpenRouter
+                  </label>
+                </div>
+
+                <AnimatePresence>
+                  {provider === 'openrouter' && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <label className="block text-xs font-medium text-on-surface-variant mb-2 mt-2">OpenRouter Model String</label>
+                      <input 
+                        type="text" 
+                        value={openrouterModel}
+                        onChange={(e) => setOpenrouterModel(e.target.value)}
+                        placeholder="e.g. openai/gpt-4o-mini"
+                        className="w-full bg-surface-container-highest border border-outline rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-inner"
+                      />
+                      <p className="text-[10px] text-on-surface-variant mt-1.5 opacity-80">Default: openai/gpt-4o-mini (Ensure your OpenRouter key has credits)</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getApiKeyStatuses, resetApiKeyStatuses } from '../../utils/ai';
+import { getApiKeyStatuses, resetApiKeyStatuses, setActiveApiKey } from '../../utils/ai';
 
 export const prerender = false;
 
@@ -24,6 +24,12 @@ export const POST: APIRoute = async ({ request }) => {
     if (body.action === 'reset') {
       const statuses = resetApiKeyStatuses();
       return new Response(JSON.stringify({ message: 'All limits reset', keys: statuses }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } else if (body.action === 'set-active' && body.id) {
+      const statuses = setActiveApiKey(body.id);
+      return new Response(JSON.stringify({ keys: statuses }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });

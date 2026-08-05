@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 
@@ -104,6 +105,18 @@ export function resetApiKeyStatuses() {
     item.status = idx === currentActiveIndex ? 'ACTIVE' : 'STANDBY';
     item.lastLimitTime = undefined;
   });
+  return getApiKeyStatuses();
+}
+
+export function setActiveApiKey(id: number) {
+  initKeyPool();
+  const index = keyPool.findIndex(k => k.id === id);
+  if (index !== -1) {
+    currentActiveIndex = index;
+    keyPool.forEach((item, idx) => {
+      item.status = idx === currentActiveIndex ? 'ACTIVE' : (item.status === 'LIMIT' ? 'LIMIT' : 'STANDBY');
+    });
+  }
   return getApiKeyStatuses();
 }
 
