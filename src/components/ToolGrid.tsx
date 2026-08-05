@@ -47,7 +47,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
 
   const POPULAR_TOOL_IDS = ['merge', 'split', 'protect', 'pdf-to-image'];
 
-  const renderToolCard = (tool: typeof TOOLS[0]) => {
+  const renderToolCard = (tool: typeof TOOLS[0], isFavoriteSection: boolean = false) => {
     const isFav = favorites.includes(tool.id);
     const setting = toolSettings?.[tool.id] || { enabled: true, badge: '' };
     const isPopular = POPULAR_TOOL_IDS.includes(tool.id);
@@ -58,9 +58,11 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
         className={`tool-card w-full text-left cursor-pointer flex flex-row md:flex-col items-center md:items-start p-3 md:p-5 rounded-xl md:rounded-2xl border relative h-full transition-all group ${
-          isPopular
-            ? 'popular-glow-card'
-            : 'bg-[#2A2824]/50 border-white/10 hover:bg-[#2A2824]/80'
+          isFavoriteSection
+            ? 'bg-amber-950/30 border-amber-500/30 hover:bg-amber-900/50 hover:border-amber-500/50 shadow-[inset_0_0_15px_rgba(245,158,11,0.05)]'
+            : isPopular
+              ? 'popular-glow-card'
+              : 'bg-[#2A2824]/50 border-white/10 hover:bg-[#2A2824]/80'
         }`}
       >
         {setting.badge ? (
@@ -119,7 +121,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
             {favorites.map(favId => {
               const tool = TOOLS.find(t => t.id === favId);
-              return tool ? renderToolCard(tool) : null;
+              return tool ? renderToolCard(tool, true) : null;
             })}
           </div>
         </div>
@@ -132,7 +134,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.manipulation')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
-          {getToolsByCategory('manipulation').map(renderToolCard)}
+          {getToolsByCategory('manipulation').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -142,7 +144,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.security')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
-          {getToolsByCategory('security').map(renderToolCard)}
+          {getToolsByCategory('security').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -152,7 +154,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.conversion')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
-          {getToolsByCategory('conversion').map(renderToolCard)}
+          {getToolsByCategory('conversion').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -162,7 +164,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.editing')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-4 mb-10">
-          {getToolsByCategory('editing').map(renderToolCard)}
+          {getToolsByCategory('editing').map(t => renderToolCard(t, false))}
         </div>
       </div>
     </section>
