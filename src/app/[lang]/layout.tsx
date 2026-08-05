@@ -31,9 +31,10 @@ export default async function RootLayout({
 }>) {
   const { lang } = await params;
   return (
-    <html lang={lang}>
+    <html lang={lang} style={{ backgroundColor: '#17130a', color: '#ece1d1' }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ backgroundColor: '#17130a', color: '#ece1d1' }}
       >
         <ClientLayoutWrapper initialLang={lang}>
           {children}
