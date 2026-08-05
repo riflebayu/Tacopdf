@@ -2527,7 +2527,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   
 
                   {!isGeneratingThumbnails && visualThumbnails.length > 0 ? (
-                    <div className="flex flex-col gap-8 items-center bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-8 max-h-[70vh] overflow-y-auto overflow-x-auto">
+                    <div className="flex flex-col gap-8 items-center bg-surface-container-lowest border border-outline-variant rounded-xl p-4 pb-28 sm:p-8 lg:pb-8 max-h-[70vh] overflow-y-auto overflow-x-auto">
                       {visualThumbnails.map((thumb, idx) => {
                         const pageNum = idx + 1;
                         return (
@@ -2623,7 +2623,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   </div>
 
                   {!isGeneratingThumbnails && visualThumbnails.length > 0 ? (
-                    <div className="flex flex-col gap-8 items-center bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-8 max-h-[70vh] overflow-y-auto">
+                    <div className="flex flex-col gap-8 items-center bg-surface-container-lowest border border-outline-variant rounded-xl p-4 pb-28 sm:p-8 lg:pb-8 max-h-[70vh] overflow-y-auto">
                       {visualThumbnails.map((thumb, idx) => {
                         const pageNum = idx + 1;
                         return (
