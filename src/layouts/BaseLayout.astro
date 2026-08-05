@@ -25,13 +25,15 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <Analytics />
     <SpeedInsights />
   </head>
-  <body class="antialiased text-on-surface bg-background overflow-x-hidden min-h-screen flex flex-col">
-    <Navbar client:load initialLang={lang} />
-    
-    <div class="flex-1 w-full flex flex-col">
-      <slot />
-    </div>
+  <body class="antialiased text-on-surface bg-background min-h-screen flex flex-col">
+    <div class="flex-1 w-full flex flex-col overflow-x-hidden">
+      <Navbar client:load initialLang={lang} />
+      
+      <div class="flex-1 w-full flex flex-col">
+        <slot />
+      </div>
 
-    <Footer client:load initialLang={lang} />
+      <Footer client:load initialLang={lang} />
+    </div>
   </body>
 </html>

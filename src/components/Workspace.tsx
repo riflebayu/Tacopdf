@@ -842,7 +842,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   const loadingTask = pdfjsLib.getDocument(loadParams);
                   const pdf = await loadingTask.promise;
                   const page = await pdf.getPage(1);
-                  const viewport = page.getViewport({ scale: 0.5 });
+                  // Use much lower resolution on mobile to save GPU/memory
+                  const viewport = page.getViewport({ scale: isMobile ? 0.2 : 0.5 });
                   const canvas = document.createElement('canvas');
                   const context = canvas.getContext('2d');
                   if (context) {
@@ -850,6 +851,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     canvas.width = viewport.width;
                     await page.render({ canvasContext: context, viewport }).promise;
                     newFileThumbnails[fileObj.id] = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    // Yield back to the main thread briefly so the UI doesn't freeze
+                    if (isMobile) {
+                      await new Promise(resolve => setTimeout(resolve, 15));
+                    }
                   }
                 }
               } catch (err) {
