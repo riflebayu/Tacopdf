@@ -2191,20 +2191,21 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                    <LucideIcon name="Eye" size={14} /> {t('workspace.preview.live') || 'Live Preview'}
                  </div>
                  <div className="overflow-y-auto overflow-x-hidden flex justify-center bg-gray-100/50 dark:bg-black/20 w-full max-w-full h-[500px]">
-                    <div style={{ width: 0, display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ width: isMobile ? '278px' : '636px', height: isMobile ? '394px' : '899px', position: 'relative', flexShrink: 0, marginTop: '1rem' }}>
                       <div
                         id="html-to-pdf-render-target"
-                        className="shadow-sm ring-1 ring-gray-900/5 mt-4"
+                        className="shadow-sm ring-1 ring-gray-900/5"
                         style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
                           width: '794px',
                           minHeight: '1123px',
                           padding: '40px',
-                          flexShrink: 0,
                           backgroundColor: '#ffffff',
                           color: '#000000',
-                          transform: 'scale(var(--preview-scale, 0.8))',
-                          transformOrigin: 'top center',
-                          marginBottom: 'var(--preview-mb, -220px)'
+                          transform: `scale(${isMobile ? 0.35 : 0.8})`,
+                          transformOrigin: 'top left'
                         }}
                         dangerouslySetInnerHTML={{ __html: htmlContent }}
                       />
