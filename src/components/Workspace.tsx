@@ -2264,10 +2264,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                           <Reorder.Item 
                             key={file.id}
                             value={file}
-                            dragListener={!isLocked}
-                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-colors ${isLocked ? 'border-red-500/30' : 'border-outline-variant hover:border-primary/50 cursor-grab active:cursor-grabbing'}`}
+                            dragListener={false} // Disable Reorder's buggy grid drag
+                            draggable={!isLocked} // Use stable HTML5 drag
+                            onDragStart={(e: any) => handleCardDragStart(e, file.id)}
+                            onDragEnd={handleCardDragEnd}
+                            onDragOver={(e: any) => handleCardDragOver(e, file.id)}
+                            onDrop={(e: any) => handleCardDrop(e, file.id)}
+                            className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-all duration-200 ${isLocked ? 'border-red-500/30' : 'border-outline-variant hover:border-primary/50 cursor-grab active:cursor-grabbing'} ${dragOverFileId === file.id ? 'scale-105 shadow-xl ring-2 ring-primary border-primary z-10' : ''}`}
                           >
-                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden">
+                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden pointer-events-none">
                               {fileThumbnails[file.id] ? (
                                 <img src={fileThumbnails[file.id]} alt={file.file.name} className="w-full h-full object-contain pointer-events-none" />
                               ) : (
@@ -2280,7 +2285,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                 {i + 1}
                               </div>
                               
-                                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity pointer-events-auto">
                                   {!isLocked && (
                                     <button
                                       title={t('workspace.file.preview') || 'Preview File'}
@@ -2292,21 +2297,21 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                         setPreviewFileUrl(url);
                                         setPreviewFileName(file.file.name);
                                       }}
-                                      className="p-1.5 bg-primary-container/90 hover:bg-primary-container text-on-primary-container rounded-lg transition-colors backdrop-blur-sm shadow-sm"
+                                      className="p-1.5 bg-primary-container/90 hover:bg-primary-container text-on-primary-container rounded-lg transition-colors shadow-sm"
                                     >
                                       <LucideIcon name="Eye" size={14} />
                                     </button>
                                   )}
                                   <button 
                                     onClick={(e) => { e.stopPropagation(); removeFile(file.id); }}
-                                    className="p-1.5 bg-red-500/90 hover:bg-red-500 text-white rounded-lg transition-colors backdrop-blur-sm shadow-sm"
+                                    className="p-1.5 bg-red-500/90 hover:bg-red-500 text-white rounded-lg transition-colors shadow-sm"
                                   >
                                     <LucideIcon name="X" size={14} />
                                   </button>
                                 </div>
                             </div>
                             
-                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px]">
+                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px] pointer-events-none">
                               <p className="text-[11px] font-semibold text-on-surface truncate w-full px-1" title={file.file.name}>{file.file.name}</p>
                               {isLocked && <p className="text-[9px] text-red-500 font-bold">{t('file.locked') || 'Locked'}</p>}
                             </div>
