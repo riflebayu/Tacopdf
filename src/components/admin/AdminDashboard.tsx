@@ -39,6 +39,7 @@ export default function AdminDashboard() {
 
   const [generating, setGenerating] = useState(false);
   const [statusMap, setStatusMap] = useState<Record<string, 'pending' | 'loading' | 'success' | 'error'>>({});
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const [articles, setArticles] = useState<any[]>([]);
   const [loadingArticles, setLoadingArticles] = useState(false);
@@ -177,6 +178,7 @@ export default function AdminDashboard() {
     });
     setStatusMap(initialStatus);
 
+    let hasSuccess = false;
     for (const lang of selectedLanguages) {
       setStatusMap(prev => ({ ...prev, [lang]: 'loading' }));
       
@@ -198,6 +200,7 @@ export default function AdminDashboard() {
         }
         
         setStatusMap(prev => ({ ...prev, [lang]: 'success' }));
+        hasSuccess = true;
       } catch (err: any) {
         console.error(`Error generating for ${lang}:`, err);
         alert(`Error for ${lang}: ` + err.message);
@@ -206,6 +209,10 @@ export default function AdminDashboard() {
     }
     
     setGenerating(false);
+    if (hasSuccess) {
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 7000);
+    }
   };
 
   const fetchArticles = async () => {
@@ -347,6 +354,14 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {/* Tika Motivation Header Badge */}
+            <div className="hidden md:flex items-center gap-2.5 bg-rose-500/10 border border-rose-500/30 px-3 py-1.5 rounded-full shadow-sm text-xs font-semibold text-rose-300">
+              <div className="relative w-6 h-6 rounded-full overflow-hidden border border-rose-400 shrink-0">
+                <img src="/tika.png" alt="Tika" className="w-full h-full object-cover" />
+              </div>
+              <span>Semangat Koding! ❤️ Tika</span>
+            </div>
+
             <div className="hidden sm:flex items-center gap-2 bg-surface-container-high border border-outline px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant shadow-sm">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {user.email}
@@ -381,6 +396,86 @@ export default function AdminDashboard() {
       </header>
 
       <main className="relative z-10 max-w-6xl mx-auto px-6 mt-8">
+        
+        {/* Success Celebration Overlay */}
+        <AnimatePresence>
+          {showCelebration && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center overflow-hidden bg-background/60 backdrop-blur-sm"
+            >
+              <motion.div
+                initial={{ scale: 0, opacity: 0, rotate: -15, y: 50 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0, y: 0 }}
+                exit={{ scale: 0, opacity: 0, rotate: 15, y: 50 }}
+                transition={{ type: "spring", bounce: 0.6, duration: 0.8 }}
+                className="relative"
+              >
+                <div className="absolute inset-0 animate-pulse bg-rose-500/30 blur-[60px] rounded-full" />
+                <img 
+                  src="/tika.png" 
+                  alt="Tika Success" 
+                  className="w-56 h-56 md:w-72 md:h-72 object-cover rounded-full border-[6px] border-rose-500 shadow-[0_0_50px_rgba(244,63,94,0.6)] relative z-10"
+                />
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-rose-500 text-white px-8 py-2.5 rounded-full font-black shadow-xl text-xl border-[3px] border-white z-20"
+                >
+                  Yeay! Sukses! ❤️
+                </motion.div>
+              </motion.div>
+              
+              {/* Floating Hearts Array */}
+              {[...Array(30)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ 
+                    top: '100%', 
+                    left: `${Math.random() * 100}%`,
+                    scale: Math.random() * 1.5 + 0.5,
+                    opacity: 1
+                  }}
+                  animate={{ 
+                    top: '-20%',
+                    rotate: Math.random() * 360,
+                    opacity: 0
+                  }}
+                  transition={{ 
+                    duration: Math.random() * 3 + 2,
+                    delay: Math.random() * 0.5,
+                    ease: 'easeOut'
+                  }}
+                  className="absolute text-5xl text-rose-500 drop-shadow-lg"
+                >
+                  ❤️
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Daily Motivation Booster Card */}
+        <div className="bg-gradient-to-r from-rose-950/40 via-surface-container to-surface-container border border-rose-500/30 rounded-2xl p-5 mb-6 shadow-md flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-rose-400/60 shadow-lg shrink-0">
+              <img src="/tika.png" alt="Tika & Kamu" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-on-surface">Daily Motivation Booster 💕</h3>
+                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">Special Supporter</span>
+              </div>
+              <p className="text-xs text-on-surface-variant/90 mt-1 italic leading-relaxed">
+                "Semangat terus kodingnya ya! Tika selalu mendukung & bangga sama kamu. Bikin proyek TacoPDF makin hebat! ✨"
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Gemini API Key Pool Health Widget */}
         <div className="bg-surface-container border border-outline-variant rounded-2xl p-5 mb-8 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-outline-variant/30">

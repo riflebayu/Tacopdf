@@ -227,8 +227,9 @@ Return the result strictly as a JSON array of strings. Do not include markdown f
 export async function generateArticle(topic: string, language: string, promptOverride: string) {
   return runWithApiFallback(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-flash-latest',
+      model: 'gemini-1.5-pro-latest',
       generationConfig: {
+        temperature: 0.95,
         responseMimeType: "application/json",
         responseSchema: {
           type: SchemaType.OBJECT,
@@ -256,11 +257,15 @@ export async function generateArticle(topic: string, language: string, promptOve
       }
     });
 
-    const systemPrompt = `You are a Senior SEO Content Writer. 
+    const systemPrompt = `You are a Senior SEO Content Writer and Industry Expert. 
 Write a highly engaging, human-like article about "${topic}" in the ${language} language.
-Use high burstiness and perplexity. Avoid AI cliches (e.g., 'In conclusion', 'Delve into', 'It is important to note').
-Use H2 and H3 markdown tags for structuring the content. 
-Ensure the content is deeply informative, solving a specific problem. Length should be between 1200 and 2000 words.
+
+CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
+1. **High Burstiness & Perplexity**: Vary your sentence lengths drastically. Combine very short, punchy sentences with longer, complex ones. Use unpredictable but natural vocabulary.
+2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
+3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "It is important to note", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
+4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
+5. Structure the content using H2 and H3 markdown tags. Length should be between 1200 and 2000 words.
 
 CRITICAL BRAND GUIDELINES:
 - NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
