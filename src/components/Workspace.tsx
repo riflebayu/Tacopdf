@@ -1233,6 +1233,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
     });
   };
 
+  // Helper to yield back to main thread and prevent mobile CPU freeze / overheating
+  const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 15));
+
   // Build the processing request
   const handleProcess = async (overridePass?: string | any) => {
     const actualPass = typeof overridePass === 'string' ? overridePass : undefined;
@@ -1261,6 +1264,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           const srcPdf = await loadPdf(fileBytes, actualPass);
           const copiedPages = await mergedPdf.copyPages(srcPdf, srcPdf.getPageIndices());
           copiedPages.forEach((page) => mergedPdf.addPage(page));
+          await yieldToMain();
         }
         outputBytes = await mergedPdf.save();
         outName = 'merged_taco.pdf';
@@ -1288,6 +1292,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           splitPdf.addPage(copied);
           const pageBytes = await splitPdf.save();
           zip.file(`split_page_${pageIndex + 1}.pdf`, pageBytes);
+          await yieldToMain();
         }
 
         outputBytes = await zip.generateAsync({ type: 'uint8array' });
@@ -1310,13 +1315,14 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           throw new Error(t('error.select_pages_rotate') || 'Please select pages to rotate.');
         }
 
-        Object.entries(pageRotations).forEach(([idxStr, rot]) => {
+        for (const [idxStr, rot] of Object.entries(pageRotations)) {
           const idx = parseInt(idxStr);
           if (rot % 360 !== 0 && allPages[idx]) {
             const currentRot = allPages[idx].getRotation().angle;
             allPages[idx].setRotation(degrees(currentRot + rot));
           }
-        });
+          await yieldToMain();
+        }
 
         outputBytes = await srcPdf.save();
         outName = `rotated_taco.pdf`;
@@ -1446,6 +1452,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           const y = (pHeight - h) / 2;
 
           page.drawImage(embedImg, { x, y, width: w, height: h });
+          await yieldToMain();
         }
         outputBytes = await imgPdf.save();
         outName = 'converted_images.pdf';
@@ -1486,6 +1493,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               const mimeType = imageFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
               const quality = imageFormat === 'jpeg' ? 0.95 : undefined;
               urls.push(canvas.toDataURL(mimeType, quality));
+              
+              // Yield back to main thread and trigger garbage collection if possible
+              await yieldToMain();
             }
           }
           
@@ -1578,22 +1588,14 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
            boxesByPage[box.pageNum].push(box);
         });
 
-        Object.keys(boxesByPage).forEach(pageNumStr => {
+        for (const pageNumStr of Object.keys(boxesByPage)) {
            const pageNum = parseInt(pageNumStr);
            const page = pages[pageNum - 1];
-           if (!page) return;
+           if (!page) continue;
            
            const { width: pWidth, height: pHeight } = page.getSize();
            
-           // We need the visual container width/height to map coordinates.
-           // Since we don't have direct access to DOM from here easily, we rely on the fact that
-           // visualThumbnails are rendered. But actually, we don't know the exact pixel width of the container during processFiles.
-           // However, the container uses CSS `w-full max-w-2xl`.
-           // A better approach is to store the container dimensions when drawing.
-           // Since we didn't, let's assume the standard aspect ratio and calculate scale based on the page dimensions.
-           // Wait, this is tricky. Let's inject a data attribute with the width during render, or just find it in DOM.
            boxesByPage[pageNum].forEach(box => {
-                // pdf-lib origin is bottom-left, DOM origin is top-left
                 const pdfX = box.x * pWidth;
                 const pdfY = pHeight - ((box.y + box.height) * pHeight);
                 const pdfWidth = box.width * pWidth;
@@ -1607,7 +1609,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  color: rgb(0, 0, 0),
               });
            });
-        });
+           await yieldToMain();
+        }
         
         outputBytes = await srcPdf.save();
         outName = 'redacted_taco.pdf';
@@ -1648,6 +1651,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             outPdf.addPage(copiedPage);
             const pageBytes = await outPdf.save();
             zip.file(`page_${pageIndex + 1}.pdf`, pageBytes);
+            await yieldToMain();
           }
           
           const zipContent = await zip.generateAsync({ type: "uint8array" });
@@ -1674,7 +1678,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         // Exact metric for Helvetica Bold ascent
         const textHeight = watermarkSize * 0.718; 
         
-        allPages.forEach((page) => {
+        for (let i = 0; i < allPages.length; i++) {
+          const page = allPages[i];
           const { width, height } = page.getSize();
           const pageRotation = page.getRotation().angle || 0;
 
@@ -1707,7 +1712,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             opacity: watermarkOpacity,
             rotate: degrees(actualRotation),
           });
-        });
+          await yieldToMain();
+        }
 
         outputBytes = await srcPdf.save();
         outName = 'watermarked_taco.pdf';
@@ -1731,7 +1737,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const p1Str = t('tool.page_num.format_2').replace('1', ''); // e.g. "Page " or "Halaman "
         const pOfStr = t('tool.page_num.format_3').replace('1', '').replace('10', '').trim(); // e.g. "of" or "dari"
 
-        allPages.forEach((page, idx) => {
+        for (let idx = 0; idx < allPages.length; idx++) {
+          const page = allPages[idx];
           const { width, height } = page.getSize();
           
           let pStr = numberFormat
@@ -1776,7 +1783,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             font: font,
             color: rgb(r, g, b),
           });
-        });
+          await yieldToMain();
+        }
 
         outputBytes = await srcPdf.save();
         outName = 'numbered_taco.pdf';
@@ -1816,6 +1824,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
              const y = pHeight - (sig.y * pHeight) - (dims.height / 2);
              
              page.drawImage(signatureImage, { x, y, width: dims.width, height: dims.height });
+             await yieldToMain();
           }
         } else {
           // Legacy flow fallback (single signature dragged)
@@ -1836,7 +1845,10 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             page.drawImage(signatureImage, { x, y, width: dims.width, height: dims.height });
           };
           if (applyToAllPages) {
-            for (const page of pages) { await applySig(page); }
+            for (const page of pages) { 
+              await applySig(page); 
+              await yieldToMain();
+            }
           } else {
             const targetIndex = Math.max(0, Math.min(pages.length - 1, signTargetPage - 1));
             await applySig(pages[targetIndex]);
