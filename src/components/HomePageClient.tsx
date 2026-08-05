@@ -19,7 +19,7 @@ function HomePageContent() {
         id="beranda-atas"
       >
         {/* Subtle Radial Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[300px] bg-[#fbbf24] opacity-15 blur-[80px] rounded-full pointer-events-none z-0" />
+        <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[300px] bg-[#fbbf24] opacity-15 blur-[80px] rounded-full pointer-events-none z-0" />
         
         <div className="max-w-4xl mx-auto relative z-10">
           <h1 className="text-balance text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-on-surface mb-3 md:mb-6 leading-tight tracking-tight">
