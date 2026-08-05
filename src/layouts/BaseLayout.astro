@@ -14,7 +14,7 @@ interface Props {
 
 const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang = "en" } = Astro.props;
 ---
-<html lang={lang}>
+<html lang={lang} style="background-color: #17130a; color: #ece1d1;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +25,7 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <Analytics />
     <SpeedInsights />
   </head>
-  <body class="antialiased text-on-surface bg-background min-h-screen flex flex-col">
+  <body class="antialiased text-on-surface bg-background min-h-screen flex flex-col" style="background-color: #17130a; color: #ece1d1;">
     <div class="flex-1 w-full flex flex-col overflow-x-hidden">
       <Navbar client:load initialLang={lang} />
       
