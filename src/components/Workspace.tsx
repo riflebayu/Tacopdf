@@ -47,9 +47,9 @@ const MobileDraggableItem = ({
           <div
             onPointerDown={(e) => controls.start(e)}
             style={{ touchAction: 'none' }}
-            className="p-1.5 -ml-1.5 text-on-surface-variant/50 cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface-variant rounded touch-none"
+            className="p-3 -ml-2 text-on-surface-variant/70 cursor-grab active:cursor-grabbing hover:bg-surface-variant hover:text-on-surface-variant rounded touch-none flex items-center justify-center"
           >
-            <GripVertical size={18} />
+            <GripVertical size={24} />
           </div>
         )}
 
@@ -85,7 +85,7 @@ const MobileDraggableItem = ({
               <LucideIcon name="Eye" size={15} />
             </button>
           )}
-          {uploadedFiles.length > 1 && i > 0 && (
+          {uploadedFiles.length > 1 && i > 0 && !isDraggableList && (
             <button onClick={() => {
               const newFiles = [...uploadedFiles];
               [newFiles[i-1], newFiles[i]] = [newFiles[i], newFiles[i-1]];
