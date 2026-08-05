@@ -3087,11 +3087,20 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       <div className="pt-3 mt-1 sm:pt-4 sm:mt-2 border-t border-[#132F1A]/10 flex justify-center w-full">
                         <button
                           onClick={() => {
-                            setProcessingState({ status: 'idle', progress: 0, message: '' });
-                            setUploadedFiles([]);
+                            // 1. Scroll up FIRST while the DOM layout is still tall and intact
+                            const ws = document.getElementById('workspace-top');
+                            if (ws) {
+                              const y = ws.getBoundingClientRect().top + window.scrollY - 80;
+                              window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+                            } else {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                            
+                            // 2. Wait for the smooth scroll to visually finish before destroying the DOM
                             setTimeout(() => {
-                              document.getElementById('workspace-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 100);
+                              setProcessingState({ status: 'idle', progress: 0, message: '' });
+                              setUploadedFiles([]);
+                            }, 400); // 400ms is standard mobile scroll duration
                           }}
                           className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F9FAF8] hover:bg-[#EAECE8] dark:bg-[#1E1F1E] dark:hover:bg-[#2D2E2D] border border-outline-variant/30 text-on-surface rounded-lg text-sm font-medium transition-colors w-full shadow-sm"
                         >
