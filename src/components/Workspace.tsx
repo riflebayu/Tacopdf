@@ -1986,8 +1986,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   return (
     <div className="w-full">
 
-      <div className={`flex ${tool.id === 'sign' && uploadedFiles.length > 0 ? 'flex-col-reverse' : 'flex-col'} lg:grid lg:grid-cols-12 gap-8 items-start`}>
-        <div className="lg:col-span-7 space-y-6">
+      <div className={`flex ${tool.id === 'sign' && uploadedFiles.length > 0 ? 'flex-col-reverse' : 'flex-col'} lg:grid lg:grid-cols-12 gap-8 items-start w-full min-w-0 max-w-full overflow-hidden`}>
+        <div className="lg:col-span-7 space-y-6 w-full min-w-0 max-w-full">
           {tool.id === 'html-to-pdf' ? (
             /* HTML Editor Block */
             <div className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 space-y-4 w-full overflow-hidden">
@@ -2246,7 +2246,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                             dragListener={!isLocked}
                             className={`group relative flex flex-col items-center bg-surface-container-lowest border rounded-xl overflow-hidden transition-colors ${isLocked ? 'border-red-500/30' : 'border-outline-variant hover:border-primary/50 cursor-grab active:cursor-grabbing'}`}
                           >
-                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden pointer-events-none">
+                            <div className="w-full aspect-[1/1.4] bg-surface-container flex items-center justify-center relative overflow-hidden">
                               {fileThumbnails[file.id] ? (
                                 <img src={fileThumbnails[file.id]} alt={file.file.name} className="w-full h-full object-contain pointer-events-none" />
                               ) : (
@@ -2285,7 +2285,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                 </div>
                             </div>
                             
-                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px] pointer-events-none">
+                            <div className="w-full p-2 text-center border-t border-outline-variant/30 bg-surface-container-low flex flex-col justify-center min-h-[50px]">
                               <p className="text-[11px] font-semibold text-on-surface truncate w-full px-1" title={file.file.name}>{file.file.name}</p>
                               {isLocked && <p className="text-[9px] text-red-500 font-bold">{t('file.locked') || 'Locked'}</p>}
                             </div>
@@ -2765,7 +2765,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="360"
                       value={watermarkRotation}
                       onChange={(e) => setWatermarkRotation(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
+                      className="w-[80%] h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -2855,7 +2855,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       max="48"
                       value={numberSize}
                       onChange={(e) => setNumberSize(Number(e.target.value))}
-                      className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y slider-thumb-only"
+                      className="w-[80%] h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary touch-pan-y"
                       style={{ touchAction: 'pan-y' }}
                     />
                   </div>
@@ -3087,7 +3087,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       {/* Per-File Preview Modal */}
       {previewFileUrl && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => { setPreviewFileUrl(null); }}>
-          <div className="relative w-full max-w-4xl h-[90vh] bg-surface-container rounded-2xl overflow-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="relative w-[95%] sm:w-full max-w-4xl h-[90vh] bg-surface-container rounded-2xl overflow-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant">
               <div className="flex items-center gap-3">
                 <LucideIcon name="Eye" className="text-primary-container" size={20} />
@@ -3129,7 +3129,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-surface-container border border-outline-variant w-full max-w-4xl h-[85vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl relative z-10"
+              className="bg-surface-container border border-outline-variant w-[95%] sm:w-full max-w-4xl h-[85vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl relative z-10"
             >
               {/* Modal Header */}
               <div className="flex justify-between items-center px-6 py-4 border-b border-outline-variant bg-surface-container-high">
