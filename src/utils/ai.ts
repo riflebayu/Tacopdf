@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import fs from 'fs';
+import path from 'path';
 
 interface ApiKeyItem {
   id: number;
@@ -17,11 +19,34 @@ function maskKey(key: string): string {
   return `${key.substring(0, 6)}...${key.substring(key.length - 4)}`;
 }
 
-function initKeyPool() {
-  if (keyPool.length > 0) return;
+function readEnvFile(): Record<string, string> {
+  try {
+    const envPath = path.resolve(process.cwd(), '.env');
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf-8');
+      const env: Record<string, string> = {};
+      content.split(/\r?\n/).forEach(line => {
+        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+        if (match) {
+          let key = match[1];
+          let value = match[2] || '';
+          if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+          if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
+          env[key] = value.trim();
+        }
+      });
+      return env;
+    }
+  } catch (e) {
+    console.error("Failed to read .env file directly", e);
+  }
+  return {};
+}
 
-  const rawKeys = (import.meta.env && import.meta.env.GEMINI_API_KEYS) || process.env.GEMINI_API_KEYS || '';
-  const singleKey = (import.meta.env && import.meta.env.GEMINI_API_KEY) || process.env.GEMINI_API_KEY || '';
+function initKeyPool() {
+  const diskEnv = readEnvFile();
+  const rawKeys = diskEnv.GEMINI_API_KEYS || (import.meta.env && import.meta.env.GEMINI_API_KEYS) || process.env.GEMINI_API_KEYS || '';
+  const singleKey = diskEnv.GEMINI_API_KEY || (import.meta.env && import.meta.env.GEMINI_API_KEY) || process.env.GEMINI_API_KEY || '';
 
   let keys: string[] = [];
 
@@ -35,12 +60,18 @@ function initKeyPool() {
     console.warn("No GEMINI_API_KEYS or GEMINI_API_KEY found in env.");
   }
 
-  keyPool = keys.map((key, index) => ({
-    id: index + 1,
-    key,
-    maskedKey: maskKey(key),
-    status: index === 0 ? 'ACTIVE' : 'STANDBY',
-  }));
+  const existingMap = new Map(keyPool.map(item => [item.key, item]));
+
+  keyPool = keys.map((key, index) => {
+    const existing = existingMap.get(key);
+    return {
+      id: index + 1,
+      key,
+      maskedKey: maskKey(key),
+      status: existing ? existing.status : (index === 0 ? 'ACTIVE' : 'STANDBY'),
+      lastLimitTime: existing?.lastLimitTime,
+    };
+  });
 }
 
 // Auto recover keys that were limited > 1 hour ago

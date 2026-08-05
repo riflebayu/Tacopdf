@@ -383,41 +383,62 @@ export default function AdminDashboard() {
       <main className="relative z-10 max-w-6xl mx-auto px-6 mt-8">
         {/* Gemini API Key Pool Health Widget */}
         <div className="bg-surface-container border border-outline-variant rounded-2xl p-5 mb-8 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                <Sparkles className="w-4 h-4" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-outline-variant/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-on-surface">Gemini API Key Pool</h3>
-                  {apiKeys.length > 0 && (
-                    <span className="bg-primary/15 text-primary border border-primary/30 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">
-                      {apiKeys.length} Keys Active
-                    </span>
-                  )}
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-base font-bold text-on-surface">Gemini API Pool Manager</h3>
+                  <span className="bg-primary text-on-primary font-black text-xs px-2.5 py-0.5 rounded-full shadow-sm">
+                    {apiKeys.length} API Keys Total
+                  </span>
                 </div>
-                <p className="text-xs text-on-surface-variant mt-0.5">Real-time status of your API Keys for automatic article failover</p>
+                <p className="text-xs text-on-surface-variant mt-0.5">Automated rotation & failover system active</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={fetchApiKeys}
-                disabled={loadingApiKeys}
-                className="text-xs px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant transition-all flex items-center gap-1.5 font-medium border border-outline-variant"
-                title="Refresh Status"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loadingApiKeys ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
-              </button>
-              <button 
-                onClick={resetApiKeys}
-                disabled={loadingApiKeys}
-                className="text-xs px-3 py-1.5 rounded-xl bg-primary/15 hover:bg-primary/25 text-primary transition-all font-semibold border border-primary/30"
-                title="Reset Limit Flags"
-              >
-                Reset Limits
-              </button>
+
+            {/* Quick Status Badges & Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-xl text-xs font-semibold">
+                <span className="text-emerald-400 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  {apiKeys.filter(k => k.status === 'ACTIVE').length} Active
+                </span>
+                <span className="text-outline-variant">•</span>
+                <span className="text-on-surface-variant">
+                  {apiKeys.filter(k => k.status === 'STANDBY').length} Standby
+                </span>
+                {apiKeys.filter(k => k.status === 'LIMIT').length > 0 && (
+                  <>
+                    <span className="text-outline-variant">•</span>
+                    <span className="text-red-400 font-bold">
+                      {apiKeys.filter(k => k.status === 'LIMIT').length} Limit
+                    </span>
+                  </>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={fetchApiKeys}
+                  disabled={loadingApiKeys}
+                  className="text-xs px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant transition-all flex items-center gap-1.5 font-medium border border-outline-variant"
+                  title="Refresh Status"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingApiKeys ? 'animate-spin' : ''}`} />
+                  <span>Refresh</span>
+                </button>
+                <button 
+                  onClick={resetApiKeys}
+                  disabled={loadingApiKeys}
+                  className="text-xs px-3 py-1.5 rounded-xl bg-primary/15 hover:bg-primary/25 text-primary transition-all font-semibold border border-primary/30"
+                  title="Reset Limit Flags"
+                >
+                  Reset Limits
+                </button>
+              </div>
             </div>
           </div>
 
