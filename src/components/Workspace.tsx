@@ -2403,8 +2403,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     )}
                     <div className="relative w-full">
                       {tool.id === 'merge' && uploadedFiles.length === 1 && (
-                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm rounded-3xl border border-outline-variant/30 mt-6 min-h-[300px]">
-                          <div className="bg-surface-container-high border border-outline-variant rounded-2xl p-6 shadow-2xl text-center max-w-[90%] w-80 mx-auto">
+                        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/80 backdrop-blur-md">
+                          <div className="bg-surface-container-high border border-outline-variant rounded-3xl p-8 shadow-2xl text-center max-w-[90%] w-96 mx-auto animate-in fade-in zoom-in duration-300">
                             <AlertCircle className="w-12 h-12 text-primary mx-auto mb-3" />
                             <h3 className="text-lg font-bold text-on-surface mb-2">
                               {t('workspace.merge.need_more') || 'Upload minimal 2 file'}
