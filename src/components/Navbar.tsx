@@ -23,10 +23,19 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
   // Build proper <a> href for each language (for SEO crawlability)
   const getLanguageHref = (targetLangCode: string) => {
     let path = currentPath || location.pathname;
+    
     // Strip current language prefix if present
     if (lang !== 'en') {
       path = path.replace(new RegExp(`^/${lang}`), '') || '/';
     }
+
+    // SEO Fallback: If switching languages while reading a specific blog article,
+    // redirect to the blog index to avoid 404 errors (since article slugs differ per language).
+    // e.g., /blog/tutorial-merge -> /blog
+    if (path.match(/^\/blog\/.+/)) {
+      path = '/blog';
+    }
+
     // Prepend target language prefix
     if (targetLangCode === 'en') {
       return path || '/';

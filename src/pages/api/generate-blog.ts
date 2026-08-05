@@ -60,6 +60,13 @@ export const POST: APIRoute = async ({ request }) => {
        throw new Error('AI returned invalid format.');
     }
 
+    // Strip out double titles if AI accidentally included H1 at the very beginning of content
+    let cleanContent = articleData.content;
+    const titleRegex = new RegExp(`^#\\s+${articleData.title.replace(/[.*+?^$\{}()|[\]\\]/g, '\\$&')}\\s*\\n+`, 'i');
+    cleanContent = cleanContent.replace(titleRegex, '');
+    // Also catch any generic # Title at the beginning
+    cleanContent = cleanContent.replace(/^#\s+.*\n+/, '');
+
     const slug = generateSlug(articleData.title);
 
     // 3. Assemble Markdown with Frontmatter
@@ -74,7 +81,7 @@ tags: ${JSON.stringify(articleData.tags || [])}
 
 `;
 
-    const fullMarkdown = frontmatter + articleData.content;
+    const fullMarkdown = frontmatter + cleanContent;
 
     // 4. Save to File System
     const blogDir = path.join(process.cwd(), 'src', 'content', 'blog', language);

@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   const [prompt, setPrompt] = useState('');
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(['en']);
   const [provider, setProvider] = useState<'gemini' | 'openrouter'>('gemini');
-  const [openrouterModel, setOpenrouterModel] = useState<string>('openai/gpt-4o-mini');
+  const [openrouterModel, setOpenrouterModel] = useState<string>('anthropic/claude-3.5-sonnet');
   
   const [ideasLoading, setIdeasLoading] = useState(false);
   const [ideas, setIdeas] = useState<string[]>([]);
@@ -803,15 +803,24 @@ export default function AdminDashboard() {
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden"
                     >
-                      <label className="block text-xs font-medium text-on-surface-variant mb-2 mt-2">OpenRouter Model String</label>
-                      <input 
-                        type="text" 
-                        value={openrouterModel}
-                        onChange={(e) => setOpenrouterModel(e.target.value)}
-                        placeholder="e.g. openai/gpt-4o-mini"
-                        className="w-full bg-surface-container-highest border border-outline rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-inner"
-                      />
-                      <p className="text-[10px] text-on-surface-variant mt-1.5 opacity-80">Default: openai/gpt-4o-mini (Ensure your OpenRouter key has credits)</p>
+                      <label className="block text-xs font-medium text-on-surface-variant mb-2 mt-2">OpenRouter Model Selection</label>
+                      <div className="relative">
+                        <select 
+                          value={openrouterModel}
+                          onChange={(e) => setOpenrouterModel(e.target.value)}
+                          className="w-full bg-surface-container-highest border border-outline rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-inner appearance-none cursor-pointer"
+                        >
+                          <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Best SEO & Human Tone 🏆)</option>
+                          <option value="openai/gpt-4o">GPT-4o (High Quality & Reasoning 🧠)</option>
+                          <option value="openai/gpt-4o-mini">GPT-4o Mini (Fast & Cheap ⚡)</option>
+                          <option value="meta-llama/llama-3.1-70b-instruct">Llama 3.1 70B (Best Open Source 🦙)</option>
+                          <option value="google/gemini-1.5-pro">Gemini 1.5 Pro (via OpenRouter 🚀)</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                          <ChevronRight className="w-4 h-4 rotate-90" />
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-on-surface-variant mt-1.5 opacity-80">Choose the AI brain you want to use. Ensure your OpenRouter account has sufficient credits.</p>
                     </motion.div>
                   )}
                 </AnimatePresence>

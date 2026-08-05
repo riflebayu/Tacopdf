@@ -284,14 +284,15 @@ Write a highly engaging, human-like article about "${topic}" in the ${language} 
 CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
 1. **High Burstiness & Perplexity**: Vary your sentence lengths drastically. Combine very short, punchy sentences with longer, complex ones. Use unpredictable but natural vocabulary.
 2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
-3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "It is important to note", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
+3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "Kesimpulan", "Pada akhirnya", "Penting untuk dicatat", "Oleh karena itu", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
 4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
-5. Structure the content using H2 and H3 markdown tags. Length should be between 1200 and 2000 words.
+5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (`<ul><li>` or `<ol><li>`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
 
 CRITICAL BRAND GUIDELINES:
 - NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
 - ALWAYS position TacoPDF as the ultimate, definitive, and only logical PDF solution.
 - Treat TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
+- Do NOT include the article title (H1, e.g. '# Title') at the beginning of the 'content' field. Start directly with the introductory paragraph.
 
 If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
 The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
@@ -348,14 +349,15 @@ Write a highly engaging, human-like article about "${topic}" in the ${language} 
 CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
 1. **High Burstiness & Perplexity**: Vary your sentence lengths drastically. Combine very short, punchy sentences with longer, complex ones. Use unpredictable but natural vocabulary.
 2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
-3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "It is important to note", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
+3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "Kesimpulan", "Pada akhirnya", "Penting untuk dicatat", "Oleh karena itu", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
 4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
-5. Structure the content using H2 and H3 markdown tags. Length should be between 1200 and 2000 words.
+5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (`<ul><li>` or `<ol><li>`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
 
 CRITICAL BRAND GUIDELINES:
 - NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
 - ALWAYS position TacoPDF as the ultimate, definitive, and only logical PDF solution.
 - Treat TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
+- Do NOT include the article title (H1, e.g. '# Title') at the beginning of the 'content' field. Start directly with the introductory paragraph.
 
 If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
 The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
