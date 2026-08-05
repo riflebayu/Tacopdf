@@ -944,10 +944,10 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             // For image-to-pdf, we just want the object url of the image
             const newFileThumbnails: Record<string, string> = {};
             for (const fileObj of uploadedFiles) {
+              let loadingTask: any = null;
               try {
-                // If we already generated this thumbnail in a previous effect run, preserve it
+                // If we already generated this thumbnail, skip re-processing it
                 if (fileThumbnails[fileObj.id]) {
-                  newFileThumbnails[fileObj.id] = fileThumbnails[fileObj.id];
                   continue;
                 }
                 
@@ -959,7 +959,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   // We will instead use progressive state updates to prevent the UI from freezing.
                   const pdfBytes = await fileObj.file.arrayBuffer();
                   const loadParams: any = { data: new Uint8Array(pdfBytes) };
-                  const loadingTask = pdfjsLib.getDocument(loadParams);
+                  loadingTask = pdfjsLib.getDocument(loadParams);
                   const pdf = await loadingTask.promise;
                   const page = await pdf.getPage(1);
                   // Use much lower resolution on mobile to save GPU/memory
@@ -971,6 +971,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     canvas.width = viewport.width;
                     await page.render({ canvasContext: context, viewport }).promise;
                     const newThumb = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    // Explicitly free canvas memory
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    
                     setFileThumbnails(prev => ({ ...prev, [fileObj.id]: newThumb }));
                     
                     // Yield back to the main thread briefly so the UI updates incrementally
@@ -981,7 +986,10 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 }
               } catch (err) {
                 console.error("Failed to generate thumbnail for file", fileObj.file.name, err);
-                // Can't render, just leave without a thumb
+              } finally {
+                if (loadingTask) {
+                  try { await loadingTask.destroy(); } catch (e) {}
+                }
               }
             }
           } else {
@@ -1018,11 +1026,18 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 }
                 await page.render({ canvasContext: context, viewport }).promise;
                 urls.push(canvas.toDataURL('image/jpeg', 0.8));
+                
+                // Explicitly free canvas memory
+                canvas.width = 0;
+                canvas.height = 0;
               }
             }
             setVisualThumbnails(urls);
             setNeedsGlobalPassword(false);
             setGlobalPasswordError('');
+            
+            // CRITICAL: Prevent memory leaks
+            await loadingTask.destroy();
           }
         } catch (err: any) {
           console.error("Error generating thumbnails:", err);
