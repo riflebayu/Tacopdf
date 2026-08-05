@@ -3167,14 +3167,22 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               )}
 
               {processingState.status !== 'processing' && processingState.status !== 'success' && (
-                <button
-                  onClick={handleProcess}
-                  disabled={(uploadedFiles.length === 0 && tool.id !== 'html-to-pdf') || (tool.id === 'unlock' && uploadedFiles.some(f => !lockedFileIds.has(f.id))) || (tool.id !== 'unlock' && uploadedFiles.some(f => lockedFileIds.has(f.id)))}
-                  className={`w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${tool.id === 'sign' ? 'hidden lg:flex' : ''}`}
-                >
-                  <TacoIcon name={tool.icon} size={32} />
-                  {tool.id === 'html-to-pdf' ? t('workspace.btn.compile') : tool.id === 'add-watermark' ? (t('workspace.btn.save_download') || 'Save & Download PDF') : `${t('workspace.btn.run')} ${t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}`}
-                </button>
+                <>
+                  <div className={(isMobile && (uploadedFiles.length > 0 || tool.id === 'html-to-pdf')) ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe sm:relative sm:p-0 sm:bg-transparent sm:border-none sm:z-auto sm:shadow-none" : "mt-4"}>
+                    <button
+                      onClick={handleProcess}
+                      disabled={(uploadedFiles.length === 0 && tool.id !== 'html-to-pdf') || (tool.id === 'unlock' && uploadedFiles.some(f => !lockedFileIds.has(f.id))) || (tool.id !== 'unlock' && uploadedFiles.some(f => lockedFileIds.has(f.id)))}
+                      className={`w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${tool.id === 'sign' ? 'hidden lg:flex' : ''}`}
+                    >
+                      <TacoIcon name={tool.icon} size={32} />
+                      {tool.id === 'html-to-pdf' ? t('workspace.btn.compile') : tool.id === 'add-watermark' ? (t('workspace.btn.save_download') || 'Save & Download PDF') : `${t('workspace.btn.run')} ${t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}`}
+                    </button>
+                  </div>
+                  {/* Spacer to prevent the floating bar from hiding the last items or footer */}
+                  {(isMobile && (uploadedFiles.length > 0 || tool.id === 'html-to-pdf')) && (
+                    <div className="h-24 w-full sm:hidden" />
+                  )}
+                </>
               )}
 
               <div className="mt-5 pt-4 border-t border-outline-variant/50 flex flex-col items-center justify-center gap-1.5 text-xs text-on-surface-variant text-center opacity-70">
