@@ -948,14 +948,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 }
                 
                 if (tool.id === 'image-to-pdf') {
-                  newFileThumbnails[fileObj.id] = URL.createObjectURL(fileObj.file);
+                  const newThumb = URL.createObjectURL(fileObj.file);
+                  setFileThumbnails(prev => ({ ...prev, [fileObj.id]: newThumb }));
                 } else {
-                  // Quick skip for mobile merge when there are many files (prevents 10s lag)
-                  if (tool.id === 'merge' && isMobile && uploadedFiles.length > 3) {
-                     // We intentionally leave it blank. The UI will fall back to a generic file icon instantly.
-                     continue;
-                  }
-
+                  // Removed the hard skip for >3 files so users still get previews.
+                  // We will instead use progressive state updates to prevent the UI from freezing.
                   const pdfBytes = await fileObj.file.arrayBuffer();
                   const loadParams: any = { data: new Uint8Array(pdfBytes) };
                   const loadingTask = pdfjsLib.getDocument(loadParams);
@@ -969,11 +966,12 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
                     await page.render({ canvasContext: context, viewport }).promise;
-                    newFileThumbnails[fileObj.id] = canvas.toDataURL('image/jpeg', 0.8);
+                    const newThumb = canvas.toDataURL('image/jpeg', 0.8);
+                    setFileThumbnails(prev => ({ ...prev, [fileObj.id]: newThumb }));
                     
-                    // Yield back to the main thread briefly so the UI doesn't freeze
+                    // Yield back to the main thread briefly so the UI updates incrementally
                     if (isMobile) {
-                      await new Promise(resolve => setTimeout(resolve, 15));
+                      await new Promise(resolve => setTimeout(resolve, 25)); // increased to 25ms to guarantee render
                     }
                   }
                 }
@@ -982,7 +980,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 // Can't render, just leave without a thumb
               }
             }
-            setFileThumbnails(newFileThumbnails);
           } else {
             // For other tools, we want ALL pages of the FIRST uploaded file
             const pdfBytes = await uploadedFiles[0].file.arrayBuffer();
