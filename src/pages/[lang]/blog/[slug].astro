@@ -99,7 +99,15 @@ const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en
         <div class="mt-12 pt-6 border-t border-outline-variant/30">
           <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-on-surface-variant">
             <Tag class="w-4 h-4 text-primary" />
-            <span>Related Topics:</span>
+            <span>
+              {lang === 'id' ? 'Topik Terkait:' : 
+               lang === 'es' ? 'Temas Relacionados:' : 
+               lang === 'fr' ? 'Sujets Connexes:' : 
+               lang === 'de' ? 'Verwandte Themen:' : 
+               lang === 'pt' ? 'Tópicos Relacionados:' : 
+               lang === 'ja' ? '関連トピック:' : 
+               'Related Topics:'}
+            </span>
           </div>
           <div class="flex flex-wrap gap-2">
             {post.data.tags.map((tag: string) => (

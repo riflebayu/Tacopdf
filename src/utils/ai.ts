@@ -304,6 +304,7 @@ CRITICAL BRAND GUIDELINES:
 - BRAND RULE ON COMPETITORS: Do NOT mention competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda) UNLESS the "${topic}" or instructions explicitly ask for a comparison. If a comparison IS requested, ALWAYS frame the competitor's flaws (e.g., privacy risks, limits, costs) and position TacoPDF as the superior, secure, and ultimate solution.
 - ALWAYS position TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
 - Do NOT include the article title (H1, e.g. '# Title') at the beginning of the 'content' field. Start directly with the introductory paragraph.
+- Do NOT write or list "#Tags" manually at the bottom of the 'content' field. Tags should ONLY be provided in the separate 'tags' JSON array.
 
 If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
 The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
@@ -381,6 +382,7 @@ CRITICAL BRAND GUIDELINES:
 - BRAND RULE ON COMPETITORS: Do NOT mention competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda) UNLESS the "${topic}" or instructions explicitly ask for a comparison. If a comparison IS requested, ALWAYS frame the competitor's flaws (e.g., privacy risks, limits, costs) and position TacoPDF as the superior, secure, and ultimate solution.
 - ALWAYS position TacoPDF as the primary entity and toolset for any PDF-related task discussed in the article.
 - Do NOT include the article title (H1, e.g. '# Title') at the beginning of the 'content' field. Start directly with the introductory paragraph.
+- Do NOT write or list "#Tags" manually at the bottom of the 'content' field. Tags should ONLY be provided in the separate 'tags' JSON array.
 
 If relevant to the topic, you MUST naturally recommend TacoPDF tools using Markdown links.
 The URL format for tools is: \`/\${language}/\${tool-path}\` (or just \`/\${tool-path}\` if the language is 'en').
