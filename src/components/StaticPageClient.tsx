@@ -112,12 +112,12 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
         );
       case 'retention':
         return (
-          <div className="space-y-5">
-            <p>{t('retention.intro')}</p>
-            <div><h3 className="font-bold text-on-surface">{t('retention.p1.title')}</h3><p>{t('retention.p1.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('retention.p2.title')}</h3><p>{t('retention.p2.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('retention.p3.title')}</h3><p>{t('retention.p3.text')}</p></div>
-            <div><h3 className="font-bold text-on-surface">{t('retention.p4.title')}</h3><p>{t('retention.p4.text')}</p></div>
+          <div className="space-y-4 md:space-y-5">
+            <p className="text-sm md:text-base text-on-surface-variant">{t('retention.intro')}</p>
+            <div className="space-y-1 md:space-y-1.5"><h3 className="font-bold text-on-surface text-base md:text-lg">{t('retention.p1.title')}</h3><p className="text-sm md:text-base text-on-surface-variant">{t('retention.p1.text')}</p></div>
+            <div className="space-y-1 md:space-y-1.5"><h3 className="font-bold text-on-surface text-base md:text-lg">{t('retention.p2.title')}</h3><p className="text-sm md:text-base text-on-surface-variant">{t('retention.p2.text')}</p></div>
+            <div className="space-y-1 md:space-y-1.5"><h3 className="font-bold text-on-surface text-base md:text-lg">{t('retention.p3.title')}</h3><p className="text-sm md:text-base text-on-surface-variant">{t('retention.p3.text')}</p></div>
+            <div className="space-y-1 md:space-y-1.5"><h3 className="font-bold text-on-surface text-base md:text-lg">{t('retention.p4.title')}</h3><p className="text-sm md:text-base text-on-surface-variant">{t('retention.p4.text')}</p></div>
           </div>
         );
       case 'privacy':
@@ -126,8 +126,8 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
       case 'disclaimer': {
         const prefix = pageType === 'terms' ? 'tos' : pageType;
         return (
-          <div className="space-y-6">
-            <p className="text-on-surface-variant font-medium" dangerouslySetInnerHTML={{ __html: t(`${prefix}.intro`) }} />
+          <div className="space-y-4 md:space-y-6">
+            <p className="text-on-surface-variant font-medium text-sm md:text-base" dangerouslySetInnerHTML={{ __html: t(`${prefix}.intro`) }} />
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => {
               const titleKey = `${prefix}.p${i}.title`;
               const textKey = `${prefix}.p${i}.text`;
@@ -135,9 +135,9 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
               const text = t(textKey, '');
               if (!title || title === titleKey) return null;
               return (
-                <div key={i} className="space-y-2">
-                  <h3 className="font-bold text-on-surface text-lg">{title}</h3>
-                  <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: text }} />
+                <div key={i} className="space-y-1.5 md:space-y-2">
+                  <h3 className="font-bold text-on-surface text-base md:text-lg">{title}</h3>
+                  <p className="text-on-surface-variant leading-relaxed text-sm md:text-base" dangerouslySetInnerHTML={{ __html: text }} />
                 </div>
               );
             })}

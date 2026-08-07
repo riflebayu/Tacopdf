@@ -55,25 +55,25 @@ export default function LegalPage({ pageId, title, lastUpdated, content, onBack 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      className="max-w-[800px] mx-auto px-4 py-12 md:py-20"
+      className="max-w-[800px] mx-auto px-4 py-8 md:py-20"
     >
       <button 
         onClick={onBack}
-        className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+        className="mb-6 md:mb-8 inline-flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
       >
         <ArrowLeft size={16} /> {t('contact.back') || 'Back to Home'}
       </button>
 
-      <div className="bg-surface-container border border-outline-variant rounded-2xl p-5 md:p-12 shadow-sm">
-        <div className="flex items-center gap-3 mb-4">
-          <LucideIcon name={getPageIcon(pageId)} className="text-primary shrink-0" size={28} />
-          <h1 className="text-3xl font-extrabold text-on-surface">{title}</h1>
+      <div className="bg-surface-container border border-outline-variant rounded-2xl p-4 md:p-12 shadow-sm">
+        <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+          <LucideIcon name={getPageIcon(pageId)} className="text-primary shrink-0 w-6 h-6 md:w-7 md:h-7" />
+          <h1 className="text-2xl md:text-3xl font-extrabold text-on-surface tracking-tight">{title}</h1>
         </div>
-        <p className="text-sm text-on-surface-variant mb-10 pb-6 border-b border-outline-variant/50">
+        <p className="text-xs md:text-sm text-on-surface-variant mb-6 md:mb-10 pb-4 md:pb-6 border-b border-outline-variant/50">
           {t('legal.last_updated') || 'Last updated:'} {formattedDate}
         </p>
 
-        <div className="prose prose-sm md:prose-base prose-invert prose-p:text-on-surface-variant prose-headings:text-on-surface prose-a:text-primary max-w-none space-y-6">
+        <div className="prose prose-sm md:prose-base prose-invert prose-p:text-on-surface-variant prose-headings:text-on-surface prose-a:text-primary max-w-none space-y-4 md:space-y-6">
           {content}
         </div>
       </div>
