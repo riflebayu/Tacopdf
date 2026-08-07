@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from '@/utils/router-mock';
 import LocalizedLink from './LocalizedLink';
-import { Menu, X, ChevronDown, UserCheck, ImageOff, CloudOff, ShieldZap } from 'lucide-react';
+import { Menu, X, ChevronDown, UserCheck, ImageOff, CloudOff, ShieldCheck } from 'lucide-react';
 import { TOOLS, CATEGORIES, getToolSeoPath } from '../data/tools';
 import TacoIcon from './TacoIcon';
 import { LanguageProvider, useLanguage, LANGUAGES } from '../context/LanguageContext';
@@ -129,7 +129,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
             <div className="flex items-center gap-1.5"><UserCheck size={14} /> {t('header.badge.noRegistration', 'No Registration')}</div>
             <div className="flex items-center gap-1.5"><ImageOff size={14} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
             <div className="flex items-center gap-1.5"><CloudOff size={14} /> {t('header.badge.offline', '100% Offline')}</div>
-            <div className="flex items-center gap-1.5"><ShieldZap size={14} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
+            <div className="flex items-center gap-1.5"><ShieldCheck size={14} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
           </div>
           {/* Mobile View (Marquee) */}
           <div className="flex md:hidden w-full overflow-hidden whitespace-nowrap text-[10px] font-bold text-primary/90 uppercase tracking-wider relative">
@@ -141,12 +141,12 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
               <div className="flex items-center gap-1.5"><UserCheck size={12} /> {t('header.badge.noRegistration', 'No Registration')}</div>
               <div className="flex items-center gap-1.5"><ImageOff size={12} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
               <div className="flex items-center gap-1.5"><CloudOff size={12} /> {t('header.badge.offline', '100% Offline')}</div>
-              <div className="flex items-center gap-1.5"><ShieldZap size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
+              <div className="flex items-center gap-1.5"><ShieldCheck size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
               {/* Duplicate set for seamless loop */}
               <div className="flex items-center gap-1.5"><UserCheck size={12} /> {t('header.badge.noRegistration', 'No Registration')}</div>
               <div className="flex items-center gap-1.5"><ImageOff size={12} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
               <div className="flex items-center gap-1.5"><CloudOff size={12} /> {t('header.badge.offline', '100% Offline')}</div>
-              <div className="flex items-center gap-1.5"><ShieldZap size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
+              <div className="flex items-center gap-1.5"><ShieldCheck size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
             </div>
           </div>
         </div>
