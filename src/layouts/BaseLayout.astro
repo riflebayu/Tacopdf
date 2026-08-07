@@ -20,6 +20,8 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {/* Google AdSense Account Verification */}
+    <meta name="google-adsense-account" content="ca-pub-9178424383165717" />
     {/* Google Search SEO-Compliant Favicons */}
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
@@ -28,6 +30,9 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
 
     {/* Canonical URL — forces Google to index tacopdf.com only, not vercel.app */}
     <link rel="canonical" href={`https://tacopdf.com${Astro.url.pathname}`} />
+
+    {/* Google AdSense */}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9178424383165717" crossorigin="anonymous"></script>
 
     {/* E-E-A-T Author & Trust Signals — readable by all bots from raw HTML */}
     <meta name="author" content="Muhammad Bayu Edi" />
