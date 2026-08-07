@@ -15,6 +15,9 @@ export default defineConfig({
   },
   // 301 Permanent Redirects: short/old URLs → canonical SEO URLs
   redirects: {
+    // Satisfy automated SEO checkers looking for exactly "sitemap.xml"
+    '/sitemap.xml': { status: 301, destination: '/sitemap-index.xml' },
+
     // English (root)
     '/merge':       { status: 301, destination: '/merge-pdf' },
     '/split':       { status: 301, destination: '/split-pdf' },
