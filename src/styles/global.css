@@ -127,3 +127,14 @@ img {
     box-shadow: 0 12px 30px -5px rgba(251, 191, 36, 0.35) !important;
   }
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  display: flex;
+  width: max-content;
+}
