@@ -68,48 +68,53 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
         );
       case 'about':
         return (
-          <div className="space-y-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 bg-surface-container-lowest p-4 sm:p-6 rounded-2xl border border-outline-variant/50 shadow-sm">
-              <div className="flex flex-col items-center gap-3 sm:gap-4 shrink-0">
-                <img 
-                  src="/profile.webp" 
-                  alt="Founder" 
-                  className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover shadow-md border-4 border-surface"
-                />
-                <div className="flex items-center justify-center gap-3 sm:gap-4">
-                  <a href="https://facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-blue-600/10 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors" title="Facebook">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[20px] sm:h-[20px]"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                  </a>
-                  <a href="https://www.instagram.com/bay.lightyear/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-pink-600/10 text-pink-600 hover:bg-pink-600 hover:text-white transition-colors" title="Instagram">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[20px] sm:h-[20px]"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                  </a>
-                </div>
+          <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
+            {/* Left Sidebar: Photo & Socials Box */}
+            <div className="w-full md:w-1/3 flex flex-col items-center gap-4 bg-surface-container-lowest p-6 md:p-8 rounded-3xl border border-outline-variant/50 shadow-sm sticky top-24 shrink-0">
+              <img 
+                src="/profile.webp" 
+                alt="Founder" 
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-md border-4 border-surface"
+              />
+              <div className="flex items-center justify-center gap-4 mt-2">
+                <a href="https://facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-blue-600/10 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors" title="Facebook">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/bay.lightyear/" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-pink-600/10 text-pink-600 hover:bg-pink-600 hover:text-white transition-colors" title="Instagram">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                </a>
               </div>
-              <div className="text-center sm:text-left space-y-2 pt-1 md:pt-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-primary-container">{t('about.founder.title', 'Creator & Founder')}</h3>
+            </div>
+
+            {/* Right Content: Article */}
+            <div className="w-full md:w-2/3 space-y-8 md:space-y-10">
+              {/* Founder Welcome Text */}
+              <div className="space-y-4">
+                <h3 className="text-2xl md:text-3xl font-extrabold text-primary-container">{t('about.founder.title', 'Creator & Founder')}</h3>
                 <p 
-                  className="text-on-surface-variant leading-relaxed" 
+                  className="text-on-surface-variant leading-relaxed text-sm md:text-base" 
                   dangerouslySetInnerHTML={{ 
                     __html: t('about.founder.text', 'Welcome to TacoPDF! I built this platform to provide a fast, completely free, and highly secure way to manage your PDF files. Since all processing happens locally on your device, your privacy is always guaranteed.') 
                   }} 
                 />
               </div>
-            </div>
 
-            <div className="space-y-6">
-              {[1, 2, 3, 4, 5].map(i => {
-              const titleKey = `about.p${i}.title`;
-              const title = t(titleKey, '');
-              if (!title || title === titleKey) return null;
-              return (
-                <div key={i} className="space-y-2">
-                  <h3 className="font-bold text-on-surface text-lg">{title}</h3>
-                  <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text1`, '') }} />
-                  {t(`about.p${i}.text2`, '') !== `about.p${i}.text2` && <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text2`, '') }} />}
-                  {t(`about.p${i}.text3`, '') !== `about.p${i}.text3` && <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text3`, '') }} />}
-                </div>
-              );
-            })}
+              {/* The rest of the article sections */}
+              <div className="space-y-6 md:space-y-8">
+                {[1, 2, 3, 4, 5].map(i => {
+                  const titleKey = `about.p${i}.title`;
+                  const title = t(titleKey, '');
+                  if (!title || title === titleKey) return null;
+                  return (
+                    <div key={i} className="space-y-2 md:space-y-3">
+                      <h3 className="font-bold text-on-surface text-lg md:text-xl">{title}</h3>
+                      <p className="text-on-surface-variant leading-relaxed text-sm md:text-base" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text1`, '') }} />
+                      {t(`about.p${i}.text2`, '') !== `about.p${i}.text2` && <p className="text-on-surface-variant leading-relaxed text-sm md:text-base" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text2`, '') }} />}
+                      {t(`about.p${i}.text3`, '') !== `about.p${i}.text3` && <p className="text-on-surface-variant leading-relaxed text-sm md:text-base" dangerouslySetInnerHTML={{ __html: t(`about.p${i}.text3`, '') }} />}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         );
