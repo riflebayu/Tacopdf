@@ -42,28 +42,33 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
     switch (pageType) {
       case 'how':
         return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold text-on-surface mb-2">{t('how.intro.title')}</h2>
-              <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t('how.intro.text') }} />
+          <article className="space-y-8 md:space-y-12">
+            <section className="space-y-3 md:space-y-4">
+              <h2 className="text-xl md:text-3xl font-extrabold text-primary-container tracking-tight">{t('how.intro.title')}</h2>
+              <p className="text-on-surface-variant leading-relaxed text-sm md:text-lg" dangerouslySetInnerHTML={{ __html: t('how.intro.text') }} />
+            </section>
+            
+            <div className="space-y-6 md:space-y-10">
+              {[1, 2, 3, 4].map(i => (
+                <section key={i} className="space-y-2 md:space-y-3">
+                  <h3 className="font-bold text-on-surface text-lg md:text-2xl">{t(`how.step${i}.title`)}</h3>
+                  <p className="text-on-surface-variant leading-relaxed text-sm md:text-lg" dangerouslySetInnerHTML={{ __html: t(`how.step${i}.text`) }} />
+                </section>
+              ))}
             </div>
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="space-y-1">
-                <h3 className="font-bold text-on-surface text-lg">{t(`how.step${i}.title`)}</h3>
-                <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`how.step${i}.text`) }} />
-              </div>
-            ))}
-            <div>
-              <h2 className="text-xl font-bold text-on-surface mt-6 mb-4">{t('how.benefits.title')}</h2>
-              <div className="space-y-4">
+
+            <section className="pt-2 md:pt-6">
+              <h2 className="text-xl md:text-3xl font-extrabold text-primary-container mb-4 md:mb-6 tracking-tight border-b-2 border-primary/20 pb-3 md:pb-4 inline-block">{t('how.benefits.title')}</h2>
+              <div className="space-y-6 md:space-y-8">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="space-y-1">
-                    <h3 className="font-bold text-on-surface text-lg">{t(`how.benefit${i}.title`)}</h3>
-                    <p className="text-on-surface-variant leading-relaxed" dangerouslySetInnerHTML={{ __html: t(`how.benefit${i}.text`) }} />
+                  <div key={i} className="space-y-2 md:space-y-3">
+                    <h3 className="font-bold text-on-surface text-lg md:text-2xl">{t(`how.benefit${i}.title`)}</h3>
+                    <p className="text-on-surface-variant leading-relaxed text-sm md:text-lg" dangerouslySetInnerHTML={{ __html: t(`how.benefit${i}.text`) }} />
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
+          </article>
           </div>
         );
       case 'about':
