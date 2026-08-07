@@ -128,7 +128,7 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
         return (
           <div className="space-y-6">
             <p className="text-on-surface-variant font-medium" dangerouslySetInnerHTML={{ __html: t(`${prefix}.intro`) }} />
-            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => {
               const titleKey = `${prefix}.p${i}.title`;
               const textKey = `${prefix}.p${i}.text`;
               const title = t(titleKey, '');
