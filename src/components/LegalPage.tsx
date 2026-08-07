@@ -64,7 +64,7 @@ export default function LegalPage({ pageId, title, lastUpdated, content, onBack 
         <ArrowLeft size={16} /> {t('contact.back') || 'Back to Home'}
       </button>
 
-      <div className="bg-surface-container border border-outline-variant rounded-2xl p-8 md:p-12 shadow-sm">
+      <div className="bg-surface-container border border-outline-variant rounded-2xl p-5 md:p-12 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
           <LucideIcon name={getPageIcon(pageId)} className="text-primary shrink-0" size={28} />
           <h1 className="text-3xl font-extrabold text-on-surface">{title}</h1>
