@@ -119,10 +119,15 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
     // Navigation is handled by LocalizedLink
   };
 
+  const rawPath = currentPath || location.pathname;
+  const pathWithoutLang = lang !== 'en' ? (rawPath.replace(new RegExp(`^/${lang}`), '') || '/') : rawPath;
+  const isHomePage = pathWithoutLang === '/';
+
   return (
     <header className="sticky top-0 z-50 bg-[#14120E]/95 sm:bg-[#14120E]/70 sm:backdrop-blur-md border-b border-white/10 w-full">
-      {/* Announcement Bar (USP) */}
-      <aside className="w-full bg-primary/10 border-b border-primary/20 overflow-hidden" aria-label="Features">
+      {/* Announcement Bar (USP) - Only on homepage */}
+      {isHomePage && (
+        <aside className="w-full bg-primary/10 border-b border-primary/20 overflow-hidden" aria-label="Features">
         <div className="max-w-[1200px] mx-auto h-8 flex items-center">
           {/* Desktop View */}
           <div className="hidden md:flex w-full justify-center gap-12 items-center text-[11px] font-bold text-primary/90 tracking-wide uppercase">
@@ -151,6 +156,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
           </div>
         </div>
       </aside>
+      )}
 
       <div className="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">
         {/* Logo */}
