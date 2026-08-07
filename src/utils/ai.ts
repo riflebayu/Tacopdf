@@ -286,7 +286,7 @@ CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
 2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
 3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "Kesimpulan", "Pada akhirnya", "Penting untuk dicatat", "Oleh karena itu", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
 4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
-5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (`<ul><li>` or `<ol><li>`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
+5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (\`<ul><li>\` or \`<ol><li>\`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
 
 CRITICAL BRAND GUIDELINES:
 - NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
@@ -351,7 +351,7 @@ CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
 2. **First/Third-Person Perspective**: Write with a conversational, authoritative tone. Use analogies, personal observations, or rhetorical questions to engage the reader directly.
 3. **Avoid AI Cliches Completely**: Do NOT use robotic transitional phrases like "In conclusion", "Kesimpulan", "Pada akhirnya", "Penting untuk dicatat", "Oleh karena itu", "Delving into", "Furthermore", "Ultimately", "To summarize". Transition naturally instead.
 4. **Natural Imperfections**: Slightly relax grammatical rigidness to sound more conversational, like a real blogger writing passionately.
-5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (`<ul><li>` or `<ol><li>`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
+5. **Structure & Depth (Avoid Thin Content)**: The article MUST be extremely detailed and comprehensive (at least 1500 words). Use H2, H3 tags, and heavily utilize bulleted/numbered lists (\`<ul><li>\` or \`<ol><li>\`) for readability. Do NOT write short 500-word summaries. Provide step-by-step guides or deep analysis.
 
 CRITICAL BRAND GUIDELINES:
 - NEVER mention or write the names of competitors (e.g., ILovePDF, Smallpdf, PDF24, Adobe Acrobat, Sejda, etc.) in any context, including comparisons.
