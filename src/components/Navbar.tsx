@@ -161,7 +161,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
       <div className="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">
         {/* Logo */}
         <LocalizedLink to="/" className="flex items-center gap-2 md:gap-3 cursor-pointer group hover:opacity-90 transition-opacity" onClick={handleGoHome}>
-          <img src="/logo.webp" alt="TacoPDF Logo" width="48" height="48" className="w-9 h-9 md:w-12 md:h-12 drop-shadow-sm rounded-lg" />
+          <img src="/logo.png" alt="TacoPDF Logo" width="48" height="48" className="w-9 h-9 md:w-12 md:h-12 drop-shadow-sm rounded-lg" />
           <span className="font-extrabold text-xl md:text-2xl tracking-tight text-on-surface">TacoPDF</span>
         </LocalizedLink>
 
