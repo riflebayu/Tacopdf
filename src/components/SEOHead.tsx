@@ -44,6 +44,11 @@ export default function SEOHead({ title, description, faqData }: SEOHeadProps) {
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
       
+      {/* E-E-A-T Author & Trust Signals */}
+      <meta name="author" content="Muhammad Bayu Edi" />
+      <meta name="creator" content="Muhammad Bayu Edi" />
+      <meta name="publisher" content="TacoPDF" />
+      
       <link rel="canonical" href={canonicalUrl} />
 
       {LANGUAGES.map((l) => {
@@ -55,6 +60,35 @@ export default function SEOHead({ title, description, faqData }: SEOHeadProps) {
       })}
       
       <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}${cleanPath === '/' ? '' : cleanPath}`} />
+
+      {/* SoftwareApplication Schema (Web App) */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "TacoPDF",
+          "url": BASE_URL,
+          "description": "Secure, fast, and 100% free client-side PDF utility tool. Merge, split, compress, and edit PDF files directly in your browser without uploading to any server.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Works best on modern browsers supporting WebAssembly.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "creator": {
+            "@type": "Person",
+            "name": "Muhammad Bayu Edi",
+            "url": "https://github.com/riflebayu"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "TacoPDF",
+            "url": BASE_URL
+          }
+        })}
+      </script>
 
       {faqData && faqData.length > 0 && (
         <script type="application/ld+json">
