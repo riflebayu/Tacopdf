@@ -69,7 +69,6 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
               </div>
             </section>
           </article>
-          </div>
         );
       case 'about':
         return (
