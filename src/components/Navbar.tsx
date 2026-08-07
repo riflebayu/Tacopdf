@@ -300,7 +300,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
               <span className="text-lg leading-none">{currentLanguage.flag}</span>
               <ChevronDown size={12} className={`transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`fixed top-14 right-2 z-[200] w-40 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-1.5 transition-all duration-150 transform origin-top-right ${
+            <div className={`absolute top-full mt-4 right-0 z-[200] w-40 bg-surface-container border border-outline-variant rounded-xl shadow-2xl p-1.5 transition-all duration-150 transform origin-top-right ${
               isLangOpen ? 'opacity-100 pointer-events-auto visible scale-100' : 'opacity-0 pointer-events-none invisible scale-95'
             }`}>
               <ul className="space-y-0.5">
