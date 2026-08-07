@@ -87,9 +87,12 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
               </div>
               <div className="text-center sm:text-left space-y-2 pt-1 md:pt-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-primary-container">{t('about.founder.title', 'Creator & Founder')}</h3>
-                <p className="text-on-surface-variant leading-relaxed">
-                  {t('about.founder.text', 'Welcome to TacoPDF! I built this platform to provide a fast, completely free, and highly secure way to manage your PDF files. Since all processing happens locally on your device, your privacy is always guaranteed.')}
-                </p>
+                <p 
+                  className="text-on-surface-variant leading-relaxed" 
+                  dangerouslySetInnerHTML={{ 
+                    __html: t('about.founder.text', 'Welcome to TacoPDF! I built this platform to provide a fast, completely free, and highly secure way to manage your PDF files. Since all processing happens locally on your device, your privacy is always guaranteed.') 
+                  }} 
+                />
               </div>
             </div>
 
