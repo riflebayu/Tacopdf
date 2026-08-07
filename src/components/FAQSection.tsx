@@ -45,6 +45,18 @@ export function FAQSectionContent() {
       question: t('faq.5.q'),
       answer: t('faq.5.a'),
       icon: <Cpu className="text-primary shrink-0" size={20} />,
+    },
+    {
+      id: 'premium',
+      question: t('faq.6.q'),
+      answer: t('faq.6.a'),
+      icon: <Coins className="text-primary shrink-0" size={20} />,
+    },
+    {
+      id: 'payment',
+      question: t('faq.7.q'),
+      answer: t('faq.7.a'),
+      icon: <ShieldCheck className="text-primary shrink-0" size={20} />,
     }
   ];
 
