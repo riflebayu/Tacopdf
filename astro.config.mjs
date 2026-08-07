@@ -18,7 +18,7 @@ export default defineConfig({
     // Satisfy automated SEO checkers looking for exactly "sitemap.xml"
     '/sitemap.xml': { status: 301, destination: '/sitemap-index.xml' },
 
-    // English (root)
+    // English (root) - Old format 1 (user's initial example)
     '/merge':       { status: 301, destination: '/merge-pdf' },
     '/split':       { status: 301, destination: '/split-pdf' },
     '/rotate':      { status: 301, destination: '/rotate-pdf' },
@@ -26,6 +26,17 @@ export default defineConfig({
     '/unlock':      { status: 301, destination: '/unlock-pdf' },
     '/sign-pdf':    { status: 301, destination: '/sign' },
     '/redact-pdf':  { status: 301, destination: '/redact' },
+
+    // English (root) - Old format 2 (/tools/ prefix which is actually indexed)
+    '/tools/merge':       { status: 301, destination: '/merge-pdf' },
+    '/tools/split':       { status: 301, destination: '/split-pdf' },
+    '/tools/rotate':      { status: 301, destination: '/rotate-pdf' },
+    '/tools/protect':     { status: 301, destination: '/protect-pdf' },
+    '/tools/unlock':      { status: 301, destination: '/unlock-pdf' },
+    '/tools/sign':        { status: 301, destination: '/sign' },
+    '/tools/sign-pdf':    { status: 301, destination: '/sign' },
+    '/tools/redact':      { status: 301, destination: '/redact' },
+    '/tools/redact-pdf':  { status: 301, destination: '/redact' },
 
     // Indonesian
     '/id/merge':      { status: 301, destination: '/id/merge-pdf' },
