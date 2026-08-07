@@ -121,7 +121,11 @@ function FooterContent(props: FooterProps) {
                 {t('footer.about')}
               </LocalizedLink>
             </li>
-
+            <li>
+              <LocalizedLink to="/blog" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+                {t('nav.blog', 'Blog')}
+              </LocalizedLink>
+            </li>
             <li>
               <LocalizedLink to="/contact" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
                 {t('footer.contact')}
