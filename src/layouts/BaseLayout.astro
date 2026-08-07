@@ -23,6 +23,9 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <link rel="icon" type="image/webp" href="/logo.webp" />
     <link rel="apple-touch-icon" href="/logo.png" />
 
+    {/* Canonical URL — forces Google to index tacopdf.com only, not vercel.app */}
+    <link rel="canonical" href={`https://tacopdf.com${Astro.url.pathname}`} />
+
     {/* E-E-A-T Author & Trust Signals — readable by all bots from raw HTML */}
     <meta name="author" content="Muhammad Bayu Edi" />
     <meta name="creator" content="Muhammad Bayu Edi" />

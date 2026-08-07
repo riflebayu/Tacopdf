@@ -24,5 +24,18 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "tacopdf.vercel.app"
+        }
+      ],
+      "destination": "https://tacopdf.com/$1",
+      "permanent": true
+    }
   ]
 }
