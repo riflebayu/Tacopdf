@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /test/
+
+User-agent: Mediapartners-Google
+Allow: /
 
 Sitemap: https://tacopdf.com/sitemap-index.xml
