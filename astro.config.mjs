@@ -9,7 +9,16 @@ export default defineConfig({
   site: 'https://tacopdf.com',
   output: 'static',
   adapter: vercel(),
-  integrations: [react(), sitemap()],
+  integrations: [react(), sitemap({
+    filter: (page) => {
+      // Exclude test, html sitemap pages, and admin from sitemap
+      const exclude = ['/test/', '/admin/'];
+      const excludePattern = [/\/sitemap\/$/, /\/sitemap\/$/];
+      if (exclude.some(path => page.includes(path))) return false;
+      if (excludePattern.some(re => re.test(page))) return false;
+      return true;
+    },
+  })],
   vite: {
     plugins: [tailwindcss()],
   },
