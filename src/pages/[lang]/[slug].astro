@@ -9,7 +9,7 @@ import StaticPageClient from '../../components/StaticPageClient';
 import FAQSection from '../../components/FAQSection';
 
 export async function getStaticPaths() {
-  const languages = ['en', 'id', 'es', 'fr', 'de', 'pt', 'ja'];
+  const languages = ['id', 'es', 'fr', 'de', 'pt', 'ja']; // 'en' excluded: root /slug/ pages serve English
   const aliases = Object.keys(TOOL_ALIASES || {});
   const ids = (TOOLS || []).map(t => t.id);
   const staticPages = ['privacy', 'terms', 'cookie', 'disclaimer', 'retention', 'how-it-works', 'about', 'contact', 'faq', 'sitemap'];
