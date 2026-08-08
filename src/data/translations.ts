@@ -16,7 +16,7 @@ export const TRANSLATIONS = {
     "about.p3.text2": "To fund server operations and infrastructure maintenance, we rely on two things: the placement of sponsored ads designed not to disrupt your workspace, as well as voluntary donation support from our loyal users. Donations from the community greatly help TacoPDF to remain operating independently and free from user data selling practices.",
     "about.p4.title": "Let's Connect!",
     "about.p4.text1": "This platform is designed to simplify daily administrative tasks for students, freelancers, and professionals alike.",
-    "about.p4.text2": "If you have suggestions for adding new features, encounter technical issues (bugs), or just want to say hello, do not hesitate to send me a message through the <a href='/en/contact' class='text-primary hover:underline font-bold'>Contact Support</a> page.",
+    "about.p4.text2": "If you have suggestions for adding new features, encounter technical issues (bugs), or just want to say hello, do not hesitate to send me a message through the <a href='/contact' class='text-primary hover:underline font-bold'>Contact Support</a> page.",
     "about.p4.text3": "Thank you for entrusting your document management and security to TacoPDF. Work safely and productively!",
     "blog.title": "Blog | TacoPDF",
     "blog.description": "Global document news, smart guides, and practical tips for a seamless PDF workflow",
@@ -135,7 +135,7 @@ export const TRANSLATIONS = {
     "privacy.p6.title": "6. Donations and Third-Party Payment Processing",
     "privacy.p6.text": "To support our operational costs and infrastructure development, TacoPDF accepts voluntary donations from users. The donation transaction process is handled entirely by secure third-party platforms, namely Saweria (for the Indonesian region) and Ko-Fi (for international).<br><br>TacoPDF never requests, processes, or stores your sensitive financial information (such as credit card numbers or banking details) on our servers. Any form of data you provide when making a donation transaction (such as name or email address) is governed by the Privacy Policy of the respective payment service providers.",
     "privacy.p7.title": "7. Contact the Support Team",
-    "privacy.p7.text": "Your trust is our top priority. If you have any further questions, feedback, or concerns regarding these privacy protection practices, please contact our team at any time via the <a href=\"/en/contact\" class=\"text-primary underline\">Contact Support</a> page.",
+    "privacy.p7.text": "Your trust is our top priority. If you have any further questions, feedback, or concerns regarding these privacy protection practices, please contact our team at any time via the <a href=\"/contact\" class=\"text-primary underline\">Contact Support</a> page.",
 
 
     "contact.back": "Back to Home",
