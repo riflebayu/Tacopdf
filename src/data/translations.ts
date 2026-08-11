@@ -696,7 +696,7 @@ export const TRANSLATIONS = {
     "favorites.reset": "Reset Favorit",
     "favorites.confirm_reset": "Apakah Anda yakin ingin menghapus semua alat favorit Anda?",
     "home.title": "Alat PDF Online 100% Gratis & Aman",
-    "home.subtitle": "Gabungkan, pisahkan, dan edit PDF langsung di browser Anda. Privasi total tanpa unggahan ke server dan tanpa penyimpanan file.",
+    "home.subtitle": "Gabung, pisah, dan edit PDF langsung di browser Anda. Privasi total tanpa unggahan ke server dan tanpa penyimpanan file.",
     "history.just_now": "baru saja",
     "tool.sign.instruction": "Silakan gambar tanda tangan Anda di bawah! Atau Anda bisa mengunggah gambar tanda tangan Anda.",
     "tool.sign.edit": "Ketuk untuk Edit",
