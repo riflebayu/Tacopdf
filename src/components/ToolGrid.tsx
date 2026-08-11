@@ -45,7 +45,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
     return TOOLS.filter((t) => t.category === catId).filter(t => toolSettings?.[t.id]?.enabled !== false);
   };
 
-  const POPULAR_TOOL_IDS = ['merge', 'split', 'protect', 'pdf-to-image'];
+  const POPULAR_TOOL_IDS = ['merge'];
 
   const renderToolCard = (tool: typeof TOOLS[0], isFavoriteSection: boolean = false) => {
     const isFav = favorites.includes(tool.id);
