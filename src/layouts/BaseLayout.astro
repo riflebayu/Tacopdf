@@ -10,9 +10,70 @@ interface Props {
   title?: string;
   description?: string;
   lang?: string;
+  schema?: string; // [SEO FIX: Dynamic Schema]
 }
 
-const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang = "en" } = Astro.props;
+const { 
+  title = "TacoPDF", 
+  description = "Free & Secure Online PDF Tools", 
+  lang = "en",
+  schema 
+} = Astro.props;
+
+// [SEO FIX: Canonical URL Consistency] Remove trailing slash for exact matching
+let currentPath = Astro.url.pathname;
+if (currentPath.endsWith('/') && currentPath.length > 1) {
+  currentPath = currentPath.slice(0, -1);
+}
+
+// [SEO FIX: Dynamic Hreflang Injection]
+const supportedLangs = ['en', 'id', 'es', 'fr', 'de', 'pt', 'ja'];
+let basePath = currentPath;
+if (lang !== 'en') {
+  basePath = currentPath.replace(new RegExp(`^/${lang}`), '') || '/';
+}
+
+const hreflangLinks = supportedLangs.map((l) => {
+  let url = 'https://tacopdf.com';
+  if (l === 'en') {
+    url += basePath === '/' ? '' : basePath;
+  } else {
+    url += `/${l}${basePath === '/' ? '' : basePath}`;
+  }
+  return { lang: l, url };
+});
+const defaultUrl = hreflangLinks.find(link => link.lang === 'en')?.url || 'https://tacopdf.com';
+
+// [SEO FIX: Dynamic Schema] Fallback to Homepage WebApplication schema
+const finalSchema = schema || JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TacoPDF",
+  "url": "https://tacopdf.com",
+  "description": "Secure, fast, and 100% free client-side PDF utility. Merge, split, compress, rotate, and edit PDF files directly in your browser — no uploads, no registration, no watermark.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript and WebAssembly support.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Muhammad Bayu Edi",
+    "url": "https://www.instagram.com/riflebayu",
+    "sameAs": [
+      "https://github.com/riflebayu",
+      "https://www.facebook.com/profile.php?id=100004429534685"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TacoPDF",
+    "url": "https://tacopdf.com"
+  }
+});
 ---
 <html lang={lang} style="background-color: #17130a; color: #ece1d1;">
   <head>
@@ -32,8 +93,14 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="TacoPDF" />
 
-    {/* Canonical URL — forces Google to index tacopdf.com only, not vercel.app */}
-    <link rel="canonical" href={`https://tacopdf.com${Astro.url.pathname}`} />
+    {/* [SEO FIX: Pillar 2] Cleaned Canonical URL */}
+    <link rel="canonical" href={`https://tacopdf.com${currentPath === '/' ? '' : currentPath}`} />
+
+    {/* [SEO FIX: Pillar 1] Bidirectional Hreflang Tags */}
+    {hreflangLinks.map((link) => (
+      <link rel="alternate" hreflang={link.lang} href={link.url} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
 
     {/* Google AdSense */}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9178424383165717" crossorigin="anonymous"></script>
@@ -49,36 +116,8 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
     <link rel="me" href="https://www.instagram.com/riflebayu" />
     <link rel="me" href="https://www.facebook.com/profile.php?id=100004429534685" />
 
-    {/* WebApplication Schema — readable by Google crawler from raw HTML */}
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "TacoPDF",
-      "url": "https://tacopdf.com",
-      "description": "Secure, fast, and 100% free client-side PDF utility. Merge, split, compress, rotate, and edit PDF files directly in your browser — no uploads, no registration, no watermark.",
-      "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "All",
-      "browserRequirements": "Requires JavaScript and WebAssembly support.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "creator": {
-        "@type": "Person",
-        "name": "Muhammad Bayu Edi",
-        "url": "https://www.instagram.com/riflebayu",
-        "sameAs": [
-          "https://github.com/riflebayu",
-          "https://www.facebook.com/profile.php?id=100004429534685"
-        ]
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "TacoPDF",
-        "url": "https://tacopdf.com"
-      }
-    })} />
+    {/* [SEO FIX: Pillar 4] Dynamic JSON-LD Schema */}
+    <script type="application/ld+json" set:html={finalSchema} />
 
     <GoogleAnalytics />
     <Analytics />
@@ -86,13 +125,13 @@ const { title = "TacoPDF", description = "Free & Secure Online PDF Tools", lang 
   </head>
   <body class="antialiased text-on-surface bg-background min-h-screen flex flex-col" style="background-color: #17130a; color: #ece1d1;">
     <div class="flex-1 w-full flex flex-col overflow-x-hidden">
-      <Navbar client:load initialLang={lang} currentPath={Astro.url.pathname} />
+      <Navbar client:load initialLang={lang} currentPath={currentPath} />
       
       <div class="flex-1 w-full flex flex-col">
         <slot />
       </div>
 
-      <Footer client:load initialLang={lang} currentPath={Astro.url.pathname} />
+      <Footer client:load initialLang={lang} currentPath={currentPath} />
     </div>
   </body>
 </html>

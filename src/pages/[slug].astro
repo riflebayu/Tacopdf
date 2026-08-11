@@ -97,6 +97,41 @@ if (tool) {
   translatedDescription = dict['footer.desc' as keyof typeof dict] || 'Free & Secure Online PDF Tools';
 }
 
+// [SEO FIX: Dynamic Schema for Specific Tools]
+let toolSchemaStr = undefined;
+if (tool && !isStaticPage) {
+  const toolSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": translatedName,
+    "url": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/${slug}`,
+    "description": translatedDescription,
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript and WebAssembly support.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Muhammad Bayu Edi",
+      "url": "https://www.instagram.com/riflebayu",
+      "sameAs": [
+        "https://github.com/riflebayu",
+        "https://www.facebook.com/profile.php?id=100004429534685"
+      ]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "TacoPDF",
+      "url": "https://tacopdf.com"
+    }
+  };
+  toolSchemaStr = JSON.stringify(toolSchema);
+}
+
 const breadcrumbsSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -124,7 +159,7 @@ const breadcrumbsSchema = JSON.stringify({
 
 ---
 
-<BaseLayout title={title} description={translatedDescription} lang={lang}>
+<BaseLayout title={title} description={translatedDescription} lang={lang} schema={toolSchemaStr}>
   {isStaticPage ? (
     slug === 'faq' ? (
       <div class="flex-1 w-full bg-background animate-fade-in pb-12">
