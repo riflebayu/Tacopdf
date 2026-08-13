@@ -1010,7 +1010,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             
             setPageOrder(Array.from({length: numPages}, (_, i) => i));
             
-            const previewScale = (tool.id === 'sign' || tool.id === 'redact' || tool.id === 'add-watermark' || tool.id === 'add-page-numbers') ? 1.5 : 0.5;
+            const previewScale = (tool.id === 'sign' || tool.id === 'redact' || tool.id === 'add-watermark' || tool.id === 'add-page-numbers') 
+              ? (isMobile ? 0.6 : 1.5) 
+              : (isMobile ? 0.2 : 0.5);
             
             const targetNumPages = (tool.id === 'add-watermark' || tool.id === 'add-page-numbers') ? 1 : numPages;
             for (let i = 1; i <= targetNumPages; i++) {
@@ -1026,11 +1028,21 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   setThumbnailNativeSize({ w: page.getViewport({ scale: 1 }).width, h: page.getViewport({ scale: 1 }).height });
                 }
                 await page.render({ canvasContext: context, viewport }).promise;
-                urls.push(canvas.toDataURL('image/jpeg', 0.8));
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                urls.push(dataUrl);
+                
+                if (i === 1) {
+                  setFileThumbnails(prev => ({ ...prev, [uploadedFiles[0].id]: dataUrl }));
+                }
                 
                 // Explicitly free canvas memory
                 canvas.width = 0;
                 canvas.height = 0;
+                
+                // Yield back to the main thread briefly to prevent canvas memory crash
+                if (isMobile) {
+                  await new Promise(resolve => setTimeout(resolve, 25));
+                }
               }
             }
             setVisualThumbnails(urls);
