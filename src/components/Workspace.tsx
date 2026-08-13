@@ -16,9 +16,9 @@ import { motion, AnimatePresence, Reorder, useMotionValue, useDragControls } fro
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
 
-const qpdfWasmUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.wasm';
-const qpdfJsUrl = 'https://unpkg.com/qpdf-run@0.2.1/vendor/qpdf/lib/qpdf.js';
-const qpdfWorkerCode = `importScripts('https://unpkg.com/qpdf-run@0.2.1/src/worker.js');`;
+const qpdfWasmUrl = '/qpdf/qpdf.wasm';
+const qpdfJsUrl = '/qpdf/qpdf.js';
+const qpdfWorkerCode = `importScripts(location.origin + '/qpdf/worker.js');`;
 const qpdfWorkerUrl = typeof window !== 'undefined' ? URL.createObjectURL(new Blob([qpdfWorkerCode], { type: 'application/javascript' })) : '';
 
 const MobileDraggableItem = ({
@@ -2654,11 +2654,17 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         );
                       })}
                     </div>
-                  ) : (
+                  ) : isGeneratingThumbnails ? (
                     <div className="flex flex-col items-center justify-center p-12 border border-dashed border-outline-variant rounded-xl bg-surface-container-lowest">
                       <LucideIcon name="Loader2" className="animate-spin text-primary mb-3" size={32} />
                       <p className="text-sm font-bold text-on-surface">Rendering Document...</p>
                       <p className="text-xs text-on-surface-variant mt-1">Preparing high quality preview pages</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-12 border border-dashed border-error/50 rounded-xl bg-error-container/20">
+                      <LucideIcon name="AlertTriangle" className="text-error mb-3" size={32} />
+                      <p className="text-sm font-bold text-on-surface">Failed to load preview</p>
+                      <p className="text-xs text-on-surface-variant mt-1">The document may be too large or complex for this device.</p>
                     </div>
                   )}
                 </div>
@@ -2721,11 +2727,17 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         );
                       })}
                     </div>
-                  ) : (
+                  ) : isGeneratingThumbnails ? (
                     <div className="flex flex-col items-center justify-center p-12 border border-dashed border-outline-variant rounded-xl bg-surface-container-lowest">
                       <LucideIcon name="Loader2" className="animate-spin text-primary mb-3" size={32} />
                       <p className="text-sm font-bold text-on-surface">Rendering Document...</p>
                       <p className="text-xs text-on-surface-variant mt-1">Preparing high quality preview pages</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-12 border border-dashed border-error/50 rounded-xl bg-error-container/20">
+                      <LucideIcon name="AlertTriangle" className="text-error mb-3" size={32} />
+                      <p className="text-sm font-bold text-on-surface">Failed to load preview</p>
+                      <p className="text-xs text-on-surface-variant mt-1">The document may be too large or complex for this device.</p>
                     </div>
                   )}
 
