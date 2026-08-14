@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '../context/LanguageContext';
+import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 import { X, AlertTriangle } from 'lucide-react';
 
-export default function MaintenancePopup() {
+function MaintenancePopupContent() {
   const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -47,5 +47,13 @@ export default function MaintenancePopup() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function MaintenancePopup({ initialLang = 'en' }: { initialLang?: string }) {
+  return (
+    <LanguageProvider initialLang={initialLang}>
+      <MaintenancePopupContent />
+    </LanguageProvider>
   );
 }

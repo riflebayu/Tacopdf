@@ -133,7 +133,7 @@ const finalSchema = schema || JSON.stringify({
       </div>
 
       <Footer client:load initialLang={lang} currentPath={currentPath} />
-      <MaintenancePopup client:idle />
+      <MaintenancePopup client:idle initialLang={lang} />
     </div>
   </body>
 </html>
