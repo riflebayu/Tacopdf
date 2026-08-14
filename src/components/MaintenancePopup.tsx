@@ -54,8 +54,8 @@ function MaintenancePopupContent() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] max-w-sm w-[calc(100%-2rem)] md:w-full animate-fade-in">
-      <div className="bg-[#1f1807] border border-yellow-500/50 rounded-2xl p-5 shadow-[0_0_30px_rgba(234,179,8,0.25)] relative overflow-hidden ring-1 ring-yellow-500/20 backdrop-blur-md">
+    <div className="fixed z-[9999] inset-0 pointer-events-none flex flex-col items-center justify-end pb-4 md:justify-center md:pb-0 animate-fade-in px-4">
+      <div className="pointer-events-auto w-full max-w-sm bg-[#1f1807] border border-yellow-500/50 rounded-2xl p-5 shadow-[0_0_30px_rgba(234,179,8,0.25)] relative overflow-hidden ring-1 ring-yellow-500/20 backdrop-blur-md">
         {/* Animated glowing top line */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 animate-pulse" />
         {/* Subtle radial glow inside */}
