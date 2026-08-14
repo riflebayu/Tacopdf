@@ -1,6 +1,7 @@
 // @ts-nocheck
 export const TRANSLATIONS = {
   "en": {
+    "maintenance.message": "🛠️ System Maintenance: Some PDF tools are temporarily unstable. Full service will be restored today at 22:00 (GMT+7).",
     "about.founder.title": "Creator & Founder",
     "about.founder.text": "Welcome! My name is Muhammad Bayu Edi, a software developer from Central Java, Indonesia. The initial idea of creating TacoPDF was born from personal experiences and challenges I frequently faced while working.<br/><br/>In my routine of managing various documents, I always struggled to find an online PDF manipulation tool that was both practical and secure. Most existing services often limit file sizes, forcefully add watermarks, require account registration, or most alarmingly: silently upload our personal documents to their servers.<br/><br/>Stemming from this concern, I decided to build my own solution. Prioritizing a clean and intuitive user interface (UI), I created TacoPDF—a document utility tool that is secure, fast, and reliable for anyone without frustrating limitations.",
     "about.p1.title": "Why Use the Name 'TacoPDF'?",
@@ -663,6 +664,7 @@ export const TRANSLATIONS = {
     "workspace.merge.upload_more": "Upload more?",
   },
   "id": {
+    "maintenance.message": "🛠️ Pemeliharaan Sistem: Beberapa alat PDF sedang tidak stabil. Layanan akan pulih sepenuhnya hari ini pukul 22:00 WIB.",
     "about.founder.title": "Kreator & Pendiri",
     "about.founder.text": "Selamat datang! Nama saya Muhammad Bayu Edi, seorang pengembang perangkat lunak (software developer) dari Jawa Tengah, Indonesia. Ide awal pembuatan TacoPDF lahir dari pengalaman dan tantangan pribadi yang sering saya hadapi saat bekerja.<br/><br/>Dalam rutinitas mengelola berbagai macam dokumen, saya selalu kesulitan menemukan alat manipulasi PDF daring (online) yang praktis sekaligus aman. Sebagian besar layanan yang ada sering kali membatasi ukuran berkas, menambahkan tanda air (watermark) secara paksa, mewajibkan pendaftaran akun, atau yang paling mengkhawatirkan: secara diam-diam mengunggah dokumen pribadi kita ke peladen (server) mereka.<br/><br/>Berangkat dari keresahan tersebut, saya memutuskan untuk membangun solusi saya sendiri. Dengan mengutamakan desain antarmuka (UI) yang bersih dan intuitif, saya menciptakan TacoPDF—sebuah alat utilitas dokumen yang aman, cepat, dan dapat diandalkan oleh siapa saja tanpa batasan yang menyulitkan.",
     "about.p1.title": "Mengapa Menggunakan Nama 'TacoPDF'?",
@@ -1318,6 +1320,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Melayani masyarakat dunia dengan sekuat tenaga.",
   },
   "es": {
+    "maintenance.message": "🛠️ Mantenimiento del Sistema: Algunas herramientas PDF son temporalmente inestables. El servicio completo se restaurará hoy a las 22:00 (GMT+7).",
     "about.founder.title": "Creador y Fundador",
     "about.founder.text": "¡Bienvenidos! Mi nombre es Muhammad Bayu Edi, desarrollador de software de Java Central, Indonesia. La idea inicial de crear TacoPDF nació de experiencias personales y desafíos que enfrentaba frecuentemente mientras trabajaba.<br/><br/>En mi rutina de administrar varios documentos, siempre me costaba encontrar una herramienta de manipulación de PDF en línea que fuera práctica y segura. La mayoría de los servicios existentes a menudo limitan el tamaño de los archivos, agregan marcas de agua por la fuerza, requieren registro de cuenta, o lo más alarmante: suben secretamente nuestros documentos personales a sus servidores.<br/><br/>A raíz de esta preocupación, decidí construir mi propia solución. Priorizando una interfaz de usuario (UI) limpia e intuitiva, creé TacoPDF: una herramienta de utilidad de documentos segura, rápida y confiable para cualquier persona sin limitaciones frustrantes.",
     "about.p1.title": "¿Por qué usar el nombre 'TacoPDF'?",
@@ -2617,6 +2620,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "maintenance.message": "🛠️ Manutenção do Sistema: Algumas ferramentas de PDF estão temporariamente instáveis. O serviço completo será restaurado hoje às 22:00 (GMT+7).",
     "about.founder.title": "Criador e Fundador",
     "about.founder.text": "Bem-vindos! Meu nome é Muhammad Bayu Edi, um desenvolvedor de software de Java Central, Indonésia. A ideia inicial de criar o TacoPDF nasceu de experiências pessoais e desafios que eu enfrentava frequentemente enquanto trabalhava.<br/><br/>Na minha rotina de gerenciamento de vários documentos, sempre tive dificuldade em encontrar uma ferramenta de manipulação de PDF online que fosse prática e segura. A maioria dos serviços existentes geralmente limita o tamanho dos arquivos, adiciona marcas d'água à força, exige registro de conta ou, o mais alarmante: carrega secretamente nossos documentos pessoais para seus servidores.<br/><br/>Decorrente dessa preocupação, decidi construir minha própria solução. Priorizando uma interface de usuário (UI) limpa e intuitiva, criei o TacoPDF—uma ferramenta utilitária de documentos que é segura, rápida e confiável para qualquer pessoa, sem limitações frustrantes.",
     "about.p1.title": "Por que usar o nome 'TacoPDF'?",
@@ -3273,6 +3277,7 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "maintenance.message": "🛠️ Systemwartung: Einige PDF-Tools sind vorübergehend instabil. Der vollständige Service wird heute um 22:00 Uhr (GMT+7) wiederhergestellt.",
     "about.founder.title": "Schöpfer & Gründer",
     "about.founder.text": "Willkommen! Mein Name ist Muhammad Bayu Edi, ein Softwareentwickler aus Zentral-Java, Indonesien. Die ursprüngliche Idee zur Entwicklung von TacoPDF entstand aus persönlichen Erfahrungen und Herausforderungen, mit denen ich während der Arbeit häufig konfrontiert war.<br/><br/>Bei meiner Routine der Verwaltung verschiedener Dokumente hatte ich immer Mühe, ein praktisches und sicheres Online-PDF-Bearbeitungstool zu finden. Die meisten bestehenden Dienste beschränken häufig die Dateigröße, fügen zwangsweise Wasserzeichen hinzu, erfordern eine Kontoregistrierung oder am alarmierendsten: laden unsere persönlichen Dokumente heimlich auf ihre Server hoch.<br/><br/>Aufgrund dieser Bedenken beschloss ich, meine eigene Lösung zu entwickeln. Unter Bevorzugung einer sauberen und intuitiven Benutzeroberfläche (UI) habe ich TacoPDF erstellt – ein sicheres, schnelles und zuverlässiges Dokumenten-Dienstprogramm für jedermann ohne frustrierende Einschränkungen.",
     "about.p1.title": "Warum den Namen 'TacoPDF' verwenden?",
@@ -3936,6 +3941,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "maintenance.message": "🛠️ Maintenance du système : Certains outils PDF sont temporairement instables. Le service complet sera rétabli aujourd'hui à 22h00 (GMT+7).",
     "about.founder.title": "Créateur & Fondateur",
     "about.founder.text": "Bienvenue ! Je m'appelle Muhammad Bayu Edi, développeur de logiciels originaire de Java central, en Indonésie. L'idée initiale de créer TacoPDF est née d'expériences personnelles et de défis auxquels j'ai été fréquemment confronté en travaillant.<br/><br/>Dans ma routine de gestion de divers documents, j'ai toujours eu du mal à trouver un outil de manipulation de PDF en ligne à la fois pratique et sécurisé. La plupart des services existants limitent souvent la taille des fichiers, ajoutent de force des filigranes, nécessitent l'enregistrement d'un compte, ou le plus alarmant : téléchargent silencieusement nos documents personnels sur leurs serveurs.<br/><br/>Suite à cette préoccupation, j'ai décidé de créer ma propre solution. En privilégiant une interface utilisateur (UI) propre et intuitive, j'ai créé TacoPDF : un outil utilitaire de documents sécurisé, rapide et fiable pour tous, sans limitations frustrantes.",
     "about.p1.title": "Pourquoi utiliser le nom « TacoPDF » ?",
