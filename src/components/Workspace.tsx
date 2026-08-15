@@ -2080,6 +2080,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       } else if (tool.id === 'html-to-pdf') {
         setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html') || 'Rendering HTML view...' });
         
+        if (typeof window !== 'undefined' && (isMobile || window.innerWidth < 1024)) {
+          setTimeout(() => {
+            const progressEl = document.getElementById('progress-box-container');
+            if (progressEl) {
+              progressEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 80);
+        }
+
         // Yield to the main thread so the browser can paint the processing overlay before html2canvas blocks the thread
         await yieldToMain();
         // Additional 50ms delay to guarantee mobile browsers have time to render the UI updates
@@ -2190,6 +2199,17 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         downloadUrl: dlUrl,
         outputFileName: outName,
       });
+
+      if (tool.id === 'html-to-pdf') {
+        if (typeof window !== 'undefined' && (isMobile || window.innerWidth < 1024)) {
+          setTimeout(() => {
+            const successEl = document.getElementById('success-box-container');
+            if (successEl) {
+              successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 120);
+        }
+      }
 
       setNeedsGlobalPassword(false);
       setGlobalUnlockPassword('');
@@ -3218,7 +3238,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  </div>
                 )}
               {processingState.status === 'processing' && (
-                <div className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 shadow-sm mb-4 w-full overflow-hidden break-words box-border">
+                <div id="progress-box-container" className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 shadow-sm mb-4 w-full overflow-hidden break-words box-border scroll-mt-28">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-bold text-on-surface flex items-center gap-2">
                       <LucideIcon name="Loader2" className="animate-spin text-primary" size={18} />
