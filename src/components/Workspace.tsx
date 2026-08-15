@@ -2436,7 +2436,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       <LucideIcon name="UploadCloud" size={24} className="text-primary-container" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm font-black text-on-surface leading-tight mb-0.5">{t('workspace.drop.title')}</p>
+                      <p className="text-sm font-black text-on-surface leading-tight mb-0.5">
+                        {t('workspace.drop.title_mobile', 'Select file from device')}
+                      </p>
                       <p className="text-[10px] text-on-surface-variant font-medium">
                         {tool.id === 'image-to-pdf' ? t('workspace.drop.support_img') : t('workspace.drop.support_pdf')}
                       </p>

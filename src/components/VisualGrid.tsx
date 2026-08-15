@@ -152,20 +152,20 @@ export default function VisualGrid({
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRotate(idx, -90); }}
                     className="flex-1 min-h-[40px] py-1.5 px-2 bg-surface-container-highest/95 hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-lg shadow-md border border-outline-variant/60 active:scale-95 transition-all flex items-center justify-center gap-1 text-xs font-bold backdrop-blur-sm cursor-pointer"
-                    title={t('tool.rotate.left') || 'Rotate Left'}
+                    title={t('tool.rotate.btn_left', 'Left')}
                     aria-label={`Rotate page ${idx + 1} Left`}
                   >
                     <RotateCcw size={16} />
-                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">Kiri</span>
+                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">{t('tool.rotate.btn_left', 'Left')}</span>
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRotate(idx, 90); }}
                     className="flex-1 min-h-[40px] py-1.5 px-2 bg-surface-container-highest/95 hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-lg shadow-md border border-outline-variant/60 active:scale-95 transition-all flex items-center justify-center gap-1 text-xs font-bold backdrop-blur-sm cursor-pointer"
-                    title={t('tool.rotate.right') || 'Rotate Right'}
+                    title={t('tool.rotate.btn_right', 'Right')}
                     aria-label={`Rotate page ${idx + 1} Right`}
                   >
                     <RotateCw size={16} />
-                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">Kanan</span>
+                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">{t('tool.rotate.btn_right', 'Right')}</span>
                   </button>
                 </div>
               ) : (
