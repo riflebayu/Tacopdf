@@ -3192,7 +3192,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
                         {processingState.outputFileName && !processingState.outputFileName.endsWith('.zip') && !processingState.outputFileName.match(/\.(png|jpe?g)$/i) && (
                           <button
-                            onClick={() => setShowPreview(true)}
+                            onClick={handleOpenPreview}
                             className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-variant hover:bg-surface-container-highest text-on-surface rounded-lg text-sm font-medium transition-colors flex-1 sm:flex-none min-w-[120px]"
                           >
                             <LucideIcon name="Eye" size={16} />
