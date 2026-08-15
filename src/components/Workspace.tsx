@@ -84,8 +84,8 @@ const MobileDraggableItem = ({
                 const bytes = await file.file.arrayBuffer();
                 const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
                 const url = URL.createObjectURL(blob);
-                setPreviewFileUrl(url);
                 setPreviewFileName(file.file.name);
+                setPreviewFileUrl(url);
               }}
               className="p-1.5 hover:bg-primary-container/20 rounded-lg text-primary-container transition-colors"
             >
@@ -1126,9 +1126,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
     const fetchTotalPages = async () => {
       if (tool.id === 'sign' && uploadedFiles.length > 0) {
         try {
-          const pdfjsLib = await loadPdfJs();
+          const pdfjsLib = getPdfJs();
           const fileBytes = await uploadedFiles[0].file.arrayBuffer();
-          const loadingTask = pdfjsLib.getDocument(fileBytes);
+          const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBytes) });
           const pdfDoc = await loadingTask.promise;
           setSignTotalPages(pdfDoc.numPages);
           // Only reset target page if it's out of bounds
@@ -1643,8 +1643,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         const fileBlobUrl = URL.createObjectURL(fileBlob);
         
         try {
-          const pdfjsLib = await loadPdfJs();
-          const loadingTask = pdfjsLib.getDocument(fileBlobUrl);
+          const pdfjsLib = getPdfJs();
+          const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBytes) });
           const pdfDoc = await loadingTask.promise;
           const pagesCount = pdfDoc.numPages;
           const urls: string[] = [];
@@ -2518,11 +2518,19 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                       title={t('workspace.file.preview') || 'Preview File'}
                                       onClick={async (e) => {
                                         e.stopPropagation();
+                                        // Create blob URL for open-in-new-tab fallback
                                         const bytes = await file.file.arrayBuffer();
                                         const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
                                         const url = URL.createObjectURL(blob);
-                                        setPreviewFileUrl(url);
                                         setPreviewFileName(file.file.name);
+                                        setPreviewFileUrl(url);
+                                        // Immediately start rendering to images
+                                        setIsFilePreviewLoading(true);
+                                        setFilePreviewImages([]);
+                                        renderPdfPagesToImages(url)
+                                          .then(imgs => setFilePreviewImages(imgs))
+                                          .catch(err => console.error('Per-file preview error:', err))
+                                          .finally(() => setIsFilePreviewLoading(false));
                                       }}
                                       className="p-1.5 bg-primary-container/90 hover:bg-primary-container text-on-primary-container rounded-lg transition-colors shadow-sm"
                                     >
@@ -3332,11 +3340,32 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 ))}
               </div>
             ) : (
-              <iframe
-                src={previewFileUrl}
-                className="flex-1 w-full bg-white"
-                title={previewFileName}
-              />
+              <div className="flex-1 flex flex-col items-center justify-center gap-5 p-6 bg-surface-container-low">
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <div className="w-16 h-16 bg-primary-container/20 rounded-2xl flex items-center justify-center text-primary">
+                    <FileText size={32} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-on-surface text-sm">{t('workspace.preview.blocked.title') || 'PDF is ready to view'}</h4>
+                    <p className="text-xs text-on-surface-variant mt-1 max-w-xs leading-relaxed">
+                      {t('workspace.preview.blocked.desc') || 'Your browser blocks direct PDF preview in this panel. Open it in a new tab to view the contents instantly.'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+                  <a
+                    href={previewFileUrl || ''}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-primary-container hover:bg-primary text-on-primary-container font-bold text-sm rounded-xl shadow-md transition-all"
+                  >
+                    <Eye size={16} /> {t('workspace.preview.blocked.open_tab') || 'Open in New Tab'}
+                  </a>
+                </div>
+                <p className="text-[10px] text-on-surface-variant/60 text-center max-w-xs">
+                  {t('workspace.preview.blocked.privacy') || 'All files are processed 100% in your browser and are never uploaded to a server.'}
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -3570,13 +3599,27 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 </button>
               </div>
 
-              {/* Modal Body - Iframe Viewer */}
-              <div className="flex-1 bg-surface-container-lowest p-6 flex flex-col relative overflow-hidden">
-                <iframe
-                  src={`${URL.createObjectURL(fileToPreview.file)}#toolbar=1`}
-                  className="w-full h-full rounded-lg border border-outline-variant bg-background shadow-inner"
-                  title="On-Demand PDF Preview"
-                />
+              {/* Modal Body */}
+              <div className="flex-1 bg-surface-container-lowest p-6 flex flex-col items-center justify-center gap-5 relative overflow-hidden">
+                <div className="w-16 h-16 bg-primary-container/20 rounded-2xl flex items-center justify-center text-primary">
+                  <FileText size={32} />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-bold text-on-surface text-base">{fileToPreview.name}</h4>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    {t('workspace.preview.blocked.desc') || 'Your browser blocks direct PDF preview in this panel. Open it in a new tab to view the contents instantly.'}
+                  </p>
+                </div>
+                <div className="flex gap-3 mt-2">
+                  <a
+                    href={URL.createObjectURL(fileToPreview.file)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-container hover:bg-primary text-on-primary-container font-bold text-sm rounded-xl shadow-md transition-all"
+                  >
+                    <Eye size={16} /> {t('workspace.preview.blocked.open_tab') || 'Open in New Tab'}
+                  </a>
+                </div>
               </div>
 
               {/* Modal Footer */}
