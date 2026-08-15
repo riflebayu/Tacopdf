@@ -416,7 +416,7 @@ Example usage (for 'en' language): "Try our free [Split PDF](/split-pdf) tool."
 (Adapt the anchor text naturally based on the ${language} being used).
 ${promptOverride ? `\nAdditional Instructions: ${promptOverride}` : ''}
 
-CRITICAL: You must return the output STRICTLY as a raw JSON object (without Markdown code blocks like ```json). The JSON must have the following structure:
+CRITICAL: You must return the output STRICTLY as a raw JSON object (without Markdown code blocks like \`\`\`json). The JSON must have the following structure:
 {
   "title": "SEO optimized title",
   "description": "SEO optimized meta description (max 160 characters)",
