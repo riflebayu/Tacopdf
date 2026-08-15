@@ -75,17 +75,30 @@ const MobileDraggableItem = ({
             {isLocked && <span className="text-red-500 font-bold">🔒 {t('file.locked') || 'Locked'}</span>}
           </p>
         </div>
-        
         <div className="flex gap-0.5 sm:gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-          {file.type === 'application/pdf' && !isLocked && (
+          {!isLocked && (
             <button
               title={t('workspace.file.preview') || 'Preview File'}
               onClick={async () => {
-                const bytes = await file.file.arrayBuffer();
-                const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
-                const url = URL.createObjectURL(blob);
                 setPreviewFileName(file.file.name);
-                setPreviewFileUrl(url);
+                setIsFilePreviewLoading(true);
+                setFilePreviewImages([]);
+                if (file.file.type.startsWith('image/') || tool.id === 'image-to-pdf') {
+                  try {
+                    const dataUrl = await fileToDataUrl(file.file);
+                    setPreviewFileUrl(dataUrl);
+                    setFilePreviewImages([dataUrl]);
+                  } catch (err) {
+                    console.error('Image preview error:', err);
+                  } finally {
+                    setIsFilePreviewLoading(false);
+                  }
+                } else {
+                  const bytes = await file.file.arrayBuffer();
+                  const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
+                  const url = URL.createObjectURL(blob);
+                  setPreviewFileUrl(url);
+                }
               }}
               className="p-1.5 hover:bg-primary-container/20 rounded-lg text-primary-container transition-colors"
             >
@@ -343,6 +356,22 @@ async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
         img.src = e.target.result as string;
       } else {
         reject(new Error('Failed to process image path'));
+      }
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+// Convert image/file to base64 DataURL (safe, persistent, no blob/CORS restrictions)
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        resolve(e.target.result as string);
+      } else {
+        reject(new Error('Failed to convert file to DataURL'));
       }
     };
     reader.onerror = () => reject(reader.error);
@@ -896,6 +925,11 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
   useEffect(() => {
     if (previewFileUrl) {
+      if (previewFileUrl.startsWith('data:image/')) {
+        setFilePreviewImages([previewFileUrl]);
+        setIsFilePreviewLoading(false);
+        return;
+      }
       setIsFilePreviewLoading(true);
       setFilePreviewImages([]);
       renderPdfPagesToImages(previewFileUrl)
@@ -977,9 +1011,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   continue;
                 }
                 
-                if (tool.id === 'image-to-pdf') {
-                  const newThumb = URL.createObjectURL(fileObj.file);
-                  setFileThumbnails(prev => ({ ...prev, [fileObj.id]: newThumb }));
+                if (tool.id === 'image-to-pdf' || fileObj.file.type.startsWith('image/')) {
+                  const dataUrl = await fileToDataUrl(fileObj.file);
+                  setFileThumbnails(prev => ({ ...prev, [fileObj.id]: dataUrl }));
                 } else {
                   // Removed the hard skip for >3 files so users still get previews.
                   // We will instead use progressive state updates to prevent the UI from freezing.
@@ -1321,6 +1355,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       setUploadedFiles((prev) => [...prev, ...newUploaded]);
     } else {
       setUploadedFiles([newUploaded[0]]);
+    }
+
+    // Immediately generate thumbnails for images
+    if (tool.id === 'image-to-pdf') {
+      for (const uf of newUploaded) {
+        fileToDataUrl(uf.file).then((dataUrl) => {
+          setFileThumbnails((prev) => ({ ...prev, [uf.id]: dataUrl }));
+        }).catch((err) => console.error('Image thumbnail error:', err));
+      }
     }
 
     // Reset progress state if new files are uploaded
@@ -2518,19 +2561,30 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                                       title={t('workspace.file.preview') || 'Preview File'}
                                       onClick={async (e) => {
                                         e.stopPropagation();
-                                        // Create blob URL for open-in-new-tab fallback
-                                        const bytes = await file.file.arrayBuffer();
-                                        const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
-                                        const url = URL.createObjectURL(blob);
                                         setPreviewFileName(file.file.name);
-                                        setPreviewFileUrl(url);
-                                        // Immediately start rendering to images
                                         setIsFilePreviewLoading(true);
                                         setFilePreviewImages([]);
-                                        renderPdfPagesToImages(url)
-                                          .then(imgs => setFilePreviewImages(imgs))
-                                          .catch(err => console.error('Per-file preview error:', err))
-                                          .finally(() => setIsFilePreviewLoading(false));
+                                        
+                                        if (file.file.type.startsWith('image/') || tool.id === 'image-to-pdf') {
+                                          try {
+                                            const dataUrl = await fileToDataUrl(file.file);
+                                            setPreviewFileUrl(dataUrl);
+                                            setFilePreviewImages([dataUrl]);
+                                          } catch (err) {
+                                            console.error('Image preview error:', err);
+                                          } finally {
+                                            setIsFilePreviewLoading(false);
+                                          }
+                                        } else {
+                                          const bytes = await file.file.arrayBuffer();
+                                          const blob = new Blob([bytes], { type: file.file.type || 'application/pdf' });
+                                          const url = URL.createObjectURL(blob);
+                                          setPreviewFileUrl(url);
+                                          renderPdfPagesToImages(url)
+                                            .then(imgs => setFilePreviewImages(imgs))
+                                            .catch(err => console.error('Per-file preview error:', err))
+                                            .finally(() => setIsFilePreviewLoading(false));
+                                        }
                                       }}
                                       className="p-1.5 bg-primary-container/90 hover:bg-primary-container text-on-primary-container rounded-lg transition-colors shadow-sm"
                                     >
