@@ -2707,59 +2707,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       </button>
                     </div>
                   )}
-
-                  {/* Mobile: Paper Size Control for Image to PDF */}
-                  {tool.id === 'image-to-pdf' && uploadedFiles.length > 0 && (
-                    <div className="mt-4 p-3.5 bg-surface-container border border-outline-variant rounded-xl space-y-2.5 md:hidden shadow-sm">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-on-surface flex items-center gap-1.5">
-                          <LucideIcon name="FileText" size={14} className="text-primary" />
-                          {t('tool.image.size', 'Ukuran Kertas')}
-                        </label>
-                        <span className="text-[11px] font-semibold text-primary">
-                          {imageSize === 'A4' ? (t('tool.image.a4') || 'Ukuran A4') : imageSize === 'Letter' ? (t('tool.image.letter') || 'Ukuran Letter') : (t('tool.image.fit') || 'Otomatis Pas')}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setImageSize('A4')}
-                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
-                            imageSize === 'A4'
-                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
-                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
-                          }`}
-                        >
-                          <span>A4</span>
-                          <span className="text-[9px] opacity-75 font-normal">Standard</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setImageSize('Letter')}
-                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
-                            imageSize === 'Letter'
-                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
-                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
-                          }`}
-                        >
-                          <span>Letter</span>
-                          <span className="text-[9px] opacity-75 font-normal">US Letter</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setImageSize('Fit')}
-                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
-                            imageSize === 'Fit'
-                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
-                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
-                          }`}
-                        >
-                          <span>Fit</span>
-                          <span className="text-[9px] opacity-75 font-normal">{t('tool.image.fit', 'Otomatis Pas')}</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
                   </div>
                   </>
                 )}
