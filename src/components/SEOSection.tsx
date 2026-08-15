@@ -96,39 +96,39 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
         </div>
 
         {/* Detailed SEO Column with targeted keywords for search indexing */}
-        <div className="max-w-4xl mx-auto space-y-8 text-on-surface-variant text-sm md:text-base leading-relaxed border-t border-outline-variant/40 pt-10">
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-on-surface">{t('seo.secure.title')}</h3>
-            <p>{t('seo.secure.p1')}</p>
-            <p dangerouslySetInnerHTML={{ __html: t('seo.secure.p2') }} />
+        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 text-on-surface-variant text-xs md:text-base leading-relaxed border-t border-outline-variant/40 pt-6 md:pt-10">
+          <div className="space-y-2 md:space-y-4">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-on-surface">{t('seo.secure.title')}</h3>
+            <p className="text-xs sm:text-sm md:text-base">{t('seo.secure.p1')}</p>
+            <p className="text-xs sm:text-sm md:text-base" dangerouslySetInnerHTML={{ __html: t('seo.secure.p2') }} />
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-on-surface">{t('seo.features.title')}</h3>
+          <div className="space-y-2.5 md:space-y-4">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-on-surface">{t('seo.features.title')}</h3>
             <div className="relative">
-              <ul ref={toolsRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-4 pb-4 md:grid md:grid-cols-2 md:gap-3 md:pl-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+              <ul ref={toolsRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-3 pb-3 md:grid md:grid-cols-2 md:gap-3 md:pl-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                 {TOOLS.map((tool) => (
-                  <li key={tool.id} className="flex-none w-[85%] snap-center snap-always bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto md:bg-transparent md:border-transparent md:p-0 md:rounded-none flex flex-col md:flex-row items-start gap-3 md:gap-2">
+                  <li key={tool.id} className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto md:bg-transparent md:border-transparent md:p-0 md:rounded-none flex flex-col md:flex-row items-start gap-2.5 md:gap-2">
                     <span className="hidden md:inline-block text-primary-container shrink-0 mt-0.5">✓</span>
                     <div className="flex flex-col md:block w-full">
                       {/* Mobile icon row */}
-                      <div className="md:hidden flex items-center justify-between w-full mb-3">
-                        <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container shrink-0">
-                          <TacoIcon name={tool.icon} size={24} className="text-primary" />
+                      <div className="md:hidden flex items-center justify-between w-full mb-2">
+                        <div className="bg-primary-container/10 border border-primary-container/30 w-9 h-9 rounded-lg flex items-center justify-center text-primary-container shrink-0">
+                          <TacoIcon name={tool.icon} size={18} className="text-primary" />
                         </div>
-                        <span className="text-primary-container font-bold text-xl">✓</span>
+                        <span className="text-primary-container font-bold text-base">✓</span>
                       </div>
 
                       <a 
                         href={lang === 'en' ? `/${tool.id}` : `/${lang}/${tool.id}`}
-                        className="text-primary md:text-on-surface flex items-center gap-1.5 mb-2 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-lg md:text-base w-full"
+                        className="text-primary md:text-on-surface flex items-center gap-1.5 mb-1.5 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-sm md:text-base w-full"
                       >
                         <span className="hidden md:inline-block">
                           <TacoIcon name={tool.icon} size={24} className="text-primary" />
                         </span>
                         {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}:
                       </a> 
-                      <p className="text-sm text-on-surface-variant md:text-on-surface leading-relaxed">
+                      <p className="text-xs md:text-sm text-on-surface-variant md:text-on-surface leading-normal md:leading-relaxed">
                         {t(`seo.features.${tool.id.replace(/-/g, '_')}`)}
                       </p>
                     </div>
