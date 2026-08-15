@@ -47,7 +47,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
 
   const POPULAR_TOOL_IDS = ['merge'];
 
-  const renderToolCard = (tool: typeof TOOLS[0], isFavoriteSection: boolean = false, isLastOdd: boolean = false) => {
+  const renderToolCard = (tool: typeof TOOLS[0], isFavoriteSection: boolean = false) => {
     const isFav = favorites.includes(tool.id);
     const setting = toolSettings?.[tool.id] || { enabled: true, badge: '' };
     const isPopular = POPULAR_TOOL_IDS.includes(tool.id);
@@ -57,11 +57,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className={`tool-card w-full cursor-pointer relative flex rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group ${
-          isLastOdd
-            ? 'col-span-2 md:col-span-1 flex-row justify-center items-center text-center px-4 gap-3 md:flex-col md:justify-center md:text-center md:p-5 md:gap-0'
-            : 'flex-col items-center justify-center text-center p-3 sm:p-4 md:p-5'
-        } ${
+        className={`tool-card w-full cursor-pointer relative flex flex-col items-center justify-center text-center p-3 sm:p-4 md:p-5 rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group ${
           isFavoriteSection
             ? 'bg-amber-950/30 border-amber-500/30 hover:bg-amber-900/50 hover:border-amber-500/50 shadow-[inset_0_0_15px_rgba(245,158,11,0.05)]'
             : isPopular
@@ -79,13 +75,11 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           </span>
         ) : null}
         
-        <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-2.5 md:p-3 object-contain shrink-0 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200 ${
-          isLastOdd ? 'mb-0 md:mb-2' : 'mb-2'
-        }`}>
+        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-2.5 md:p-3 object-contain shrink-0 mb-2 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
           <TacoIcon name={tool.icon} className="!w-full !h-full object-contain drop-shadow-sm" />
         </div>
         
-        <div className={`flex flex-col items-center text-center ${isLastOdd ? 'flex-initial' : 'flex-1 min-w-0'}`}>
+        <div className="flex-1 min-w-0 flex flex-col items-center text-center w-full">
           <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 text-center transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
@@ -128,10 +122,9 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
             </button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-            {favorites.map((favId, idx) => {
+            {favorites.map(favId => {
               const tool = TOOLS.find(t => t.id === favId);
-              const isLastOdd = favorites.length % 2 !== 0 && idx === favorites.length - 1;
-              return tool ? renderToolCard(tool, true, isLastOdd) : null;
+              return tool ? renderToolCard(tool, true) : null;
             })}
           </div>
         </div>
@@ -144,10 +137,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.manipulation')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-          {(() => {
-            const list = getToolsByCategory('manipulation');
-            return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
-          })()}
+          {getToolsByCategory('manipulation').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -157,10 +147,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.security')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-          {(() => {
-            const list = getToolsByCategory('security');
-            return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
-          })()}
+          {getToolsByCategory('security').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -170,10 +157,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.conversion')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-          {(() => {
-            const list = getToolsByCategory('conversion');
-            return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
-          })()}
+          {getToolsByCategory('conversion').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
@@ -183,10 +167,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           {t('cat.editing')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-          {(() => {
-            const list = getToolsByCategory('editing');
-            return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
-          })()}
+          {getToolsByCategory('editing').map(t => renderToolCard(t, false))}
         </div>
       </div>
     </section>
