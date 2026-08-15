@@ -15,6 +15,7 @@ import { createBrowserQpdfRunner } from 'qpdf-run';
 import { motion, AnimatePresence, Reorder, useMotionValue, useDragControls } from 'motion/react';
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
+import * as pdfjsLib from 'pdfjs-dist';
 
 const qpdfWasmUrl = '/qpdf/qpdf.wasm';
 const qpdfJsUrl = '/qpdf/qpdf.js';
@@ -347,37 +348,33 @@ async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
   });
 }
 
-// Dynamic load of PDF.js from CDN
-const loadPdfJs = (): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    if ((window as any).pdfjsLib) {
-      resolve((window as any).pdfjsLib);
-      return;
+// Use locally installed pdfjs-dist — no CDN dependency
+const getPdfJs = (() => {
+  let initialized = false;
+  return () => {
+    if (!initialized) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.min.js',
+        import.meta.url
+      ).href;
+      initialized = true;
     }
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
-    script.onload = () => {
-      const pdfjsLib = (window as any).pdfjsLib;
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-      resolve(pdfjsLib);
-    };
-    script.onerror = (err) => reject(err);
-    document.head.appendChild(script);
-  });
-};
+    return pdfjsLib;
+  };
+})();
 
-// Render PDF pages as PNG images dynamically for previewing
+// Render PDF pages as PNG images using local pdfjs-dist
 async function renderPdfPagesToImages(pdfUrl: string): Promise<string[]> {
   try {
-    const pdfjsLib = await loadPdfJs();
-    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+    const lib = getPdfJs();
+    const loadingTask = lib.getDocument(pdfUrl);
     const pdfDoc = await loadingTask.promise;
     const pagesCount = pdfDoc.numPages;
     const urls: string[] = [];
     
     for (let i = 1; i <= pagesCount; i++) {
       const page = await pdfDoc.getPage(i);
-      const viewport = page.getViewport({ scale: 1.5 }); // Crisp but lightweight
+      const viewport = page.getViewport({ scale: 1.5 });
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       if (context) {
@@ -397,7 +394,7 @@ async function renderPdfPagesToImages(pdfUrl: string): Promise<string[]> {
 // Render a single PDF page quickly for interactive placement previews
 async function renderSinglePdfPageToImage(file: File, pageIndex: number): Promise<{url: string, width: number, height: number} | null> {
   try {
-    const pdfjsLib = await loadPdfJs();
+    const pdfjsLib = getPdfJs();
     const fileBytes = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument(fileBytes);
     const pdfDoc = await loadingTask.promise;
