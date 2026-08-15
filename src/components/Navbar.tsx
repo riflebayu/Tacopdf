@@ -125,37 +125,19 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 bg-[#14120E]/95 sm:bg-[#14120E]/70 sm:backdrop-blur-md border-b border-white/10 w-full">
-      {/* Announcement Bar (USP) - Only on homepage */}
+      {/* Announcement Bar (USP) - Only on desktop homepage */}
       {isHomePage && (
-        <aside className="w-full bg-primary/10 border-b border-primary/20 overflow-hidden" aria-label="Features">
-        <div className="max-w-[1200px] mx-auto h-8 flex items-center">
-          {/* Desktop View */}
-          <div className="hidden md:flex w-full justify-center gap-12 items-center text-[11px] font-bold text-primary/90 tracking-wide uppercase">
-            <div className="flex items-center gap-1.5"><UserCheck size={14} /> {t('header.badge.noRegistration', 'No Registration')}</div>
-            <div className="flex items-center gap-1.5"><ImageOff size={14} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
-            <div className="flex items-center gap-1.5"><CloudOff size={14} /> {t('header.badge.offline', '100% Offline')}</div>
-            <div className="flex items-center gap-1.5"><ShieldCheck size={14} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
-          </div>
-          {/* Mobile View (Marquee) */}
-          <div className="flex md:hidden w-full overflow-hidden whitespace-nowrap text-[10px] font-bold text-primary/90 uppercase tracking-wider relative">
-            {/* Soft gradient edges for smooth entry/exit */}
-            <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#17130a] to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#17130a] to-transparent z-10 pointer-events-none"></div>
-            
-            <div className="animate-marquee inline-flex gap-8 items-center pl-4">
-              <div className="flex items-center gap-1.5"><UserCheck size={12} /> {t('header.badge.noRegistration', 'No Registration')}</div>
-              <div className="flex items-center gap-1.5"><ImageOff size={12} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
-              <div className="flex items-center gap-1.5"><CloudOff size={12} /> {t('header.badge.offline', '100% Offline')}</div>
-              <div className="flex items-center gap-1.5"><ShieldCheck size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
-              {/* Duplicate set for seamless loop */}
-              <div className="flex items-center gap-1.5"><UserCheck size={12} /> {t('header.badge.noRegistration', 'No Registration')}</div>
-              <div className="flex items-center gap-1.5"><ImageOff size={12} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
-              <div className="flex items-center gap-1.5"><CloudOff size={12} /> {t('header.badge.offline', '100% Offline')}</div>
-              <div className="flex items-center gap-1.5"><ShieldCheck size={12} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
+        <aside className="hidden md:block w-full bg-primary/10 border-b border-primary/20 overflow-hidden" aria-label="Features">
+          <div className="max-w-[1200px] mx-auto h-8 flex items-center">
+            {/* Desktop View */}
+            <div className="flex w-full justify-center gap-12 items-center text-[11px] font-bold text-primary/90 tracking-wide uppercase">
+              <div className="flex items-center gap-1.5"><UserCheck size={14} /> {t('header.badge.noRegistration', 'No Registration')}</div>
+              <div className="flex items-center gap-1.5"><ImageOff size={14} /> {t('header.badge.noWatermark', 'No Watermark')}</div>
+              <div className="flex items-center gap-1.5"><CloudOff size={14} /> {t('header.badge.offline', '100% Offline')}</div>
+              <div className="flex items-center gap-1.5"><ShieldCheck size={14} /> {t('header.badge.fastSecure', 'Fast & Highly Secure')}</div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
       )}
 
       <div className="flex justify-between items-center w-full px-4 md:px-8 h-14 md:h-20">

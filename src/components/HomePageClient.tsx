@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { UserCheck, ImageOff, CloudOff, ShieldCheck } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 import Banner from './Banner';
 import ToolGrid from './ToolGrid';
@@ -28,6 +29,26 @@ function HomePageContent() {
           <p className="text-base sm:text-lg md:text-xl text-on-surface-variant font-medium leading-relaxed max-w-2xl mx-auto">
             {t('home.subtitle', 'Process documents directly in your browser. Total privacy with zero file storage.')}
           </p>
+
+          {/* Badges on mobile under the subtitle */}
+          <div className="flex md:hidden flex-wrap items-center justify-center gap-2 mt-5 text-[11px] font-semibold text-primary">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
+              <UserCheck size={13} className="text-primary-container" />
+              <span>{t('header.badge.noRegistration', 'No Registration')}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
+              <ImageOff size={13} className="text-primary-container" />
+              <span>{t('header.badge.noWatermark', 'No Watermark')}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
+              <CloudOff size={13} className="text-primary-container" />
+              <span>{t('header.badge.offline', '100% Offline')}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
+              <ShieldCheck size={13} className="text-primary-container" />
+              <span>{t('header.badge.fastSecure', 'Fast & Highly Secure')}</span>
+            </span>
+          </div>
         </div>
       </section>
 
