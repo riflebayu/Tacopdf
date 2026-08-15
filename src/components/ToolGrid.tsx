@@ -57,9 +57,9 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className={`tool-card w-full cursor-pointer relative overflow-hidden flex rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group ${
+        className={`tool-card w-full cursor-pointer relative flex rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group ${
           isLastOdd
-            ? 'col-span-2 md:col-span-1 flex-row justify-start items-center text-left px-4 gap-3 md:flex-col md:justify-center md:text-center md:p-5 md:gap-0'
+            ? 'col-span-2 md:col-span-1 flex-row justify-center items-center text-center px-4 gap-3 md:flex-col md:justify-center md:text-center md:p-5 md:gap-0'
             : 'flex-col items-center justify-center text-center p-3 sm:p-4 md:p-5'
         } ${
           isFavoriteSection
@@ -70,11 +70,11 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         }`}
       >
         {setting.badge ? (
-          <span className="absolute top-0 left-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-br-lg rounded-tl-xl z-10 shadow-sm">
+          <span className="absolute -top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm">
             {setting.badge.toUpperCase()}
           </span>
         ) : isPopular ? (
-          <span className="absolute top-0 left-0 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-br-lg rounded-tl-xl z-10 shadow-sm flex items-center gap-1 uppercase tracking-wide">
+          <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
             🔥 {t('badge.popular', 'Popular Tools')}
           </span>
         ) : null}
@@ -85,13 +85,11 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           <TacoIcon name={tool.icon} className="!w-full !h-full object-contain drop-shadow-sm" />
         </div>
         
-        <div className={`flex-1 min-w-0 flex flex-col ${
-          isLastOdd ? 'items-start text-left pr-8 md:pr-0 md:items-center md:text-center' : 'items-center text-center'
-        }`}>
-          <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 transition-colors duration-150">
+        <div className={`flex flex-col items-center text-center ${isLastOdd ? 'flex-initial' : 'flex-1 min-w-0'}`}>
+          <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 text-center transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
-          <p className="hidden md:block text-xs text-white/70 leading-snug mt-1 md:mt-2">
+          <p className="hidden md:block text-xs text-white/70 leading-snug mt-1 md:mt-2 text-center">
             {t(`seo.features.${tool.id.replace(/-/g, '_')}`, tool.description)}
           </p>
         </div>
@@ -108,7 +106,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
   };
 
   return (
-    <section className="w-full max-w-[1200px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 space-y-8">
+    <section className="w-full max-w-[1200px] mx-auto px-4 md:px-6 lg:px-8 py-6 space-y-8">
       
       {/* Favorites Section */}
       {favorites.length > 0 && (
@@ -129,7 +127,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
               <Trash2 size={14} /> {t('favorites.reset', 'Reset Favorites')}
             </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
             {favorites.map((favId, idx) => {
               const tool = TOOLS.find(t => t.id === favId);
               const isLastOdd = favorites.length % 2 !== 0 && idx === favorites.length - 1;
@@ -145,7 +143,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
           {t('cat.manipulation')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
           {(() => {
             const list = getToolsByCategory('manipulation');
             return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
@@ -158,7 +156,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
           {t('cat.security')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
           {(() => {
             const list = getToolsByCategory('security');
             return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
@@ -171,7 +169,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
           {t('cat.conversion')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
           {(() => {
             const list = getToolsByCategory('conversion');
             return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
@@ -184,7 +182,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
           {t('cat.editing')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
           {(() => {
             const list = getToolsByCategory('editing');
             return list.map((t, idx) => renderToolCard(t, false, list.length % 2 !== 0 && idx === list.length - 1));
