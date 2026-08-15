@@ -41,48 +41,48 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
   const { containerRef: toolsRef, activeIndex: toolsIndex } = useScrollIndicator(TOOLS.length);
   
   return (
-    <section className="bg-surface-container-low border-y border-outline-variant py-8 mt-4">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 space-y-8">
+    <section className="bg-surface-container-low border-y border-outline-variant py-6 md:py-8 mt-4">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8 space-y-5 md:space-y-8">
         
         {/* SEO Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-on-surface tracking-tight leading-tight">
+        <div className="text-center max-w-3xl mx-auto space-y-1.5 md:space-y-4">
+          <h2 className="text-xl sm:text-2xl md:text-5xl font-extrabold text-on-surface tracking-tight leading-snug md:leading-tight">
             {t('seo.header.title')}
           </h2>
-          <p className="text-lg text-primary-container font-medium">
+          <p className="text-xs sm:text-sm md:text-lg text-primary-container font-medium leading-relaxed">
             {t('seo.header.subtitle')}
           </p>
         </div>
 
         {/* SEO Bento Grid for Keywords & Features */}
         <div className="relative">
-          <div ref={bentoRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-4 pb-4 pt-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-            <div className="flex-none w-[85%] snap-center snap-always bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
-              <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
-                <EyeOff size={24} />
+          <div ref={bentoRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-3 pb-3 pt-2 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+            <div className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto space-y-2 md:space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+              <div className="bg-primary-container/10 border border-primary-container/30 w-9 h-9 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-primary-container">
+                <EyeOff className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <h3 className="text-lg font-bold text-on-surface">{t('seo.box1.title')}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
+              <h3 className="text-sm md:text-lg font-bold text-on-surface">{t('seo.box1.title')}</h3>
+              <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
                 {t('seo.box1.desc')}
               </p>
             </div>
 
-            <div className="flex-none w-[85%] snap-center snap-always bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
-              <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
-                <Zap size={24} />
+            <div className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto space-y-2 md:space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+              <div className="bg-primary-container/10 border border-primary-container/30 w-9 h-9 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-primary-container">
+                <Zap className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <h3 className="text-lg font-bold text-on-surface">{t('seo.box2.title')}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
+              <h3 className="text-sm md:text-lg font-bold text-on-surface">{t('seo.box2.title')}</h3>
+              <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
                 {t('seo.box2.desc')}
               </p>
             </div>
 
-            <div className="flex-none w-[85%] snap-center snap-always bg-surface-container/50 p-5 rounded-2xl border border-outline-variant/60 md:w-auto space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
-              <div className="bg-primary-container/10 border border-primary-container/30 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container">
-                <Globe size={24} />
+            <div className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto space-y-2 md:space-y-3 shadow-sm hover:border-primary-container/35 transition-all">
+              <div className="bg-primary-container/10 border border-primary-container/30 w-9 h-9 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-primary-container">
+                <Globe className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <h3 className="text-lg font-bold text-on-surface">{t('seo.box3.title')}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
+              <h3 className="text-sm md:text-lg font-bold text-on-surface">{t('seo.box3.title')}</h3>
+              <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
                 {t('seo.box3.desc')}
               </p>
             </div>
