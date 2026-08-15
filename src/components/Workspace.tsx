@@ -16,6 +16,8 @@ import { motion, AnimatePresence, Reorder, useMotionValue, useDragControls } fro
 import Tesseract from 'tesseract.js';
 import VisualGrid from './VisualGrid';
 import * as pdfjsLib from 'pdfjs-dist';
+// @ts-ignore - Vite ?url import: bundles worker file locally, served from same origin
+import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 
 const qpdfWasmUrl = '/qpdf/qpdf.wasm';
 const qpdfJsUrl = '/qpdf/qpdf.js';
@@ -348,14 +350,14 @@ async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
   });
 }
 
-// Use locally installed pdfjs-dist — run on main thread (no worker) to avoid blob: origin issues
+// Use locally installed pdfjs-dist with Vite-bundled worker (same origin, no CORS issues)
 const getPdfJs = (() => {
   let initialized = false;
   return () => {
     if (!initialized) {
-      // Setting workerSrc to empty string makes pdfjs use a fake worker on the main thread.
-      // This avoids ALL cross-origin web worker issues with blob: URLs.
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+      // pdfjsWorkerUrl is resolved by Vite at build time to a local URL
+      // This eliminates all cross-origin restrictions
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
       initialized = true;
     }
     return pdfjsLib;
