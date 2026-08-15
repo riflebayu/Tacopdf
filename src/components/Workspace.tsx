@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw, ArrowUpDown } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, X, AlertCircle, RefreshCw, MoveUp, MoveDown, Check, Eye, EyeOff, ShieldCheck, PenTool, Trash2, RotateCw, RotateCcw, GripVertical } from 'lucide-react';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import JSZip from 'jszip';
 import html2canvas from 'html2canvas';
@@ -54,9 +54,11 @@ const MobileDraggableItem = ({
               controls.start(e);
             }}
             style={{ touchAction: 'none' }}
-            className="p-3 -ml-2 text-amber-500 cursor-grab active:cursor-grabbing hover:bg-amber-500/20 rounded-lg touch-none flex items-center justify-center bg-amber-500/10 shadow-[0_0_12px_rgba(245,158,11,0.25)] animate-pulse"
+            className="p-2 -ml-1 text-amber-500/80 hover:text-amber-400 cursor-grab active:cursor-grabbing hover:bg-amber-500/10 rounded-lg touch-none select-none flex items-center justify-center min-w-[40px] min-h-[40px] bg-amber-500/10 border border-amber-500/20 shadow-sm"
+            title="Drag to reorder"
+            aria-label="Drag handle to reorder file"
           >
-            <ArrowUpDown size={24} className="pointer-events-none" />
+            <GripVertical size={20} className="pointer-events-none" />
           </div>
         )}
 
