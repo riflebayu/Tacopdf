@@ -29,4 +29,5 @@ Before outputting code:
 1. Diagnosis: Root cause in 2 short bullets.
 2. Plan: Exact file & line targets.
 3. Patch: Surgical minimal diff only.
+4. NO AUTO-BUILDING NEVER run `astro build`, `npm run build`, or validation scripts after making code changes. The user relies on immediate hot-reload and manual GitHub pushes. Your ONLY job is to write the code.
 <!-- END:astro-agent-rules -->
