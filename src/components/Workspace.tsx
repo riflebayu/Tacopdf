@@ -961,7 +961,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       setIsGeneratingThumbnails(true);
       const generateThumbnails = async () => {
         try {
-          const pdfjsLib = await loadPdfJs();
+          const pdfjsLib = getPdfJs();
           
           if (tool.id === 'merge' || tool.id === 'image-to-pdf') {
             // For merge, we want the first page of EVERY uploaded file
