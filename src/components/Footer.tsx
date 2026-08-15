@@ -20,18 +20,18 @@ function FooterContent(props: FooterProps) {
   return (
     <footer className="bg-surface-container full-width border-t border-outline-variant mt-auto">
       {/* 5-Column Grid */}
-      <div className="w-full py-4 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-x-2 gap-y-6 md:gap-8">
+      <div className="w-full py-8 md:py-16 px-4 md:px-8 max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-10 md:gap-8">
         {/* Support */}
-        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.support')}</h3>
-          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm">
+        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 text-left">
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4 text-left">{t('footer.support')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-sm text-left">
             <li>
-              <LocalizedLink to="/faq" onClick={handleGoFAQ} className="text-on-surface-variant hover:underline hover:text-primary transition-colors cursor-pointer">
+              <LocalizedLink to="/faq" onClick={handleGoFAQ} className="text-zinc-300 hover:text-white hover:underline transition-colors py-1 inline-block cursor-pointer">
                 {t('nav.faq')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/sitemap" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/sitemap" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.sitemap')}
               </LocalizedLink>
             </li>
@@ -40,7 +40,7 @@ function FooterContent(props: FooterProps) {
                 href={lang === 'id' ? 'https://saweria.co/tacopdf' : 'https://ko-fi.com/tacopdf'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-amber-200 transition-all duration-300 cursor-pointer font-medium hover:[text-shadow:0_0_12px_rgba(251,191,36,0.9)] md:hover:scale-105 inline-block"
+                className="text-amber-400 hover:text-amber-200 transition-all duration-300 cursor-pointer font-medium hover:[text-shadow:0_0_12px_rgba(251,191,36,0.9)] md:hover:scale-105 py-1 inline-block"
               >
                 {lang === 'id' ? '🌮 Donasi' : t('nav.donate', '🌮 Buy me a Taco')}
               </a>
@@ -49,26 +49,26 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Features */}
-        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 items-end md:items-start">
-          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.features')}</h3>
-          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
+        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 text-left">
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4 text-left">{t('footer.features')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-sm text-left flex flex-col items-start">
             <li>
-              <LocalizedLink to="/#manipulation" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/#manipulation" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('cat.manipulation')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/#security" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/#security" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('cat.security')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/#conversion" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/#conversion" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('cat.conversion')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/#editing" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/#editing" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('cat.editing')}
               </LocalizedLink>
             </li>
@@ -76,31 +76,31 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Popular Tools */}
-        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.popular')}</h3>
-          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm">
+        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 text-left">
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4 text-left">{t('footer.popular')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-sm text-left">
             <li>
-              <LocalizedLink to={getToolSeoPath('merge')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('merge')} onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('tools.merge.name')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to={getToolSeoPath('image-to-pdf')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('image-to-pdf')} onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('tools.image-to-pdf.name')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to={getToolSeoPath('delete-pages')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('delete-pages')} onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('tools.delete-pages.name')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to={getToolSeoPath('split')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('split')} onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('tools.split.name')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to={getToolSeoPath('protect')} onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to={getToolSeoPath('protect')} onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('tools.protect.name')}
               </LocalizedLink>
             </li>
@@ -108,26 +108,26 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Company */}
-        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 items-end md:items-start">
-          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider text-right md:text-left">{t('footer.company')}</h3>
-          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm text-right md:text-left flex flex-col items-end md:items-start">
+        <div className="col-span-1 flex flex-col gap-1.5 md:gap-3 text-left">
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4 text-left">{t('footer.company')}</h3>
+          <ul className="space-y-1.5 md:space-y-3 text-sm text-left flex flex-col items-start">
             <li>
-              <LocalizedLink to="/how-it-works" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/how-it-works" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('page.how.title') || 'How It Works'}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/about" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/about" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.about')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/blog" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/blog" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('nav.blog', 'Blog')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/contact" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-right md:text-left cursor-pointer inline-block">
+              <LocalizedLink to="/contact" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.contact')}
               </LocalizedLink>
             </li>
@@ -135,31 +135,31 @@ function FooterContent(props: FooterProps) {
         </div>
 
         {/* Legal */}
-        <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5 md:gap-3">
-          <h3 className="font-bold text-xs md:text-sm text-on-surface uppercase mb-0.5 md:mb-4 tracking-wider">{t('footer.legal')}</h3>
-          <ul className="space-y-1.5 md:space-y-3 text-[13px] md:text-sm flex flex-col items-start gap-y-1.5 md:gap-y-0">
+        <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5 md:gap-3 text-left">
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4 text-left">{t('footer.legal')}</h3>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-2 md:flex md:flex-col md:gap-y-3 text-sm text-left">
             <li>
-              <LocalizedLink to="/privacy" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/privacy" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.privacy')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/terms" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/terms" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.terms')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/cookie" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/cookie" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.cookie')}
               </LocalizedLink>
             </li>
             <li>
-              <LocalizedLink to="/disclaimer" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors text-left cursor-pointer">
+              <LocalizedLink to="/disclaimer" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
                 {t('footer.disclaimer')}
               </LocalizedLink>
             </li>
-            <li>
-              <LocalizedLink to="/retention" onClick={() => {}} className="text-on-surface-variant hover:underline hover:text-primary transition-colors flex flex-col leading-tight text-left cursor-pointer">
+            <li className="col-span-2 md:col-span-1">
+              <LocalizedLink to="/retention" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors flex flex-col leading-tight text-left py-1 cursor-pointer">
                 <span>{t('footer.retention').split(' / ')[0]} /</span>
                 <span>{t('footer.retention').split(' / ')[1] || 'File Deletion'}</span>
               </LocalizedLink>
