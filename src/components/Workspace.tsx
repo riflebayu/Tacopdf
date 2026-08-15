@@ -2078,7 +2078,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
         outName = 'signed_taco.pdf';
 
       } else if (tool.id === 'html-to-pdf') {
-        setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html') || 'Rendering HTML view...' });
+        setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html', 'Rendering HTML view...') });
         
         // Yield to the main thread so the browser can paint the processing overlay before html2canvas blocks the thread
         await yieldToMain();
@@ -2130,7 +2130,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           }
         });
 
-        setProcessingState({ status: 'processing', progress: 70, message: t('progress.converting_pdf') || 'Converting to PDF format...' });
+        setProcessingState({ status: 'processing', progress: 70, message: t('progress.converting_pdf', 'Converting to PDF format...') });
         
         const pdf = new jsPDF({
           orientation: 'portrait',
