@@ -12,21 +12,81 @@ export async function getStaticPaths() {
     .map(post => {
       const [lang, ...slugParts] = post.id.split(/[\/\\]/);
       const slug = slugParts.join('/').replace('.md', '');
+
+      // Find cluster posts sharing the same translationKey
+      let customHreflang: Array<{ lang: string; url: string }> = [];
+      if (post.data.translationKey) {
+        const clusterPosts = allPosts.filter(p => p.data.translationKey === post.data.translationKey);
+        customHreflang = clusterPosts.map(p => {
+          const [postLang, ...pSlugParts] = p.id.split(/[\/\\]/);
+          const postSlug = pSlugParts.join('/').replace('.md', '');
+          return {
+            lang: postLang,
+            url: postLang === 'en' ? `https://tacopdf.com/blog/${postSlug}` : `https://tacopdf.com/${postLang}/blog/${postSlug}`
+          };
+        });
+      }
+
       return {
         params: { lang, slug },
-        props: { post },
+        props: { post, customHreflang },
       };
     });
 }
 
-const { post } = Astro.props;
+const { post, customHreflang = [] } = Astro.props;
 const { Content } = await render(post);
 
 const { lang } = Astro.params;
 const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+
+const [, ...slugParts] = post.id.split(/[\/\\]/);
+const slug = slugParts.join('/').replace('.md', '');
+const canonicalUrl = `https://tacopdf.com/${lang}/blog/${slug}`;
+const imageUrl = post.data.featuredImage 
+  ? (post.data.featuredImage.startsWith('http') ? post.data.featuredImage : `https://tacopdf.com${post.data.featuredImage}`)
+  : 'https://tacopdf.com/favicon-192x192.png';
+
+// [SEO FIX: Dynamic BlogPosting Schema]
+const blogSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": post.data.title,
+  "description": post.data.description,
+  "datePublished": post.data.pubDate.toISOString(),
+  "dateModified": post.data.pubDate.toISOString(),
+  "image": imageUrl,
+  "author": {
+    "@type": "Person",
+    "name": post.data.author || "TacoPDF Team",
+    "url": "https://tacopdf.com/about"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TacoPDF",
+    "url": "https://tacopdf.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://tacopdf.com/favicon-192x192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalUrl
+  }
+});
 ---
 
-<BaseLayout title={`${post.data.title} | TacoPDF`} description={post.data.description} lang={lang}>
+<BaseLayout 
+  title={`${post.data.title} | TacoPDF`} 
+  description={post.data.description} 
+  lang={lang}
+  schema={blogSchema}
+  image={post.data.featuredImage}
+  ogType="article"
+  disableHreflang={customHreflang.length <= 1}
+  customHreflang={customHreflang}
+>
   <article class="min-h-screen bg-background pt-24 pb-20 selection:bg-primary/30">
     <div class="max-w-4xl mx-auto px-6">
       

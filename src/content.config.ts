@@ -10,6 +10,8 @@ const blogCollection = defineCollection({
     featuredImage: z.string().optional(),
     author: z.string().default('TacoPDF Team'),
     tags: z.array(z.string()).default([]),
+    translationKey: z.string().optional(),
+    standalone: z.boolean().default(true),
   }),
 });
 

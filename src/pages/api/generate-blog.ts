@@ -6,12 +6,35 @@ import sharp from 'sharp';
 
 export const prerender = false;
 
-function generateSlug(title: string) {
-  return title
-    .toLowerCase()
-    .trim()
+function generateSlug(title: string, lang: string = 'en') {
+  if (!title) return `post-${Date.now()}`;
+  let str = title.trim();
+
+  // German Umlauts
+  if (lang === 'de') {
+    str = str
+      .replace(/ä/g, 'ae')
+      .replace(/ö/g, 'oe')
+      .replace(/ü/g, 'ue')
+      .replace(/ß/g, 'ss')
+      .replace(/Ä/g, 'ae')
+      .replace(/Ö/g, 'oe')
+      .replace(/Ü/g, 'ue');
+  }
+
+  // Unicode Normalization for accents (é -> e, ñ -> n, ç -> c)
+  str = str.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  // Clean ASCII slug
+  str = str
     .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/[\s-]+/g, '-');
+    .replace(/[\s-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  if (!str) {
+    return `post-${Date.now().toString(36)}`;
+  }
+  return str;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -36,7 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
     const buffer = Buffer.from(arrayBuffer);
     
     // Generate SEO friendly image filename based on topic and language
-    const safeTopic = generateSlug(topic);
+    const safeTopic = generateSlug(topic, 'en');
     const imageFilename = `${safeTopic}-${language}-${Date.now()}.webp`;
     
     // public/images/blog
@@ -67,7 +90,8 @@ export const POST: APIRoute = async ({ request }) => {
     // Also catch any generic # Title at the beginning
     cleanContent = cleanContent.replace(/^#\s+.*\n+/, '');
 
-    const slug = generateSlug(articleData.title);
+    const slug = generateSlug(articleData.title, language);
+    const clusterKey = generateSlug(topic, 'en');
 
     // 3. Assemble Markdown with Frontmatter
     const frontmatter = `---
@@ -77,6 +101,7 @@ pubDate: "${new Date().toISOString()}"
 featuredImage: "${imageWebPath}"
 author: "TacoPDF Team"
 tags: ${JSON.stringify(articleData.tags || [])}
+translationKey: "${clusterKey}"
 ---
 
 `;

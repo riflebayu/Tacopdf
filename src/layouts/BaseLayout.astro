@@ -7,18 +7,31 @@ import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import MaintenancePopup from '../components/MaintenancePopup';
 
+interface HreflangLink {
+  lang: string;
+  url: string;
+}
+
 interface Props {
   title?: string;
   description?: string;
   lang?: string;
   schema?: string; // [SEO FIX: Dynamic Schema]
+  image?: string; // [SEO FIX: Open Graph / Social Image]
+  ogType?: string; // [SEO FIX: Open Graph Type (website vs article)]
+  disableHreflang?: boolean; // [SEO FIX: Decouple standalone blog posts]
+  customHreflang?: HreflangLink[]; // [SEO FIX: Explicit verified translation cluster]
 }
 
 const { 
   title = "TacoPDF", 
   description = "Free & Secure Online PDF Tools", 
   lang = "en",
-  schema 
+  schema,
+  image,
+  ogType = "website",
+  disableHreflang = false,
+  customHreflang
 } = Astro.props;
 
 // [SEO FIX: Canonical URL Consistency] Remove trailing slash for exact matching
@@ -27,6 +40,8 @@ if (currentPath.endsWith('/') && currentPath.length > 1) {
   currentPath = currentPath.slice(0, -1);
 }
 
+const canonicalUrl = `https://tacopdf.com${currentPath === '/' ? '' : currentPath}`;
+
 // [SEO FIX: Dynamic Hreflang Injection]
 const supportedLangs = ['en', 'id', 'es', 'fr', 'de', 'pt', 'ja'];
 let basePath = currentPath;
@@ -34,7 +49,7 @@ if (lang !== 'en') {
   basePath = currentPath.replace(new RegExp(`^/${lang}`), '') || '/';
 }
 
-const hreflangLinks = supportedLangs.map((l) => {
+const defaultHreflangLinks: HreflangLink[] = supportedLangs.map((l) => {
   let url = 'https://tacopdf.com';
   if (l === 'en') {
     url += basePath === '/' ? '' : basePath;
@@ -43,7 +58,17 @@ const hreflangLinks = supportedLangs.map((l) => {
   }
   return { lang: l, url };
 });
-const defaultUrl = hreflangLinks.find(link => link.lang === 'en')?.url || 'https://tacopdf.com';
+
+const finalHreflangLinks: HreflangLink[] = disableHreflang
+  ? []
+  : (customHreflang && customHreflang.length > 0 ? customHreflang : defaultHreflangLinks);
+
+const defaultUrl = finalHreflangLinks.find(link => link.lang === 'en')?.url || finalHreflangLinks[0]?.url || 'https://tacopdf.com';
+
+// [SEO FIX: Social Image absolute URL]
+const ogImageUrl = image 
+  ? (image.startsWith('http') ? image : `https://tacopdf.com${image.startsWith('/') ? image : `/${image}`}`)
+  : 'https://tacopdf.com/favicon-192x192.png';
 
 // [SEO FIX: Dynamic Schema] Fallback to Homepage WebApplication schema
 const finalSchema = schema || JSON.stringify({
@@ -95,13 +120,31 @@ const finalSchema = schema || JSON.stringify({
     <meta name="apple-mobile-web-app-title" content="TacoPDF" />
 
     {/* [SEO FIX: Pillar 2] Cleaned Canonical URL */}
-    <link rel="canonical" href={`https://tacopdf.com${currentPath === '/' ? '' : currentPath}`} />
+    <link rel="canonical" href={canonicalUrl} />
 
     {/* [SEO FIX: Pillar 1] Bidirectional Hreflang Tags */}
-    {hreflangLinks.map((link) => (
-      <link rel="alternate" hreflang={link.lang} href={link.url} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={defaultUrl} />
+    {!disableHreflang && finalHreflangLinks.length > 0 && (
+      <>
+        {finalHreflangLinks.map((link) => (
+          <link rel="alternate" hreflang={link.lang} href={link.url} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={defaultUrl} />
+      </>
+    )}
+
+    {/* [SEO FIX: Open Graph & Social Cards] */}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="TacoPDF" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    {/* [SEO FIX: Twitter Card Tags] */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     {/* Google AdSense */}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9178424383165717" crossorigin="anonymous"></script>
@@ -110,7 +153,6 @@ const finalSchema = schema || JSON.stringify({
     <meta name="author" content="Muhammad Bayu Edi" />
     <meta name="creator" content="Muhammad Bayu Edi" />
     <meta name="publisher" content="TacoPDF" />
-    <meta property="og:site_name" content="TacoPDF" />
     <meta property="article:author" content="Muhammad Bayu Edi" />
 
     {/* Social Links for Trust Signals */}
