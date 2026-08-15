@@ -100,12 +100,12 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
   };
 
   return (
-    <section className="max-w-[1200px] mx-auto px-3 sm:px-4 md:px-8 py-6 space-y-8">
+    <section className="w-full max-w-[1200px] mx-auto px-0 sm:px-2 md:px-4 lg:px-8 py-6 space-y-8">
       
       {/* Favorites Section */}
       {favorites.length > 0 && (
         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center justify-between border-b border-outline-variant pb-2">
+          <div className="flex items-center justify-between border-b border-outline-variant pb-2 px-2 sm:px-0">
             <h2 className="text-2xl font-bold text-yellow-500 flex items-center gap-2">
               <Star className="fill-yellow-500" size={24} /> {t('favorites.title', 'Favorite Tools')}
             </h2>
@@ -121,7 +121,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
               <Trash2 size={14} /> {t('favorites.reset', 'Reset Favorites')}
             </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mt-4 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2 md:gap-4 mt-4 mb-10">
             {favorites.map(favId => {
               const tool = TOOLS.find(t => t.id === favId);
               return tool ? renderToolCard(tool, true) : null;
@@ -133,40 +133,40 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
 
       {/* Page Manipulation */}
       <div id="manipulation" className="space-y-4 scroll-mt-20">
-        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 px-2 sm:px-0 flex items-center gap-2">
           {t('cat.manipulation')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2 md:gap-4 mt-4 mb-10">
           {getToolsByCategory('manipulation').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
       {/* Security */}
       <div id="security" className="space-y-4 scroll-mt-20">
-        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 px-2 sm:px-0 flex items-center gap-2">
           {t('cat.security')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2 md:gap-4 mt-4 mb-10">
           {getToolsByCategory('security').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
       {/* Format Conversion */}
       <div id="conversion" className="space-y-4 scroll-mt-20">
-        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 px-2 sm:px-0 flex items-center gap-2">
           {t('cat.conversion')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2 md:gap-4 mt-4 mb-10">
           {getToolsByCategory('conversion').map(t => renderToolCard(t, false))}
         </div>
       </div>
 
       {/* Editing */}
       <div id="editing" className="space-y-4 scroll-mt-20">
-        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 px-2 sm:px-0 flex items-center gap-2">
           {t('cat.editing')}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 mt-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2 md:gap-4 mt-4 mb-10">
           {getToolsByCategory('editing').map(t => renderToolCard(t, false))}
         </div>
       </div>
