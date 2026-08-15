@@ -30,23 +30,23 @@ function HomePageContent() {
             {t('home.subtitle', 'Process documents directly in your browser. Total privacy with zero file storage.')}
           </p>
 
-          {/* Badges on mobile under the subtitle */}
-          <div className="flex md:hidden flex-wrap items-center justify-center gap-2 mt-5 text-[11px] font-semibold text-primary">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
-              <UserCheck size={13} className="text-primary-container" />
-              <span>{t('header.badge.noRegistration', 'No Registration')}</span>
+          {/* Feature Badges under Subtitle (Responsive 2x2 Grid on Mobile, Flex Row on Desktop) */}
+          <div className="grid grid-cols-2 md:flex md:flex-row md:flex-wrap items-center justify-center gap-2 md:gap-3 max-w-sm sm:max-w-md md:max-w-none mx-auto mt-5 md:mt-6 text-[11px] md:text-xs font-semibold text-primary">
+            <span className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 border border-primary/25 shadow-sm text-center">
+              <UserCheck size={14} className="text-primary-container shrink-0" />
+              <span className="truncate md:overflow-visible">{t('header.badge.noRegistration', 'No Registration')}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
-              <ImageOff size={13} className="text-primary-container" />
-              <span>{t('header.badge.noWatermark', 'No Watermark')}</span>
+            <span className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 border border-primary/25 shadow-sm text-center">
+              <ImageOff size={14} className="text-primary-container shrink-0" />
+              <span className="truncate md:overflow-visible">{t('header.badge.noWatermark', 'No Watermark')}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
-              <CloudOff size={13} className="text-primary-container" />
-              <span>{t('header.badge.offline', '100% Offline')}</span>
+            <span className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 border border-primary/25 shadow-sm text-center">
+              <CloudOff size={14} className="text-primary-container shrink-0" />
+              <span className="truncate md:overflow-visible">{t('header.badge.offline', '100% Offline')}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 shadow-sm">
-              <ShieldCheck size={13} className="text-primary-container" />
-              <span>{t('header.badge.fastSecure', 'Fast & Highly Secure')}</span>
+            <span className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 border border-primary/25 shadow-sm text-center">
+              <ShieldCheck size={14} className="text-primary-container shrink-0" />
+              <span className="truncate md:overflow-visible">{t('header.badge.fastSecure', 'Fast & Highly Secure')}</span>
             </span>
           </div>
         </div>
