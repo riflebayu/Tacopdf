@@ -91,9 +91,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
-          <p className={`text-xs text-white/70 leading-snug mt-1 md:mt-2 ${
-            isLastOdd ? 'block md:block' : 'hidden md:block'
-          }`}>
+          <p className="hidden md:block text-xs text-white/70 leading-snug mt-1 md:mt-2">
             {t(`seo.features.${tool.id.replace(/-/g, '_')}`, tool.description)}
           </p>
         </div>
