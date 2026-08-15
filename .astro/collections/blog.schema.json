@@ -22,6 +22,9 @@
     "featuredImage": {
       "type": "string"
     },
+    "imageAlt": {
+      "type": "string"
+    },
     "author": {
       "default": "TacoPDF Team",
       "type": "string"

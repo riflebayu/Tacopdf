@@ -3,6 +3,7 @@ title: "Stopp! Lädst du deine PDFs hier hoch? Diese sichere Alternative musst d
 description: "Lade vertrauliche PDFs nicht unüberlegt auf fremde Server! Erfahre, welche Datenschutzrisiken drohen und wie du mit TacoPDF deine Dateien sicher bearbeitest."
 pubDate: "2026-08-07T14:03:38.610Z"
 featuredImage: "/images/blog/stopp-ldst-du-deine-pdfs-hier-hoch-diese-sichere-alternative-musst-du-kennen-de-1786111393570.webp"
+imageAlt: "Vergleichsinfografik zu Datenschutzrisiken bei iLovePDF im Vergleich zu TacoPDF"
 author: "TacoPDF Team"
 tags: ["PDF Sicherheit","TacoPDF","Datenschutz","PDF bearbeiten","PDF Alternativen","DSGVO"]
 translationKey: "ilovepdf-privacy-alternative"

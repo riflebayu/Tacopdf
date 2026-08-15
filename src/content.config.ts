@@ -8,6 +8,7 @@ const blogCollection = defineCollection({
     description: z.string(),
     pubDate: z.string().or(z.date()).transform((val: string | Date) => new Date(val)),
     featuredImage: z.string().optional(),
+    imageAlt: z.string().optional(),
     author: z.string().default('TacoPDF Team'),
     tags: z.array(z.string()).default([]),
     translationKey: z.string().optional(),

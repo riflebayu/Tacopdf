@@ -16,6 +16,7 @@ interface Props {
   title?: string;
   description?: string;
   lang?: string;
+  author?: string; // [SEO FIX: Dynamic E-E-A-T Author Identity]
   schema?: string; // [SEO FIX: Dynamic Schema]
   image?: string; // [SEO FIX: Open Graph / Social Image]
   ogType?: string; // [SEO FIX: Open Graph Type (website vs article)]
@@ -27,6 +28,7 @@ const {
   title = "TacoPDF", 
   description = "Free & Secure Online PDF Tools", 
   lang = "en",
+  author = "TacoPDF Team",
   schema,
   image,
   ogType = "website",
@@ -86,13 +88,9 @@ const finalSchema = schema || JSON.stringify({
     "priceCurrency": "USD"
   },
   "creator": {
-    "@type": "Person",
-    "name": "Muhammad Bayu Edi",
-    "url": "https://www.instagram.com/riflebayu",
-    "sameAs": [
-      "https://github.com/riflebayu",
-      "https://www.facebook.com/profile.php?id=100004429534685"
-    ]
+    "@type": "Organization",
+    "name": "TacoPDF",
+    "url": "https://tacopdf.com"
   },
   "publisher": {
     "@type": "Organization",
@@ -150,14 +148,10 @@ const finalSchema = schema || JSON.stringify({
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9178424383165717" crossorigin="anonymous"></script>
 
     {/* E-E-A-T Author & Trust Signals — readable by all bots from raw HTML */}
-    <meta name="author" content="Muhammad Bayu Edi" />
-    <meta name="creator" content="Muhammad Bayu Edi" />
+    <meta name="author" content={author} />
+    <meta name="creator" content={author} />
     <meta name="publisher" content="TacoPDF" />
-    <meta property="article:author" content="Muhammad Bayu Edi" />
-
-    {/* Social Links for Trust Signals */}
-    <link rel="me" href="https://www.instagram.com/riflebayu" />
-    <link rel="me" href="https://www.facebook.com/profile.php?id=100004429534685" />
+    <meta property="article:author" content={author} />
 
     {/* [SEO FIX: Pillar 4] Dynamic JSON-LD Schema */}
     <script type="application/ld+json" set:html={finalSchema} />

@@ -263,6 +263,10 @@ export async function generateArticle(topic: string, language: string, promptOve
               type: SchemaType.STRING,
               description: "SEO optimized meta description (max 160 characters)"
             },
+            imageAlt: {
+              type: SchemaType.STRING,
+              description: "Descriptive alt text for the featured hero image detailing visual context for accessibility and Google Image Search"
+            },
             slug: {
               type: SchemaType.STRING,
               description: "SEO-optimized clean URL slug in lowercase alphanumeric-hyphenated ASCII format. FOR JAPANESE (ja) OR NON-LATIN: this MUST be in English/Romanized keywords (e.g. 'why-switch-to-tacopdf', 'merge-pdf-guide-japan')."
@@ -277,7 +281,7 @@ export async function generateArticle(topic: string, language: string, promptOve
               description: "Array of relevant tags"
             }
           },
-          required: ["title", "description", "slug", "content", "tags"]
+          required: ["title", "description", "imageAlt", "slug", "content", "tags"]
         }
       }
     });
@@ -412,10 +416,11 @@ Example usage (for 'en' language): "Try our free [Split PDF](/split-pdf) tool."
 (Adapt the anchor text naturally based on the ${language} being used).
 ${promptOverride ? `\nAdditional Instructions: ${promptOverride}` : ''}
 
-CRITICAL: You must return the output STRICTLY as a raw JSON object (without Markdown code blocks like \`\`\`json). The JSON must have the following structure:
+CRITICAL: You must return the output STRICTLY as a raw JSON object (without Markdown code blocks like ```json). The JSON must have the following structure:
 {
   "title": "SEO optimized title",
   "description": "SEO optimized meta description (max 160 characters)",
+  "imageAlt": "Descriptive alt text for the featured hero image for visually impaired users and SEO",
   "slug": "SEO-optimized clean lowercase alphanumeric-hyphenated ASCII URL slug (MUST be English/Romanized keywords for Japanese/non-Latin)",
   "content": "The main body of the article in Markdown format (use H2 and H3 tags)",
   "tags": ["Array", "of", "relevant", "tags"]

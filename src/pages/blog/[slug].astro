@@ -80,6 +80,7 @@ const blogSchema = JSON.stringify({
   title={`${post.data.title} | TacoPDF`} 
   description={post.data.description} 
   lang={lang}
+  author={post.data.author || "TacoPDF Team"}
   schema={blogSchema}
   image={post.data.featuredImage}
   ogType="article"
@@ -105,7 +106,7 @@ const blogSchema = JSON.stringify({
         <div class="flex flex-wrap items-center gap-3 text-xs md:text-sm font-medium text-on-surface-variant/80">
           <div class="flex items-center gap-1.5">
             <User size={13} class="shrink-0 text-primary/70 inline-block" />
-            <span>{post.data.author}</span>
+            <span>{post.data.author || "TacoPDF Team"}</span>
           </div>
           <span class="text-on-surface-variant/30">•</span>
           <div class="flex items-center gap-1.5">
@@ -135,7 +136,7 @@ const blogSchema = JSON.stringify({
         <div class="relative w-full rounded-xl md:rounded-3xl mb-8 md:mb-16 shadow-2xl border border-outline flex justify-center bg-surface-container-lowest">
           <img 
             src={post.data.featuredImage} 
-            alt={post.data.title}
+            alt={post.data.imageAlt || post.data.title}
             class="w-full h-auto object-contain rounded-xl md:rounded-3xl max-h-[600px]"
           />
         </div>

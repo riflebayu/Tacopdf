@@ -3,6 +3,7 @@ title: "La verdad sobre la privacidad en iLovePDF: Por qué TacoPDF está revolu
 description: "¿Es seguro subir tus documentos a iLovePDF? Descubre los riesgos ocultos de privacidad y por qué TacoPDF es la alternativa más segura y rápida del mercado."
 pubDate: "2026-08-07T13:51:15.729Z"
 featuredImage: "/images/blog/la-verdad-sobre-la-privacidad-en-ilovepdf-por-qu-tacopdf-est-revolucionando-internet-es-1786110644286.webp"
+imageAlt: "Infografia comparativa sobre la privacidad de datos entre iLovePDF y TacoPDF"
 author: "TacoPDF Team"
 tags: ["privacidad PDF","iLovePDF seguridad","TacoPDF","unir PDF seguro","herramientas PDF gratis","seguridad documental"]
 translationKey: "ilovepdf-privacy-alternative"

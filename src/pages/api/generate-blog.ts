@@ -146,11 +146,13 @@ export const POST: APIRoute = async ({ request }) => {
     const clusterKey = normalizeSlug(topic, 'en') || 'tacopdf-cluster';
 
     // 4. Assemble Markdown with Frontmatter
+    const imageAltText = (articleData.imageAlt || articleData.title).replace(/"/g, '\\"');
     const frontmatter = `---
 title: "${articleData.title.replace(/"/g, '\\"')}"
 description: "${articleData.description.replace(/"/g, '\\"')}"
 pubDate: "${new Date().toISOString()}"
 featuredImage: "${imageWebPath}"
+imageAlt: "${imageAltText}"
 author: "TacoPDF Team"
 tags: ${JSON.stringify(articleData.tags || [])}
 translationKey: "${clusterKey}"
