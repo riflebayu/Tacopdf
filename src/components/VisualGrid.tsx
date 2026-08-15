@@ -37,7 +37,6 @@ export default function VisualGrid({
   onToggleExtract,
 }: VisualGridProps) {
   const { t } = useLanguage();
-  const [selectedRotateIdx, setSelectedRotateIdx] = useState<number | null>(null);
 
   if (isGenerating) {
     return (
@@ -141,88 +140,61 @@ export default function VisualGrid({
               <img 
                 src={thumbUrl} 
                 alt={`Page ${idx + 1}`}
-                className={`w-full h-full object-contain p-2 transition-transform duration-300 ${isExtracted ? 'bg-transparent' : 'bg-white'}`}
+                className={`w-full h-full object-contain p-2 ${toolId === 'rotate' ? 'pb-12' : ''} transition-transform duration-300 ${isExtracted ? 'bg-transparent' : 'bg-white'}`}
                 style={{ transform: `rotate(${rotation}deg)` }}
               />
-              <div className="absolute top-2 left-2 bg-surface-container text-on-surface text-xs font-bold px-2 py-1 rounded shadow-sm border border-outline-variant">
+              <div className="absolute top-2 left-2 bg-surface-container text-on-surface text-xs font-bold px-2 py-1 rounded shadow-sm border border-outline-variant z-10">
                 {idx + 1}
               </div>
               
-              <div 
-                className={`absolute inset-0 transition-colors flex items-center justify-center opacity-100 sm:opacity-0 sm:hover:opacity-100 ${isExtracted ? 'bg-green-500/10' : 'bg-surface/10'}`}
-                onClick={() => {
-                  if (toolId === 'rotate' && window.innerWidth < 640) {
-                     setSelectedRotateIdx(idx);
-                  }
-                }}
-              >
-                {toolId === 'delete-pages' && (
+              {toolId === 'rotate' ? (
+                <div className="absolute bottom-1.5 inset-x-1.5 sm:bottom-2 sm:inset-x-2 flex items-center justify-center gap-1.5 pointer-events-auto z-20">
                   <button 
-                    onClick={() => toggleDelete(idx)}
-                    className={`p-4 rounded-full shadow-lg transform hover:scale-110 transition-all ${isDeleted ? 'bg-surface-container text-on-surface' : 'bg-red-500 text-white'}`}
+                    onClick={(e) => { e.stopPropagation(); handleRotate(idx, -90); }}
+                    className="flex-1 min-h-[40px] py-1.5 px-2 bg-surface-container-highest/95 hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-lg shadow-md border border-outline-variant/60 active:scale-95 transition-all flex items-center justify-center gap-1 text-xs font-bold backdrop-blur-sm cursor-pointer"
+                    title={t('tool.rotate.left') || 'Rotate Left'}
+                    aria-label={`Rotate page ${idx + 1} Left`}
                   >
-                    {isDeleted ? (t('tool.action.undo') || 'Undo') : <Trash2 size={24} />}
+                    <RotateCcw size={16} />
+                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">Kiri</span>
                   </button>
-                )}
-                {(toolId === 'split' || toolId === 'extract-pages') && (
                   <button 
-                    onClick={() => toggleExtract(idx)}
-                    disabled={extractMode === 'all'}
-                    className={`p-4 rounded-full shadow-lg transform transition-all ${extractMode === 'all' ? 'cursor-not-allowed bg-green-600/70 text-white' : 'hover:scale-110'} ${isExtracted && extractMode !== 'all' ? 'bg-green-600 text-white' : 'bg-surface-container text-on-surface'}`}
+                    onClick={(e) => { e.stopPropagation(); handleRotate(idx, 90); }}
+                    className="flex-1 min-h-[40px] py-1.5 px-2 bg-surface-container-highest/95 hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-lg shadow-md border border-outline-variant/60 active:scale-95 transition-all flex items-center justify-center gap-1 text-xs font-bold backdrop-blur-sm cursor-pointer"
+                    title={t('tool.rotate.right') || 'Rotate Right'}
+                    aria-label={`Rotate page ${idx + 1} Right`}
                   >
-                    {isExtracted ? (t('tool.action.undo') || 'Undo') : <span className="font-bold text-sm">{toolId === 'extract-pages' ? (t('tool.action.extract') || 'Extract') : (t('tool.action.select') || 'Select')}</span>}
+                    <RotateCw size={16} />
+                    <span className="text-[11px] font-semibold hidden min-[360px]:inline">Kanan</span>
                   </button>
-                )}
-                {toolId === 'rotate' && (
-                  <div className="hidden sm:flex gap-4">
+                </div>
+              ) : (
+                <div 
+                  className={`absolute inset-0 transition-colors flex items-center justify-center opacity-100 sm:opacity-0 sm:hover:opacity-100 ${isExtracted ? 'bg-green-500/10' : 'bg-surface/10'}`}
+                >
+                  {toolId === 'delete-pages' && (
                     <button 
-                      onClick={(e) => { e.stopPropagation(); handleRotate(idx, -90); }}
-                      className="p-3 bg-surface-variant text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container rounded-full shadow-lg transform hover:scale-110 transition-all"
-                      title={t('tool.rotate.left') || 'Rotate Left'}
+                      onClick={() => toggleDelete(idx)}
+                      className={`p-4 rounded-full shadow-lg transform hover:scale-110 transition-all ${isDeleted ? 'bg-surface-container text-on-surface' : 'bg-red-500 text-white'}`}
                     >
-                      <RotateCcw size={24} />
+                      {isDeleted ? (t('tool.action.undo') || 'Undo') : <Trash2 size={24} />}
                     </button>
+                  )}
+                  {(toolId === 'split' || toolId === 'extract-pages') && (
                     <button 
-                      onClick={(e) => { e.stopPropagation(); handleRotate(idx, 90); }}
-                      className="p-3 bg-surface-variant text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container rounded-full shadow-lg transform hover:scale-110 transition-all"
-                      title={t('tool.rotate.right') || 'Rotate Right'}
+                      onClick={() => toggleExtract(idx)}
+                      disabled={extractMode === 'all'}
+                      className={`p-4 rounded-full shadow-lg transform transition-all ${extractMode === 'all' ? 'cursor-not-allowed bg-green-600/70 text-white' : 'hover:scale-110'} ${isExtracted && extractMode !== 'all' ? 'bg-green-600 text-white' : 'bg-surface-container text-on-surface'}`}
                     >
-                      <RotateCw size={24} />
+                      {isExtracted ? (t('tool.action.undo') || 'Undo') : <span className="font-bold text-sm">{toolId === 'extract-pages' ? (t('tool.action.extract') || 'Extract') : (t('tool.action.select') || 'Select')}</span>}
                     </button>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
-
-      {toolId === 'rotate' && (
-        <div className="sm:hidden mt-8 flex flex-col items-center justify-center gap-4 bg-surface-container-high p-4 rounded-xl shadow-sm border border-outline-variant">
-           {selectedRotateIdx !== null ? (
-              <div className="flex items-center w-full gap-4 justify-center">
-                <button 
-                  onClick={() => handleRotate(selectedRotateIdx, -90)}
-                  className="px-4 py-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2"
-                >
-                  <RotateCcw size={18} />
-                  <span>{t('tool.rotate.left', 'Left')}</span>
-                </button>
-                <button 
-                  onClick={() => handleRotate(selectedRotateIdx, 90)}
-                  className="px-4 py-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2"
-                >
-                  <RotateCw size={18} />
-                  <span>{t('tool.rotate.right', 'Right')}</span>
-                </button>
-              </div>
-           ) : (
-              <p className="text-sm font-medium text-on-surface-variant text-center w-full">
-                {t('tool.rotate.select_hint', 'Select a page above to rotate')}
-              </p>
-           )}
-        </div>
-      )}
     </div>
   );
 }
