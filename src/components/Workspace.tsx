@@ -320,23 +320,47 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   return { r: isNaN(r) ? 0 : r, g: isNaN(g) ? 0 : g, b: isNaN(b) ? 0 : b };
 }
 
-// Convert any image file (WEBP, GIF, PNG, JPG) to JPEG ArrayBuffer using canvas
+// Convert any image file (WEBP, GIF, PNG, JPG, HEIC/camera) to JPEG ArrayBuffer safely with memory protection
 async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
+        // Constrain extreme mobile camera resolutions (e.g. 48MP) to maximum 2400px to avoid mobile browser crashes
+        const MAX_DIM = 2400;
+        let targetWidth = img.naturalWidth || img.width;
+        let targetHeight = img.naturalHeight || img.height;
+
+        if (targetWidth > MAX_DIM || targetHeight > MAX_DIM) {
+          if (targetWidth > targetHeight) {
+            targetHeight = Math.round((targetHeight * MAX_DIM) / targetWidth);
+            targetWidth = MAX_DIM;
+          } else {
+            targetWidth = Math.round((targetWidth * MAX_DIM) / targetHeight);
+            targetHeight = MAX_DIM;
+          }
+        }
+
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           reject(new Error('Failed to create canvas 2D drawing context'));
           return;
         }
-        ctx.drawImage(img, 0, 0);
+
+        // Fill white background in case source image is transparent PNG/WEBP
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, targetWidth, targetHeight);
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
         canvas.toBlob((blob) => {
+          // Free canvas memory immediately
+          canvas.width = 0;
+          canvas.height = 0;
+
           if (!blob) {
             reject(new Error('Canvas image conversion to JPEG blob failed'));
             return;
@@ -351,7 +375,7 @@ async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
           };
           blobReader.onerror = () => reject(blobReader.error);
           blobReader.readAsArrayBuffer(blob);
-        }, 'image/jpeg', 0.95);
+        }, 'image/jpeg', 0.90);
       };
       img.onerror = () => reject(new Error('Failed to parse uploaded image format'));
       if (e.target?.result) {
@@ -1635,11 +1659,15 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
       } else if (tool.id === 'image-to-pdf') {
         const imgPdf = await PDFDocument.create();
-        for (let i = 0; i < uploadedFiles.length; i++) {
+        const total = uploadedFiles.length;
+        
+        for (let i = 0; i < total; i++) {
+          const currentNum = i + 1;
+          const msgTemplate = t('progress.optimizing_image', 'Memproses gambar {current} dari {total}...');
           setProcessingState({
             status: 'processing',
-            progress: Math.floor(10 + (i / uploadedFiles.length) * 80),
-            message: t('progress.optimizing_image').replace('{current}', (i + 1).toString()).replace('{total}', uploadedFiles.length.toString()),
+            progress: Math.floor(10 + (i / total) * 80),
+            message: msgTemplate.replace('{current}', currentNum.toString()).replace('{total}', total.toString()),
           });
 
           const imgFile = uploadedFiles[i];
@@ -1650,28 +1678,45 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
           let pHeight = embedImg.height;
 
           if (imageSize === 'A4') {
-            pWidth = 595;
-            pHeight = 842;
+            // Standard A4: 595.28 x 841.89 points (auto orientation based on image)
+            const isLandscape = embedImg.width > embedImg.height;
+            pWidth = isLandscape ? 842 : 595;
+            pHeight = isLandscape ? 595 : 842;
           } else if (imageSize === 'Letter') {
-            pWidth = 612;
-            pHeight = 792;
+            // US Letter: 612 x 792 points (auto orientation based on image)
+            const isLandscape = embedImg.width > embedImg.height;
+            pWidth = isLandscape ? 792 : 612;
+            pHeight = isLandscape ? 612 : 792;
           }
 
           const page = imgPdf.addPage([pWidth, pHeight]);
           
-          const m = imageMargin;
-          const fitWidth = pWidth - m * 2;
-          const fitHeight = pHeight - m * 2;
-          
-          const ratio = Math.min(fitWidth / embedImg.width, fitHeight / embedImg.height);
-          const w = embedImg.width * ratio;
-          const h = embedImg.height * ratio;
-          
-          const x = (pWidth - w) / 2;
-          const y = (pHeight - h) / 2;
+          if (imageSize === 'Fit') {
+            // Fit 1:1 without margins or shrinkage
+            page.drawImage(embedImg, {
+              x: 0,
+              y: 0,
+              width: pWidth,
+              height: pHeight
+            });
+          } else {
+            // Standard document margins (20 points)
+            const m = 20;
+            const fitWidth = Math.max(10, pWidth - m * 2);
+            const fitHeight = Math.max(10, pHeight - m * 2);
+            
+            const ratio = Math.min(fitWidth / embedImg.width, fitHeight / embedImg.height);
+            const w = embedImg.width * ratio;
+            const h = embedImg.height * ratio;
+            
+            const x = (pWidth - w) / 2;
+            const y = (pHeight - h) / 2;
 
-          page.drawImage(embedImg, { x, y, width: w, height: h });
-          await yieldToMain();
+            page.drawImage(embedImg, { x, y, width: w, height: h });
+          }
+
+          // Main thread cooperative yielding to ensure mobile tab stability for batches of photos
+          await new Promise(r => setTimeout(r, 25));
         }
         outputBytes = await imgPdf.save();
         outName = 'converted_images.pdf';
@@ -2662,6 +2707,59 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       </button>
                     </div>
                   )}
+
+                  {/* Mobile: Paper Size Control for Image to PDF */}
+                  {tool.id === 'image-to-pdf' && uploadedFiles.length > 0 && (
+                    <div className="mt-4 p-3.5 bg-surface-container border border-outline-variant rounded-xl space-y-2.5 md:hidden shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                          <LucideIcon name="FileText" size={14} className="text-primary" />
+                          {t('tool.image.size', 'Ukuran Kertas')}
+                        </label>
+                        <span className="text-[11px] font-semibold text-primary">
+                          {imageSize === 'A4' ? (t('tool.image.a4') || 'Ukuran A4') : imageSize === 'Letter' ? (t('tool.image.letter') || 'Ukuran Letter') : (t('tool.image.fit') || 'Otomatis Pas')}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setImageSize('A4')}
+                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                            imageSize === 'A4'
+                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                          }`}
+                        >
+                          <span>A4</span>
+                          <span className="text-[9px] opacity-75 font-normal">Standard</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setImageSize('Letter')}
+                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                            imageSize === 'Letter'
+                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                          }`}
+                        >
+                          <span>Letter</span>
+                          <span className="text-[9px] opacity-75 font-normal">US Letter</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setImageSize('Fit')}
+                          className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                            imageSize === 'Fit'
+                              ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                              : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                          }`}
+                        >
+                          <span>Fit</span>
+                          <span className="text-[9px] opacity-75 font-normal">{t('tool.image.fit', 'Otomatis Pas')}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   </div>
                   </>
                 )}
@@ -3181,18 +3279,53 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
 
 
               {tool.id === 'image-to-pdf' && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-on-surface">{t('tool.image.size')}</label>
-                    <select
-                      value={imageSize}
-                      onChange={(e) => setImageSize(e.target.value as any)}
-                      className="w-full bg-background border border-outline-variant rounded-lg px-4 py-2 text-sm text-on-surface focus:border-primary-container focus:outline-none"
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                      <LucideIcon name="FileText" size={14} className="text-primary" />
+                      {t('tool.image.size', 'Ukuran Kertas')}
+                    </label>
+                    <span className="text-[11px] font-semibold text-primary">
+                      {imageSize === 'A4' ? (t('tool.image.a4') || 'Ukuran A4') : imageSize === 'Letter' ? (t('tool.image.letter') || 'Ukuran Letter') : (t('tool.image.fit') || 'Otomatis Pas')}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setImageSize('A4')}
+                      className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                        imageSize === 'A4'
+                          ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                          : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                      }`}
                     >
-                      <option value="A4">{t('tool.image.a4') || "A4"}</option>
-                      <option value="Letter">{t('tool.image.letter') || "Letter"}</option>
-                      <option value="Fit">{t('tool.image.fit') || "Fit to Image"}</option>
-                    </select>
+                      <span>A4</span>
+                      <span className="text-[9px] opacity-75 font-normal">Standard</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageSize('Letter')}
+                      className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                        imageSize === 'Letter'
+                          ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                          : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                      }`}
+                    >
+                      <span>Letter</span>
+                      <span className="text-[9px] opacity-75 font-normal">US Letter</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageSize('Fit')}
+                      className={`py-2.5 px-2 rounded-lg border text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-95 ${
+                        imageSize === 'Fit'
+                          ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm ring-2 ring-primary/20'
+                          : 'bg-surface-container-high border-outline-variant/60 text-on-surface-variant hover:text-on-surface'
+                      }`}
+                    >
+                      <span>Fit</span>
+                      <span className="text-[9px] opacity-75 font-normal">{t('tool.image.fit', 'Otomatis Pas')}</span>
+                    </button>
                   </div>
                 </div>
               )}
