@@ -2,26 +2,26 @@ import { PDFTool } from '../types';
 
 export const TOOLS: PDFTool[] = [
   // Page Manipulation
-  { id: 'merge', name: 'Merge PDF', description: 'Combine multiple PDFs into one document in your preferred order.', category: 'manipulation', icon: 'merge', active: true },
-  { id: 'split', name: 'Split PDF', description: 'Extract specific page ranges or split a PDF into separate files.', category: 'manipulation', icon: 'split', active: true },
-  { id: 'rotate', name: 'Rotate PDF', description: 'Rotate specific pages or all pages in your PDF by 90, 180, or 270 degrees.', category: 'manipulation', icon: 'rotate', active: true },
-  { id: 'delete-pages', name: 'Delete Pages', description: 'Remove unwanted pages from your PDF file and shrink document size.', category: 'manipulation', icon: 'delete-pages', active: true },
-  { id: 'extract-pages', name: 'Extract Pages', description: 'Select and save only the pages you need as a separate new PDF.', category: 'manipulation', icon: 'extract-pages', active: true },
+  { id: 'merge', name: 'Merge PDF', description: "Combine and merge multiple PDF files or reports into a single document instantly and securely.", category: 'manipulation', icon: 'merge', active: true },
+  { id: 'split', name: 'Split PDF', description: "Split PDF files and extract specific pages to create a new, organized PDF document.", category: 'manipulation', icon: 'split', active: true },
+  { id: 'rotate', name: 'Rotate PDF', description: "Rotate PDF pages permanently to fix upside-down scans and save the corrected document.", category: 'manipulation', icon: 'rotate', active: true },
+  { id: 'delete-pages', name: 'Delete Pages', description: "Remove blank or unwanted pages from your PDF files easily and securely.", category: 'manipulation', icon: 'delete-pages', active: true },
+  { id: 'extract-pages', name: 'Extract Pages', description: "Extract selected pages from a PDF to save them as a new, lightweight document.", category: 'manipulation', icon: 'extract-pages', active: true },
   
   // Security
-  { id: 'protect', name: 'Protect PDF', description: 'Encrypt and secure your PDF document with a strong password locally.', category: 'security', icon: 'protect', active: true },
-  { id: 'unlock', name: 'Unlock PDF', description: 'Remove password security and encryption from your unlocked PDF.', category: 'security', icon: 'unlock', active: true },
-  { id: 'sign', name: 'Sign PDF', description: 'Add your electronic signature to documents locally and securely.', icon: 'sign', category: 'security', active: true },
-  { id: 'redact', name: 'Redact PDF', description: 'Black out sensitive information permanently.', category: 'security', icon: 'redact', active: true },
+  { id: 'protect', name: 'Protect PDF', description: "Protect your PDF files with a secure password and local AES encryption.", category: 'security', icon: 'protect', active: true },
+  { id: 'unlock', name: 'Unlock PDF', description: "Remove PDF passwords and restrictions to unlock documents for easy printing and sharing.", category: 'security', icon: 'unlock', active: true },
+  { id: 'sign', name: 'Sign PDF', description: "Sign PDF documents online for free by drawing or uploading your signature locally.", icon: 'sign', category: 'security', active: true },
+  { id: 'redact', name: 'Redact PDF', description: "Redact PDF text and blackout sensitive images permanently to hide confidential data.", category: 'security', icon: 'redact', active: true },
   
   // Format Conversion
-  { id: 'image-to-pdf', name: 'Image to PDF', description: 'Convert JPG, PNG, WebP, and other images into a polished PDF document.', category: 'conversion', icon: 'image-to-pdf', active: true },
-  { id: 'pdf-to-image', name: 'PDF to Image', description: 'Extract raw images or render PDF pages as high-quality JPG/PNG files.', category: 'conversion', icon: 'pdf-to-image', active: true },
-  { id: 'html-to-pdf', name: 'HTML to PDF', description: 'Convert web page screenshots, rich text, or HTML content into PDF files.', category: 'conversion', icon: 'html-to-pdf', active: true },
+  { id: 'image-to-pdf', name: 'Image to PDF', description: "Convert JPG, PNG, and WebP images into high-quality PDF documents instantly.", category: 'conversion', icon: 'image-to-pdf', active: true },
+  { id: 'pdf-to-image', name: 'PDF to Image', description: "Convert PDF to JPG or PNG by extracting every page into high-quality images.", category: 'conversion', icon: 'pdf-to-image', active: true },
+  { id: 'html-to-pdf', name: 'HTML to PDF', description: "Convert HTML and rich text to PDF locally directly in your browser.", category: 'conversion', icon: 'html-to-pdf', active: true },
   
   // Editing
-  { id: 'add-watermark', name: 'Add Watermark', description: 'Stamp custom text or images over pages with customized opacity and size.', category: 'editing', icon: 'add-watermark', active: true },
-  { id: 'add-page-numbers', name: 'Add Page Numbers', description: 'Insert customized page numbers into your PDF easily with perfect layouts.', category: 'editing', icon: 'add-page-numbers', active: true }
+  { id: 'add-watermark', name: 'Add Watermark', description: "Add custom text or image watermarks to your PDF files to protect your documents.", category: 'editing', icon: 'add-watermark', active: true },
+  { id: 'add-page-numbers', name: 'Add Page Numbers', description: "Add page numbers to PDF documents easily with customizable formatting and placement.", category: 'editing', icon: 'add-page-numbers', active: true }
 ];
 
 export const CATEGORIES = [
