@@ -2242,7 +2242,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       `}</style>
 
       <div className={`flex ${tool.id === 'sign' && uploadedFiles.length > 0 && processingState.status !== 'success' ? 'flex-col-reverse' : 'flex-col'} lg:grid lg:grid-cols-12 gap-8 items-start w-full min-w-0 max-w-full overflow-hidden`}>
-        <div className={`${tool.id === 'sign' && processingState.status === 'success' ? 'hidden lg:block' : ''} lg:col-span-7 space-y-6 w-full min-w-0 max-w-full`}>
+        <div className={`${processingState.status === 'success' ? 'hidden lg:block' : ''} lg:col-span-7 space-y-6 w-full min-w-0 max-w-full`}>
           {tool.id === 'html-to-pdf' ? (
             /* HTML Editor Block */
             <div className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 space-y-4 w-full overflow-hidden">
@@ -2877,14 +2877,14 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
             ['merge', 'split', 'rotate', 'delete-pages', 'extract-pages', 'redact'].includes(tool.id) ? 'p-3' : 'p-4'
           }`}>
             <h3 className={`font-bold text-lg text-on-surface items-center gap-2 mb-4 border-b border-outline-variant pb-4 ${
-              (tool.id === 'sign' && processingState.status === 'success') || ['merge', 'split', 'rotate', 'delete-pages', 'extract-pages', 'redact'].includes(tool.id) ? 'hidden md:flex' : 'flex'
+              processingState.status === 'success' || ['merge', 'split', 'rotate', 'delete-pages', 'extract-pages', 'redact'].includes(tool.id) ? 'hidden md:flex' : 'flex'
             }`}>
               <LucideIcon name="Settings" className="text-primary-container" size={20} />
               {t('workspace.options') || 'Options & Instructions'}
             </h3>
 
             <div className={`p-4 bg-primary-container/10 border border-primary-container/20 rounded-xl ${
-              (tool.id === 'sign' && processingState.status === 'success') || (tool.id === 'merge' && uploadedFiles.length === 0) || tool.id === 'rotate' || tool.id === 'delete-pages' || (tool.id === 'redact' && uploadedFiles.length > 0) ? 'hidden md:block mb-6' : 'mb-6'
+              processingState.status === 'success' || (tool.id === 'merge' && uploadedFiles.length === 0) || tool.id === 'rotate' || tool.id === 'delete-pages' || (tool.id === 'redact' && uploadedFiles.length > 0) ? 'hidden md:block mb-6' : 'mb-6'
             }`}>
               {/* Default/Desktop View */}
               <div className={tool.id === 'merge' ? 'hidden md:block space-y-3' : 'space-y-3'}>
@@ -2909,7 +2909,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
               )}
             </div>
             
-            {tool.id === 'extract-pages' && uploadedFiles.length > 0 && (
+            {tool.id === 'extract-pages' && uploadedFiles.length > 0 && processingState.status !== 'success' && (
               <div className="mb-6 bg-surface-container p-4 rounded-xl border border-outline-variant shadow-sm flex items-start gap-3">
                 <input 
                   type="checkbox" 
@@ -2923,6 +2923,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 </label>
               </div>
             )}
+            
+            {processingState.status !== 'success' && (
+              <>
               {tool.id === 'protect' && (
                 <div className="space-y-4">
                   <div className="space-y-2 relative">
@@ -3200,6 +3203,8 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                   </div>
                 </div>
               )}
+              </>
+            )}
 
                
                <div className="mt-8 space-y-4">
