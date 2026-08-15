@@ -2417,7 +2417,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex flex-col items-center justify-center cursor-pointer transition-all mobile-glow ${
+                className={`${uploadedFiles.length > 0 ? 'hidden md:flex' : 'flex'} border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex-col items-center justify-center cursor-pointer transition-all mobile-glow ${
                   isDragActive 
                     ? 'border-primary-container bg-surface-container' 
                     : 'md:border-outline-variant bg-surface-container/40'
@@ -2634,6 +2634,23 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                       );
                     })}
                   </Reorder.Group>
+
+                  {/* Mobile: Compact "+ Add more files" button for multi-file tools */}
+                  {(tool.id === 'merge' || tool.id === 'image-to-pdf') && (
+                    <div className="mt-3 flex md:hidden justify-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className="w-full py-3 px-4 bg-surface-container-high hover:bg-surface-container-highest text-primary font-bold text-xs rounded-xl border border-outline-variant/60 shadow-sm flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
+                      >
+                        <LucideIcon name="Plus" size={16} />
+                        <span>{t('workspace.drop.add_more', '+ Add more files')}</span>
+                      </button>
+                    </div>
+                  )}
                   </div>
                   </>
                 )}
