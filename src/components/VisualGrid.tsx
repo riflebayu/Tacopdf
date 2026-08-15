@@ -130,7 +130,7 @@ export default function VisualGrid({
           let borderClass = 'border-outline-variant hover:border-primary-container bg-surface-container-low';
           if (isDeleted) borderClass = 'border-red-500 opacity-50 grayscale';
           if (isExtracted) borderClass = 'border-green-500 ring-2 ring-green-500/50 bg-green-500/10 shadow-green-500/20';
-          if (toolId === 'rotate' && selectedRotateIdx === idx) borderClass = 'border-primary ring-2 ring-primary/50 bg-primary/10 shadow-primary/20';
+          if (toolId === 'rotate' && rotation % 360 !== 0) borderClass = 'border-primary ring-2 ring-primary/50 bg-primary/10 shadow-primary/20';
 
           return (
             <div 
