@@ -5,6 +5,7 @@ pubDate: "2026-08-07T14:12:27.163Z"
 featuredImage: "/images/blog/pdfilovepdftacopdf-ja-1786111924144.webp"
 author: "TacoPDF Team"
 tags: ["PDF変換","TacoPDF","iLovePDF","情報漏洩","セキュリティ","PDF結合","PDF分割","無料ツール"]
+translationKey: "ilovepdf-privacy-alternative"
 ---
 
 「取引先に提出する重要な契約書を、無料サイトでPDF結合したら……」

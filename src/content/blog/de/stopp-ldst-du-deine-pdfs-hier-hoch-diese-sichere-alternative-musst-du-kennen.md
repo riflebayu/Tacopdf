@@ -5,6 +5,7 @@ pubDate: "2026-08-07T14:03:38.610Z"
 featuredImage: "/images/blog/stopp-ldst-du-deine-pdfs-hier-hoch-diese-sichere-alternative-musst-du-kennen-de-1786111393570.webp"
 author: "TacoPDF Team"
 tags: ["PDF Sicherheit","TacoPDF","Datenschutz","PDF bearbeiten","PDF Alternativen","DSGVO"]
+translationKey: "ilovepdf-privacy-alternative"
 ---
 
 Stopp. Kurz innehalten.
