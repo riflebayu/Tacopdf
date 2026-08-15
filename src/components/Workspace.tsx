@@ -2080,15 +2080,6 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
       } else if (tool.id === 'html-to-pdf') {
         setProcessingState({ status: 'processing', progress: 30, message: t('progress.rendering_html') || 'Rendering HTML view...' });
         
-        if (typeof window !== 'undefined' && (isMobile || window.innerWidth < 1024)) {
-          setTimeout(() => {
-            const progressEl = document.getElementById('progress-box-container');
-            if (progressEl) {
-              progressEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }, 80);
-        }
-
         // Yield to the main thread so the browser can paint the processing overlay before html2canvas blocks the thread
         await yieldToMain();
         // Additional 50ms delay to guarantee mobile browsers have time to render the UI updates
@@ -3238,7 +3229,7 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                  </div>
                 )}
               {processingState.status === 'processing' && (
-                <div id="progress-box-container" className="bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 shadow-sm mb-4 w-full overflow-hidden break-words box-border scroll-mt-28">
+                <div id="progress-box-container" className="hidden sm:block bg-surface-container border border-outline-variant rounded-xl p-4 sm:p-6 shadow-sm mb-4 w-full overflow-hidden break-words box-border scroll-mt-28">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-bold text-on-surface flex items-center gap-2">
                       <LucideIcon name="Loader2" className="animate-spin text-primary" size={18} />
@@ -3367,6 +3358,30 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         </button>
                       </div>
                     </div>
+                </div>
+              )}
+
+              {/* Mobile Processing Bar placed directly in the fixed bottom action zone */}
+              {processingState.status === 'processing' && (
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe sm:hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-bold text-xs text-on-surface flex items-center gap-1.5">
+                      <LucideIcon name="Loader2" className="animate-spin text-primary" size={14} />
+                      {t('workspace.processing') || "Sedang diproses..."}
+                    </h4>
+                    <span className="text-primary font-bold text-xs">{Math.round(processingState.progress)}%</span>
+                  </div>
+                  <div className="w-full bg-surface-variant rounded-full h-2 overflow-hidden shadow-inner">
+                    <div 
+                      className="bg-primary h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${processingState.progress}%` }}
+                    />
+                  </div>
+                  {processingState.message && (
+                    <p className="text-[10px] text-on-surface-variant text-center mt-1.5 animate-pulse truncate">
+                      {processingState.message}
+                    </p>
+                  )}
                 </div>
               )}
 
