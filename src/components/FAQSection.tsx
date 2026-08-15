@@ -65,7 +65,7 @@ export function FAQSectionContent() {
       <h2 className="text-2xl sm:text-3xl font-bold text-on-surface mb-6 text-center tracking-tight">
         {t('faq.title')}
       </h2>
-      <div className="max-w-4xl mx-auto flex flex-col border border-outline-variant/60 rounded-2xl overflow-hidden divide-y divide-outline-variant/60 bg-[#2A2824]/30 shadow-sm">
+      <div className="w-full max-w-4xl mx-auto flex flex-col border border-outline-variant/60 rounded-2xl overflow-hidden divide-y divide-outline-variant/60 bg-[#2A2824]/30 shadow-sm">
         {faqs.map((faq, index) => (
           <motion.details
             key={faq.id}
