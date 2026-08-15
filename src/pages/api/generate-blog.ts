@@ -6,11 +6,15 @@ import sharp from 'sharp';
 
 export const prerender = false;
 
-function generateSlug(title: string, lang: string = 'en') {
-  if (!title) return `post-${Date.now()}`;
-  let str = title.trim();
+/**
+ * Robust, SEO-compliant slug normalization function.
+ * Converts accents/umlauts and guarantees strict ASCII kebab-case URLs.
+ */
+function normalizeSlug(rawString: string, lang: string = 'en'): string {
+  if (!rawString) return '';
+  let str = rawString.trim();
 
-  // German Umlauts
+  // 1. German Umlaut expansion (ä -> ae, ö -> oe, ü -> ue, ß -> ss)
   if (lang === 'de') {
     str = str
       .replace(/ä/g, 'ae')
@@ -22,19 +26,59 @@ function generateSlug(title: string, lang: string = 'en') {
       .replace(/Ü/g, 'ue');
   }
 
-  // Unicode Normalization for accents (é -> e, ñ -> n, ç -> c)
+  // 2. Unicode Normalization (decompose accents: é -> e, ñ -> n, ç -> c)
   str = str.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-  // Clean ASCII slug
+  // 3. Keep only alphanumeric ASCII and hyphens
   str = str
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/[\s-]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-  if (!str) {
-    return `post-${Date.now().toString(36)}`;
-  }
   return str;
+}
+
+/**
+ * Resolves the final slug using a hierarchy:
+ * 1. manualSlug (if provided by user in CMS)
+ * 2. AI-generated slug (from JSON response, especially English slug for Japanese)
+ * 3. Title-based normalized slug
+ * 4. Topic-based fallback
+ * 5. Safe timestamp fallback
+ */
+function resolveFinalSlug(
+  manualSlug: string | undefined,
+  aiSlug: string | undefined,
+  title: string,
+  topic: string,
+  lang: string
+): string {
+  // 1. Check manual override
+  if (manualSlug) {
+    const cleaned = normalizeSlug(manualSlug, lang);
+    if (cleaned) return cleaned;
+  }
+
+  // 2. Check AI-generated slug (critical for non-Latin/Japanese)
+  if (aiSlug) {
+    const cleaned = normalizeSlug(aiSlug, lang);
+    if (cleaned && cleaned.length >= 3) return cleaned;
+  }
+
+  // 3. Check Title slug
+  const titleSlug = normalizeSlug(title, lang);
+  if (titleSlug && titleSlug.length >= 3) {
+    return titleSlug;
+  }
+
+  // 4. Fallback to topic slug (Latin/English basis)
+  const topicSlug = normalizeSlug(topic, 'en');
+  if (topicSlug && topicSlug.length >= 3) {
+    return `${topicSlug}-${lang}`;
+  }
+
+  // 5. Ultimate safe fallback
+  return `post-${Date.now().toString(36)}`;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -44,6 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
     const image = formData.get('image') as File;
     const prompt = formData.get('prompt') as string;
     const language = formData.get('language') as string;
+    const manualSlug = (formData.get('slug') || formData.get('manualSlug')) as string | undefined;
     const provider = formData.get('provider') as string || 'gemini';
     const openrouterModel = formData.get('openrouterModel') as string || 'openai/gpt-4o-mini';
 
@@ -59,7 +104,7 @@ export const POST: APIRoute = async ({ request }) => {
     const buffer = Buffer.from(arrayBuffer);
     
     // Generate SEO friendly image filename based on topic and language
-    const safeTopic = generateSlug(topic, 'en');
+    const safeTopic = normalizeSlug(topic, 'en') || 'tacopdf';
     const imageFilename = `${safeTopic}-${language}-${Date.now()}.webp`;
     
     // public/images/blog
@@ -90,10 +135,17 @@ export const POST: APIRoute = async ({ request }) => {
     // Also catch any generic # Title at the beginning
     cleanContent = cleanContent.replace(/^#\s+.*\n+/, '');
 
-    const slug = generateSlug(articleData.title, language);
-    const clusterKey = generateSlug(topic, 'en');
+    // 3. Resolve Final SEO-Optimized Slug
+    const slug = resolveFinalSlug(
+      manualSlug,
+      articleData.slug,
+      articleData.title,
+      topic,
+      language
+    );
+    const clusterKey = normalizeSlug(topic, 'en') || 'tacopdf-cluster';
 
-    // 3. Assemble Markdown with Frontmatter
+    // 4. Assemble Markdown with Frontmatter
     const frontmatter = `---
 title: "${articleData.title.replace(/"/g, '\\"')}"
 description: "${articleData.description.replace(/"/g, '\\"')}"
@@ -108,7 +160,7 @@ translationKey: "${clusterKey}"
 
     const fullMarkdown = frontmatter + cleanContent;
 
-    // 4. Save to File System
+    // 5. Save to File System
     const blogDir = path.join(process.cwd(), 'src', 'content', 'blog', language);
     await fs.mkdir(blogDir, { recursive: true });
     

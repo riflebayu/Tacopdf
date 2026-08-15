@@ -263,6 +263,10 @@ export async function generateArticle(topic: string, language: string, promptOve
               type: SchemaType.STRING,
               description: "SEO optimized meta description (max 160 characters)"
             },
+            slug: {
+              type: SchemaType.STRING,
+              description: "SEO-optimized clean URL slug in lowercase alphanumeric-hyphenated ASCII format. FOR JAPANESE (ja) OR NON-LATIN: this MUST be in English/Romanized keywords (e.g. 'why-switch-to-tacopdf', 'merge-pdf-guide-japan')."
+            },
             content: {
               type: SchemaType.STRING,
               description: "The main body of the article in Markdown format (use H2 and H3 tags)"
@@ -273,7 +277,7 @@ export async function generateArticle(topic: string, language: string, promptOve
               description: "Array of relevant tags"
             }
           },
-          required: ["title", "description", "content", "tags"]
+          required: ["title", "description", "slug", "content", "tags"]
         }
       }
     });
@@ -285,6 +289,7 @@ CRITICAL LOCALIZATION & MULTILINGUAL INSTRUCTIONS:
 - You are writing in ${language} (Target languages include English, Japanese, Spanish, German, French, Portuguese, or Indonesian). 
 - Do NOT translate English concepts word-for-word. Use native idioms, culturally relevant analogies, and natural sentence structures specific to ${language}. 
 - For Japanese (if applicable): Use natural Keigo/Teineigo or standard Desu/Masu form appropriate for a tech-blog, avoiding robotic direct translations.
+- For the 'slug' field: MUST ALWAYS be clean ASCII kebab-case (e.g. 'why-choose-tacopdf'). If the language is Japanese ('ja'), translate the core meaning into concise English words for the slug (e.g., 'tacopdf-security-reasons-guide') to prevent percent-encoding or garbage URLs.
 
 CRITICAL ANTI-AI DETECTOR INSTRUCTIONS (HUMANIZE CONTENT):
 1. High Burstiness & Perplexity: Vary your sentence lengths drastically. Combine very short, punchy sentences with longer, complex ones. Use unpredictable but natural vocabulary.
@@ -411,6 +416,7 @@ CRITICAL: You must return the output STRICTLY as a raw JSON object (without Mark
 {
   "title": "SEO optimized title",
   "description": "SEO optimized meta description (max 160 characters)",
+  "slug": "SEO-optimized clean lowercase alphanumeric-hyphenated ASCII URL slug (MUST be English/Romanized keywords for Japanese/non-Latin)",
   "content": "The main body of the article in Markdown format (use H2 and H3 tags)",
   "tags": ["Array", "of", "relevant", "tags"]
 }`;
