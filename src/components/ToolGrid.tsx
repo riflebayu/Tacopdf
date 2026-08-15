@@ -66,12 +66,12 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         }`}
       >
         {setting.badge ? (
-          <span className="absolute top-2 left-2 flex items-center gap-1 bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+          <span className="absolute -top-2.5 left-2.5 sm:-top-3 sm:left-3 flex items-center gap-1 bg-red-500 text-white border border-red-400 text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-md z-20">
             {setting.badge.toUpperCase()}
           </span>
         ) : isPopular ? (
-          <span className="absolute top-2 left-2 flex items-center gap-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-            🔥 {t('badge.popular', 'Popular')}
+          <span className="absolute -top-2.5 left-2.5 sm:-top-3 sm:left-3 bg-amber-500 text-amber-950 border border-amber-400 text-[9px] sm:text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md z-20 flex items-center gap-1 uppercase tracking-wide">
+            🔥 {t('badge.popular', 'Popular Tools')}
           </span>
         ) : null}
         
