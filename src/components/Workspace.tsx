@@ -887,6 +887,27 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
   // Per-file preview state
   const [previewFileUrl, setPreviewFileUrl] = useState<string | null>(null);
   const [previewFileName, setPreviewFileName] = useState<string>('');
+  const [filePreviewImages, setFilePreviewImages] = useState<string[]>([]);
+  const [isFilePreviewLoading, setIsFilePreviewLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (previewFileUrl) {
+      setIsFilePreviewLoading(true);
+      setFilePreviewImages([]);
+      renderPdfPagesToImages(previewFileUrl)
+        .then(imgs => {
+          setFilePreviewImages(imgs);
+        })
+        .catch(err => {
+          console.error("Failed to render file preview:", err);
+        })
+        .finally(() => {
+          setIsFilePreviewLoading(false);
+        });
+    } else {
+      setFilePreviewImages([]);
+    }
+  }, [previewFileUrl]);
 
   // Add signature handler
   
@@ -3285,11 +3306,34 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                 <LucideIcon name="X" size={20} />
               </button>
             </div>
-            <iframe
-              src={previewFileUrl}
-              className="flex-1 w-full bg-white"
-              title={previewFileName}
-            />
+            {isFilePreviewLoading ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-surface-container-low">
+                <LucideIcon name="Loader2" className="animate-spin text-primary" size={32} />
+                <p className="text-xs text-on-surface-variant font-medium">Generating high-fidelity page previews...</p>
+              </div>
+            ) : filePreviewImages.length > 0 ? (
+              <div className="flex-1 overflow-y-auto space-y-6 p-4 bg-surface-container-low">
+                {filePreviewImages.map((pageImg, idx) => (
+                  <div key={idx} className="relative bg-background border border-outline-variant rounded-xl shadow-md p-4 flex flex-col items-center gap-2 max-w-xl mx-auto">
+                    <div className="absolute top-3 left-3 bg-primary/95 text-on-primary text-[10px] font-mono px-2 py-0.5 rounded-full font-bold shadow-sm">
+                      Page {idx + 1}
+                    </div>
+                    <img 
+                      src={pageImg} 
+                      alt={`Page ${idx + 1}`} 
+                      className="w-full h-auto max-h-[80vh] object-contain rounded border border-outline-variant/30" 
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <iframe
+                src={previewFileUrl}
+                className="flex-1 w-full bg-white"
+                title={previewFileName}
+              />
+            )}
           </div>
         </div>
       )}
