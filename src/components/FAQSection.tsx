@@ -61,7 +61,7 @@ export function FAQSectionContent() {
   ];
 
   return (
-    <section id="faq" className="max-w-[1200px] mx-auto px-4 md:px-8 py-8 scroll-mt-16">
+    <section id="faq" className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 scroll-mt-16">
       <h2 className="text-2xl sm:text-3xl font-bold text-on-surface mb-6 text-center tracking-tight">
         {t('faq.title')}
       </h2>
@@ -73,10 +73,10 @@ export function FAQSectionContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
             transition={{ duration: 0.3, delay: index * 0.05, ease: 'easeOut' }}
-            className="group"
+            className="group w-full"
           >
-            <summary className="list-none cursor-pointer">
-              <div className="p-4 sm:p-5 flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+            <summary className="list-none cursor-pointer w-full block">
+              <div className="w-full p-4 sm:p-5 flex items-center justify-between hover:bg-surface-container/50 transition-colors">
                 <div className="flex items-center gap-3 font-semibold text-primary text-sm sm:text-base md:text-lg text-left">
                   {faq.icon}
                   <span>{faq.question}</span>
