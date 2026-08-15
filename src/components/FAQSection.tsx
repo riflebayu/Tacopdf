@@ -62,30 +62,30 @@ export function FAQSectionContent() {
 
   return (
     <section id="faq" className="max-w-[1200px] mx-auto px-4 md:px-8 py-8 scroll-mt-16">
-      <h2 className="text-3xl font-bold text-on-surface mb-6 text-center tracking-tight">
+      <h2 className="text-2xl sm:text-3xl font-bold text-on-surface mb-6 text-center tracking-tight">
         {t('faq.title')}
       </h2>
-      <div className="max-w-5xl mx-auto flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-6 p-4">
+      <div className="max-w-4xl mx-auto flex flex-col border border-outline-variant/60 rounded-2xl overflow-hidden divide-y divide-outline-variant/60 bg-[#2A2824]/30 shadow-sm">
         {faqs.map((faq, index) => (
           <motion.details
             key={faq.id}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.35, delay: index * 0.07, ease: 'easeOut' }}
-            className="group bg-surface-container border border-outline-variant rounded-xl overflow-hidden"
+            viewport={{ once: true, margin: '-20px' }}
+            transition={{ duration: 0.3, delay: index * 0.05, ease: 'easeOut' }}
+            className="group"
           >
-            <summary className="list-none cursor-pointer md:cursor-auto">
-              <div className="p-6 flex items-center justify-between hover:bg-surface-container-high md:hover:bg-transparent transition-colors">
-                <div className="flex items-center gap-3 font-semibold text-primary text-base md:text-lg">
+            <summary className="list-none cursor-pointer">
+              <div className="p-4 sm:p-5 flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+                <div className="flex items-center gap-3 font-semibold text-primary text-sm sm:text-base md:text-lg text-left">
                   {faq.icon}
                   <span>{faq.question}</span>
                 </div>
-                <ChevronDown className="text-on-surface-variant transition-transform group-open:rotate-180 md:hidden" size={20} />
+                <ChevronDown className="text-on-surface-variant shrink-0 ml-2 transition-transform duration-200 group-open:rotate-180" size={18} />
               </div>
               
-              <div className="px-6 pb-6 pt-0 hidden group-open:block md:!block md:h-auto md:opacity-100 cursor-text">
-                <div className="pl-8 text-sm md:text-base text-on-surface-variant leading-relaxed font-sans border-t border-outline-variant pt-4">
+              <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 hidden group-open:block cursor-text">
+                <div className="pl-8 sm:pl-9 text-xs sm:text-sm md:text-base text-on-surface-variant leading-relaxed font-sans pt-1">
                   {faq.answer}
                 </div>
               </div>
