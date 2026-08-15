@@ -6,7 +6,7 @@ const blogCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    pubDate: z.string().or(z.date()).transform((val) => new Date(val)),
+    pubDate: z.string().or(z.date()).transform((val: string | Date) => new Date(val)),
     featuredImage: z.string().optional(),
     author: z.string().default('TacoPDF Team'),
     tags: z.array(z.string()).default([]),

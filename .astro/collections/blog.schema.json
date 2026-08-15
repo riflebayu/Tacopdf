@@ -33,6 +33,13 @@
         "type": "string"
       }
     },
+    "translationKey": {
+      "type": "string"
+    },
+    "standalone": {
+      "default": true,
+      "type": "boolean"
+    },
     "$schema": {
       "type": "string"
     }
