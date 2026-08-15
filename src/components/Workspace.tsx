@@ -3481,9 +3481,9 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         <FileText size={32} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-on-surface text-sm">PDF siap ditampilkan</h4>
+                        <h4 className="font-bold text-on-surface text-sm">{t('workspace.preview.blocked.title') || 'PDF is ready to view'}</h4>
                         <p className="text-xs text-on-surface-variant mt-1 max-w-xs leading-relaxed">
-                          Browser memblokir pratinjau PDF langsung di panel ini. Buka di tab baru untuk melihat isinya secara instan.
+                          {t('workspace.preview.blocked.desc') || 'Your browser blocks direct PDF preview in this panel. Open it in a new tab to view the contents instantly.'}
                         </p>
                       </div>
                     </div>
@@ -3494,18 +3494,18 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                         rel="noopener noreferrer"
                         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-primary-container hover:bg-primary text-on-primary-container font-bold text-sm rounded-xl shadow-md transition-all"
                       >
-                        <Eye size={16} /> Buka di Tab Baru
+                        <Eye size={16} /> {t('workspace.preview.blocked.open_tab') || 'Open in New Tab'}
                       </a>
                       <a
                         href={processingState.downloadUrl || ''}
                         download={processingState.outputFileName || 'document.pdf'}
                         className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-surface-container-highest hover:bg-surface-variant text-on-surface font-bold text-sm rounded-xl shadow-sm transition-all border border-outline-variant"
                       >
-                        <Download size={16} /> Download
+                        <Download size={16} /> {t('workspace.preview.blocked.download') || 'Download'}
                       </a>
                     </div>
                     <p className="text-[10px] text-on-surface-variant/60 text-center max-w-xs">
-                      Semua file diproses 100% di browser Anda dan tidak pernah diunggah ke server.
+                      {t('workspace.preview.blocked.privacy') || 'All files are processed 100% in your browser and are never uploaded to a server.'}
                     </p>
                   </div>
                 )}
