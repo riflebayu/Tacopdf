@@ -153,7 +153,7 @@ description: "${articleData.description.replace(/"/g, '\\"')}"
 pubDate: "${new Date().toISOString()}"
 featuredImage: "${imageWebPath}"
 imageAlt: "${imageAltText}"
-author: "TacoPDF Team"
+author: "Muhammad Bayu Edi"
 tags: ${JSON.stringify(articleData.tags || [])}
 translationKey: "${clusterKey}"
 ---

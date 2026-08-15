@@ -28,7 +28,7 @@ const {
   title = "TacoPDF", 
   description = "Free & Secure Online PDF Tools", 
   lang = "en",
-  author = "TacoPDF Team",
+  author = "Muhammad Bayu Edi",
   schema,
   image,
   ogType = "website",
@@ -88,9 +88,13 @@ const finalSchema = schema || JSON.stringify({
     "priceCurrency": "USD"
   },
   "creator": {
-    "@type": "Organization",
-    "name": "TacoPDF",
-    "url": "https://tacopdf.com"
+    "@type": "Person",
+    "name": "Muhammad Bayu Edi",
+    "url": "https://www.instagram.com/riflebayu",
+    "sameAs": [
+      "https://github.com/riflebayu",
+      "https://www.facebook.com/profile.php?id=100004429534685"
+    ]
   },
   "publisher": {
     "@type": "Organization",
@@ -152,6 +156,10 @@ const finalSchema = schema || JSON.stringify({
     <meta name="creator" content={author} />
     <meta name="publisher" content="TacoPDF" />
     <meta property="article:author" content={author} />
+
+    {/* Social Links for Personal Entity Verification */}
+    <link rel="me" href="https://www.instagram.com/riflebayu" />
+    <link rel="me" href="https://www.facebook.com/profile.php?id=100004429534685" />
 
     {/* [SEO FIX: Pillar 4] Dynamic JSON-LD Schema */}
     <script type="application/ld+json" set:html={finalSchema} />

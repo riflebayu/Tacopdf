@@ -265,7 +265,7 @@ export async function generateArticle(topic: string, language: string, promptOve
             },
             imageAlt: {
               type: SchemaType.STRING,
-              description: "Descriptive alt text for the featured hero image detailing visual context for accessibility and Google Image Search"
+              description: "Provide a highly descriptive alt text for visually impaired users explaining the visual elements of the featured image. Maximum 150 characters."
             },
             slug: {
               type: SchemaType.STRING,
@@ -420,7 +420,7 @@ CRITICAL: You must return the output STRICTLY as a raw JSON object (without Mark
 {
   "title": "SEO optimized title",
   "description": "SEO optimized meta description (max 160 characters)",
-  "imageAlt": "Descriptive alt text for the featured hero image for visually impaired users and SEO",
+  "imageAlt": "Provide a highly descriptive alt text for visually impaired users explaining the visual elements of the featured image. Maximum 150 characters.",
   "slug": "SEO-optimized clean lowercase alphanumeric-hyphenated ASCII URL slug (MUST be English/Romanized keywords for Japanese/non-Latin)",
   "content": "The main body of the article in Markdown format (use H2 and H3 tags)",
   "tags": ["Array", "of", "relevant", "tags"]

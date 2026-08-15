@@ -4,7 +4,7 @@ description: "Lade vertrauliche PDFs nicht unüberlegt auf fremde Server! Erfahr
 pubDate: "2026-08-07T14:03:38.610Z"
 featuredImage: "/images/blog/stopp-ldst-du-deine-pdfs-hier-hoch-diese-sichere-alternative-musst-du-kennen-de-1786111393570.webp"
 imageAlt: "Vergleichsinfografik zu Datenschutzrisiken bei iLovePDF im Vergleich zu TacoPDF"
-author: "TacoPDF Team"
+author: "Muhammad Bayu Edi"
 tags: ["PDF Sicherheit","TacoPDF","Datenschutz","PDF bearbeiten","PDF Alternativen","DSGVO"]
 translationKey: "ilovepdf-privacy-alternative"
 ---

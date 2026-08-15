@@ -4,7 +4,7 @@ description: "Cansado de limites de tamanho e falta de privacidade online? Descu
 pubDate: "2026-08-07T14:09:00.527Z"
 featuredImage: "/images/blog/adeus-ilovepdf-descubra-a-ferramenta-secreta-e-100-segura-que-virou-febre-na-internet-pt-1786111716537.webp"
 imageAlt: "Infografico comparativo sobre privacidade de dados e seguranca no TacoPDF"
-author: "TacoPDF Team"
+author: "Muhammad Bayu Edi"
 tags: ["TacoPDF","iLovePDF alternativa","ferramentas PDF gratuitas","juntar PDF grátis","proteger PDF","segurança de dados","LGPD PDF"]
 translationKey: "ilovepdf-privacy-alternative"
 ---

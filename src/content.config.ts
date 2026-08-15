@@ -9,7 +9,7 @@ const blogCollection = defineCollection({
     pubDate: z.string().or(z.date()).transform((val: string | Date) => new Date(val)),
     featuredImage: z.string().optional(),
     imageAlt: z.string().optional(),
-    author: z.string().default('TacoPDF Team'),
+    author: z.string().default('Muhammad Bayu Edi'),
     tags: z.array(z.string()).default([]),
     translationKey: z.string().optional(),
     standalone: z.boolean().default(true),

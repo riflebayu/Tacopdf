@@ -4,7 +4,7 @@ description: "iLovePDFなどの無料PDFツールに危険な情報漏洩リス�
 pubDate: "2026-08-07T14:12:27.163Z"
 featuredImage: "/images/blog/pdfilovepdftacopdf-ja-1786111924144.webp"
 imageAlt: "TacoPDFとiLovePDFのデータセキュリティとプライバシー比較イラスト"
-author: "TacoPDF Team"
+author: "Muhammad Bayu Edi"
 tags: ["PDF変換","TacoPDF","iLovePDF","情報漏洩","セキュリティ","PDF結合","PDF分割","無料ツール"]
 translationKey: "ilovepdf-privacy-alternative"
 ---

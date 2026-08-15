@@ -4,7 +4,7 @@ description: "Khawatir data pribadi bocor saat olah PDF online? Ketahui bahaya i
 pubDate: "2026-08-07T13:32:23.018Z"
 featuredImage: "/images/blog/stop-pakai-ilovepdf-ini-alasan-tacopdf-jadi-pilihan-utama-untuk-lindungi-data-pribadimu-id-1786109470988.webp"
 imageAlt: "Infografis perbandingan keamanan dan privasi data antara iLovePDF dan TacoPDF"
-author: "TacoPDF Team"
+author: "Muhammad Bayu Edi"
 tags: ["TacoPDF","iLovePDF Alternative","Keamanan Data","Privasi PDF","Edit PDF Online","Proteksi PDF"]
 translationKey: "ilovepdf-privacy-alternative"
 ---
