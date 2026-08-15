@@ -348,26 +348,31 @@ async function convertImageToJpg(file: File): Promise<ArrayBuffer> {
   });
 }
 
-// Use locally installed pdfjs-dist — no CDN dependency
+// Use locally installed pdfjs-dist — run on main thread (no worker) to avoid blob: origin issues
 const getPdfJs = (() => {
   let initialized = false;
   return () => {
     if (!initialized) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-        'pdfjs-dist/build/pdf.worker.min.js',
-        import.meta.url
-      ).href;
+      // Setting workerSrc to empty string makes pdfjs use a fake worker on the main thread.
+      // This avoids ALL cross-origin web worker issues with blob: URLs.
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
       initialized = true;
     }
     return pdfjsLib;
   };
 })();
 
-// Render PDF pages as PNG images using local pdfjs-dist
+// Render PDF pages as PNG images.
+// Fetches blob URL → ArrayBuffer first so pdfjs never has to load it from worker context.
 async function renderPdfPagesToImages(pdfUrl: string): Promise<string[]> {
   try {
     const lib = getPdfJs();
-    const loadingTask = lib.getDocument(pdfUrl);
+    // Always fetch the blob/URL to get raw bytes. This sidesteps any
+    // blob: URL cross-origin restrictions inside the pdf.js fake-worker.
+    const response = await fetch(pdfUrl);
+    if (!response.ok) throw new Error(`Failed to fetch PDF: ${response.status}`);
+    const arrayBuffer = await response.arrayBuffer();
+    const loadingTask = lib.getDocument({ data: new Uint8Array(arrayBuffer) });
     const pdfDoc = await loadingTask.promise;
     const pagesCount = pdfDoc.numPages;
     const urls: string[] = [];
@@ -396,7 +401,7 @@ async function renderSinglePdfPageToImage(file: File, pageIndex: number): Promis
   try {
     const pdfjsLib = getPdfJs();
     const fileBytes = await file.arrayBuffer();
-    const loadingTask = pdfjsLib.getDocument(fileBytes);
+    const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBytes) });
     const pdfDoc = await loadingTask.promise;
     const maxPage = pdfDoc.numPages;
     const targetPageNum = pageIndex === -1 ? maxPage : Math.min(Math.max(1, pageIndex), maxPage);
@@ -3470,62 +3475,39 @@ const updateRedactBox = (id: string, updates: Partial<RedactBox>) => {
                     ))}
                   </div>
                 ) : (
-                  <>
-                    {/* Browser Sandbox Helpful Tip */}
-                    <div className="bg-primary-container/10 border border-primary-container/20 rounded-xl p-4 flex flex-col sm:flex-row items-start gap-3">
-                      <span className="p-2 bg-primary-container/20 text-primary rounded-lg shrink-0">
-                        <AlertCircle size={18} />
-                      </span>
-                      <div className="space-y-1 text-xs">
-                        <h4 className="font-bold text-on-surface">
-                          {t('workspace.preview.blank.title') || 'Is the PDF preview blank or showing a blocked page?'}
-                        </h4>
-                        <p className="text-on-surface-variant leading-relaxed">
-                          {(t('workspace.preview.blank.desc') || "Don't worry! This is a standard security restriction enforced by modern web browsers when rendering {blob} PDF assets inside nested developer iframes.").split('{blob}')[0]}
-                          <code className="bg-surface-container px-1 py-0.5 rounded text-primary font-mono text-[10px]">blob:</code>
-                          {(t('workspace.preview.blank.desc') || "Don't worry! This is a standard security restriction enforced by modern web browsers when rendering {blob} PDF assets inside nested developer iframes.").split('{blob}')[1] || ''}
-                        </p>
-                        <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-1 text-primary font-semibold">
-                          <span>{t('workspace.preview.blank.list1') || '✓ Your processed PDF is 100% complete & secure.'}</span>
-                          <span>{t('workspace.preview.blank.list2') || '✓ It will display instantly when downloaded or opened in a direct browser tab.'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <iframe
-                      src={`${processingState.downloadUrl}#toolbar=1`}
-                      className="hidden sm:block w-full flex-1 rounded-lg border border-outline-variant bg-background shadow-inner"
-                      title="PDF Document Preview"
-                    />
-                    <div className="sm:hidden w-full flex-1 rounded-lg border border-outline-variant bg-surface-container flex flex-col items-center justify-center p-6 text-center gap-4">
-                      <div className="p-4 bg-primary-container/20 rounded-full text-primary">
+                  <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6">
+                    <div className="flex flex-col items-center gap-3 text-center">
+                      <div className="w-16 h-16 bg-primary-container/20 rounded-2xl flex items-center justify-center text-primary">
                         <FileText size={32} />
                       </div>
-                      <p className="text-on-surface-variant text-sm font-medium">
-                        {(() => {
-                          const val = t('workspace.preview.mobileFallback');
-                          return val === 'workspace.preview.mobileFallback' ? 'Mobile browser cannot display direct PDF blobs in an iframe. Please download the file to view it.' : val;
-                        })()}
-                      </p>
-                      <div className="flex gap-3 mt-2">
-                        <a
-                          href={processingState.downloadUrl}
-                          download={processingState.outputFileName || 'document.pdf'}
-                          className="bg-primary text-on-primary font-bold text-xs px-5 py-3 rounded-xl shadow-md flex items-center gap-2"
-                        >
-                          <Download size={16} /> {t('workspace.preview.download', 'Download')}
-                        </a>
-                        <a
-                          href={processingState.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-surface-container-highest text-on-surface font-bold text-xs px-5 py-3 rounded-xl shadow-sm flex items-center gap-2"
-                        >
-                          <Eye size={16} /> {t('workspace.preview.new_tab', 'Open in New Tab')}
-                        </a>
+                      <div>
+                        <h4 className="font-bold text-on-surface text-sm">PDF siap ditampilkan</h4>
+                        <p className="text-xs text-on-surface-variant mt-1 max-w-xs leading-relaxed">
+                          Browser memblokir pratinjau PDF langsung di panel ini. Buka di tab baru untuk melihat isinya secara instan.
+                        </p>
                       </div>
                     </div>
-                  </>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+                      <a
+                        href={processingState.downloadUrl || ''}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-primary-container hover:bg-primary text-on-primary-container font-bold text-sm rounded-xl shadow-md transition-all"
+                      >
+                        <Eye size={16} /> Buka di Tab Baru
+                      </a>
+                      <a
+                        href={processingState.downloadUrl || ''}
+                        download={processingState.outputFileName || 'document.pdf'}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-surface-container-highest hover:bg-surface-variant text-on-surface font-bold text-sm rounded-xl shadow-sm transition-all border border-outline-variant"
+                      >
+                        <Download size={16} /> Download
+                      </a>
+                    </div>
+                    <p className="text-[10px] text-on-surface-variant/60 text-center max-w-xs">
+                      Semua file diproses 100% di browser Anda dan tidak pernah diunggah ke server.
+                    </p>
+                  </div>
                 )}
               </div>
 
