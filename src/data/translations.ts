@@ -170,7 +170,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "Are my PDF files saved by Tacopdf?",
     "contact.faq1_a": "No. All processing (such as splitting, merging, watermarking) is done locally in your browser. Your files are never uploaded to our servers, ensuring 100% privacy.",
     "contact.faq2_q": "Are Tacopdf tools really free?",
-    "contact.faq2_a": "Yes, all PDF tools we provide are free to use. We use non-intrusive ads to support the operational costs of this website.",
+    "contact.faq2_a": "Yes, all PDF tools we provide are free to use. We use non-intrusive ads to support the operational costs of this website. You can also support us by donating through Saweria and Ko-fi.",
 
     "tool.redact.howto.1": "Upload the PDF containing sensitive information.",
     "tool.redact.howto.2": "Draw black rectangles over the text or images you want to censor.",
@@ -847,7 +847,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "Apakah file PDF saya disimpan oleh Tacopdf?",
     "contact.faq1_a": "Tidak. Semua pemrosesan (seperti memisahkan, menggabungkan, memberi watermark) dilakukan secara lokal di dalam browser Anda. File Anda tidak pernah diunggah ke server kami, menjamin privasi 100%.",
     "contact.faq2_q": "Apakah alat di Tacopdf benar-benar gratis?",
-    "contact.faq2_a": "Ya, seluruh alat PDF yang kami sediakan gratis untuk digunakan. Kami menggunakan iklan non-intrusif (seperti untuk mendukung biaya operasional website ini.",
+    "contact.faq2_a": "Ya, semua alat PDF yang kami sediakan gratis untuk digunakan. Kami menggunakan iklan yang tidak mengganggu untuk mendukung biaya operasional situs web ini. Anda juga dapat mendukung kami dengan berdonasi melalui Saweria dan Ko-fi.",
 
     "tool.redact.howto.1": "Unggah PDF yang berisi informasi sensitif.",
     "tool.redact.howto.2": "Gambar persegi panjang hitam di atas teks atau gambar yang ingin disensor.",
@@ -1514,7 +1514,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "¿Tacopdf guarda mis archivos PDF?",
     "contact.faq1_a": "No. Todo el procesamiento se realiza localmente en su navegador. Sus archivos nunca se suben a nuestros servidores.",
     "contact.faq2_q": "¿Las herramientas de Tacopdf son realmente gratuitas?",
-    "contact.faq2_a": "Sí, todas nuestras herramientas son de uso gratuito. Usamos anuncios no intrusivos para cubrir costos operativos.",
+    "contact.faq2_a": "Sí, todas las herramientas PDF que ofrecemos son de uso gratuito. Utilizamos anuncios no intrusivos para apoyar los costos operativos de este sitio web. También puedes apoyarnos haciendo una donación a través de Saweria y Ko-fi.",
 
     "tool.redact.howto.1": "Sube el PDF que contiene información confidencial.",
     "tool.redact.howto.2": "Dibuja rectángulos negros sobre el texto o las imágenes que deseas censurar.",
@@ -2163,7 +2163,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "私のPDFファイルはTacopdfに保存されますか？",
     "contact.faq1_a": "いいえ。すべての処理はブラウザ内でローカルに行われます。ファイルがサーバーにアップロードされることはありません。",
     "contact.faq2_q": "Tacopdfのツールは本当に無料ですか？",
-    "contact.faq2_a": "はい。すべてのツールは無料です。運営費用のために非侵入型の広告を使用しています。",
+    "contact.faq2_a": "はい、私たちが提供するすべてのPDFツールは無料でご利用いただけます。このウェブサイトの運営費をサポートするため、控えめな広告を使用しています。また、SaweriaやKo-fiを通じた寄付でのサポートも歓迎しています。",
 
     "tool.redact.howto.1": "機密情報を含む PDF をアップロードします。",
     "tool.redact.howto.2": "検閲したいテキストまたは画像の上に黒い四角形を描きます。",
@@ -2836,7 +2836,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "Meus arquivos PDF são salvos pelo Tacopdf?",
     "contact.faq1_a": "Não. Todo o processamento é feito localmente no seu navegador. Seus arquivos nunca são enviados aos nossos servidores.",
     "contact.faq2_q": "As ferramentas do Tacopdf são realmente gratuitas?",
-    "contact.faq2_a": "Sim, todas as ferramentas que fornecemos são gratuitas para uso. Usamos anúncios não intrusivos para cobrir custos operacionais.",
+    "contact.faq2_a": "Sim, todas as ferramentas de PDF que oferecemos são de uso gratuito. Utilizamos anúncios não intrusivos para apoiar os custos operacionais deste site. Você também pode nos apoiar fazendo uma doação através do Saweria e Ko-fi.",
 
     "tool.redact.howto.1": "Carregue o PDF contendo informações confidenciais.",
     "tool.redact.howto.2": "Desenhe retângulos pretos sobre o texto ou imagens que deseja censurar.",
@@ -3828,7 +3828,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "Werden meine PDF-Dateien von Tacopdf gespeichert?",
     "contact.faq1_a": "Nein. Die gesamte Verarbeitung erfolgt lokal in Ihrem Browser. Ihre Dateien werden niemals auf unsere Server hochgeladen.",
     "contact.faq2_q": "Sind die Tacopdf-Tools wirklich kostenlos?",
-    "contact.faq2_a": "Ja, alle Tools sind kostenlos. Wir nutzen unaufdringliche Werbung, um die Betriebskosten zu decken.",
+    "contact.faq2_a": "Ja, alle von uns bereitgestellten PDF-Tools sind kostenlos nutzbar. Wir verwenden unaufdringliche Werbung, um die Betriebskosten dieser Website zu decken. Sie können uns auch durch eine Spende über Saweria und Ko-fi unterstützen.",
 
     "tool.redact.howto.1": "Laden Sie das PDF hoch, das vertrauliche Informationen enthält.",
     "tool.redact.howto.2": "Zeichnen Sie schwarze Rechtecke über den Text oder die Bilder, die Sie schwärzen möchten.",
@@ -4179,7 +4179,7 @@ export const TRANSLATIONS = {
     "contact.faq1_q": "Mes fichiers PDF sont-ils enregistrés par Tacopdf?",
     "contact.faq1_a": "Non. Tout le traitement est effectué localement dans votre navigateur. Vos fichiers ne sont jamais téléchargés sur nos serveurs.",
     "contact.faq2_q": "Les outils Tacopdf sont-ils vraiment gratuits?",
-    "contact.faq2_a": "Oui, tous les outils sont gratuits. Nous utilisons des publicités non intrusives pour couvrir les coûts d'exploitation.",
+    "contact.faq2_a": "Oui, tous les outils PDF que nous fournissons sont gratuits. Nous utilisons des publicités non intrusives pour couvrir les coûts opérationnels de ce site Web. Vous pouvez également nous soutenir en faisant un don via Saweria et Ko-fi.",
 
     "tool.redact.howto.1": "Téléchargez le PDF contenant des informations sensibles.",
     "tool.redact.howto.2": "Dessinez des rectangles noirs sur le texte ou les images que vous souhaitez censurer.",
