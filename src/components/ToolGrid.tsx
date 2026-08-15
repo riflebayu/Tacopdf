@@ -57,7 +57,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         key={tool.id}
         to={getToolSeoPath(tool.id)}
         onClick={() => { if (onSelectTool) onSelectTool(tool.id); }}
-        className={`tool-card w-full cursor-pointer relative flex flex-col items-center justify-center text-center p-3 sm:p-4 md:p-5 rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group ${
+        className={`tool-card w-full cursor-pointer relative flex flex-col items-center justify-center text-center p-3 sm:p-4 md:p-5 rounded-xl md:rounded-2xl border transition-all duration-150 active:scale-[0.97] group last:odd:col-span-2 md:last:odd:col-span-1 last:odd:flex-row last:odd:justify-start last:odd:text-left last:odd:p-4 last:odd:gap-3.5 md:last:odd:flex-col md:last:odd:justify-center md:last:odd:text-center md:last:odd:p-5 md:last:odd:gap-0 ${
           isFavoriteSection
             ? 'bg-amber-950/30 border-amber-500/30 hover:bg-amber-900/50 hover:border-amber-500/50 shadow-[inset_0_0_15px_rgba(245,158,11,0.05)]'
             : isPopular
@@ -66,31 +66,31 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         }`}
       >
         {setting.badge ? (
-          <span className="absolute -top-2 left-2 bg-error text-on-error text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10">
+          <span className="absolute top-2 left-2 flex items-center gap-1 bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
             {setting.badge.toUpperCase()}
           </span>
         ) : isPopular ? (
-          <span className="absolute -top-2 left-2 bg-amber-500 text-amber-950 border border-amber-400 text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm z-10 flex items-center gap-1 uppercase tracking-wide">
+          <span className="absolute top-2 left-2 flex items-center gap-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
             🔥 {t('badge.popular', 'Popular')}
           </span>
         ) : null}
         
-        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-2.5 md:p-3 object-contain mb-2 flex-shrink-0 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-white rounded-xl md:rounded-2xl shadow-sm flex items-center justify-center p-2 sm:p-2.5 md:p-3 object-contain mb-2 group-last:odd:mb-0 md:group-last:odd:mb-2 flex-shrink-0 text-primary-container group-hover:bg-primary-container group-hover:text-on-primary-container transition-all duration-200">
           <TacoIcon name={tool.icon} className="!w-full !h-full object-contain drop-shadow-sm" />
         </div>
         
-        <div className="w-full flex flex-col items-center">
-          <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 px-1 text-center transition-colors duration-150">
+        <div className="w-full flex flex-col items-center group-last:odd:items-start group-last:odd:text-left md:group-last:odd:items-center md:group-last:odd:text-center">
+          <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 px-1 text-center group-last:odd:text-left md:group-last:odd:text-center transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
           </h3>
-          <p className="hidden md:block text-xs text-white/70 leading-snug mt-1 md:mt-2 text-center">
+          <p className="hidden md:block group-last:odd:block text-xs text-white/70 leading-snug mt-1 md:mt-2 text-center group-last:odd:text-left md:group-last:odd:text-center">
             {t(`seo.features.${tool.id.replace(/-/g, '_')}`, tool.description)}
           </p>
         </div>
 
         <div 
           onClick={(e) => toggleFavorite(e, tool.id)}
-          className={`absolute top-2.5 right-2.5 p-1 rounded-full cursor-pointer transition-colors z-10 ${isFav ? 'text-yellow-500' : 'text-zinc-500 hover:text-amber-400'}`}
+          className={`absolute top-2 right-2 p-1.5 rounded-full cursor-pointer transition-colors z-10 ${isFav ? 'text-yellow-500' : 'text-zinc-500 hover:text-amber-400'}`}
           title={isFav ? "Remove from Favorites" : "Add to Favorites"}
         >
           <Star size={16} className={isFav ? "fill-yellow-500" : ""} />
