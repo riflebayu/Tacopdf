@@ -86,7 +86,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         </div>
         
         <div className={`flex-1 min-w-0 flex flex-col ${
-          isLastOdd ? 'items-start text-left md:items-center md:text-center' : 'items-center text-center'
+          isLastOdd ? 'items-start text-left pr-8 md:pr-0 md:items-center md:text-center' : 'items-center text-center'
         }`}>
           <h3 className="text-xs sm:text-sm md:text-base font-medium md:font-bold text-slate-100 group-hover:text-primary-container leading-snug line-clamp-2 transition-colors duration-150">
             {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}
@@ -100,7 +100,7 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
 
         <div 
           onClick={(e) => toggleFavorite(e, tool.id)}
-          className={`absolute top-2 right-2 p-1.5 rounded-full cursor-pointer transition-colors z-10 ${isFav ? 'text-yellow-500' : 'text-zinc-500 hover:text-amber-400'}`}
+          className={`absolute top-3 right-3 p-1 rounded-full cursor-pointer transition-colors z-10 ${isFav ? 'text-yellow-500' : 'text-zinc-500 hover:text-amber-400'}`}
           title={isFav ? "Remove from Favorites" : "Add to Favorites"}
         >
           <Star size={16} className={isFav ? "fill-yellow-500" : ""} />
