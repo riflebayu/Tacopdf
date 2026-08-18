@@ -1,141 +1,179 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/data/translations.ts', 'utf8');
 
-const replacements = {
-  "en": `"privacy.doc_title": "Privacy Policy",
-    "privacy.intro": "TacoPDF is fully committed to your privacy and data security. As a provider of free online PDF tools, we pioneer a local processing (Client-Side) architecture to guarantee maximum document protection. This Privacy Policy outlines how we protect your data when you use our services.",
-    "privacy.p1.title": "1. 100% Local Processing (No Server Uploads)",
-    "privacy.p1.text": "All file manipulations (such as Merge PDF, Split PDF, and other conversion formats) are processed exclusively within your device's browser memory using modern WebAssembly and JavaScript technologies. We never upload, store, read, or distribute your documents. Your PDF files never once touch or pass through TacoPDF servers. The confidentiality of your documents rests entirely in your hands.",
-    "privacy.p2.title": "2. Use of Cookies & Local Preferences",
-    "privacy.p2.text": "To provide a seamless and responsive user experience (UX), TacoPDF utilizes basic cookies stored in your browser. These cookies are extremely small and are solely responsible for saving your tool interface preferences (such as language selection or display settings). By continuing to use our services, you consent to the use of these essential cookies for your navigational convenience.",
-    "privacy.p3.title": "3. Third-Party Advertising",
-    "privacy.p3.text": "In order to continue providing these high-performance PDF services for free to the public, TacoPDF displays sponsored advertisements. Third-party vendors, including Google, use advertising cookies to serve ads based on your prior visits to this website or other websites on the internet. Google's use of advertising cookies enables it and its partners to serve ads that are most relevant to users to support the maintenance of our infrastructure.",
-    "privacy.p4.title": "4. Control & Opt-out of Personalized Advertising",
-    "privacy.p4.text": "You have full control over your advertising privacy. Users may opt-out of personalized advertising at any time by visiting <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Google Ads Settings</a>. Alternatively, you may also disable the use of cookies for interest-based advertising by third-party vendors via the <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a> website.",
-    "privacy.p5.title": "5. Web Analytics and Log Files",
-    "privacy.p5.text": "To ensure the website runs stably and continues to improve, we collect standard traffic analytics data. This data includes basic information such as browser type, time of visit, tool pages accessed, and anonymized IP addresses. It is strictly noted that this tracking is purely limited to web page interactions and absolutely does not track, collect, or have access to the contents of the PDF documents that you process locally on your device.",
-    "privacy.p6.title": "6. Donations and Third-Party Payment Processing",
-    "privacy.p6.text": "To support our operational costs and infrastructure development, TacoPDF accepts voluntary donations from users. The donation transaction process is handled entirely by secure third-party platforms, namely Saweria (for the Indonesian region) and Ko-Fi (for international).<br><br>TacoPDF never requests, processes, or stores your sensitive financial information (such as credit card numbers or banking details) on our servers. Any form of data you provide when making a donation transaction (such as name or email address) is governed by the Privacy Policy of the respective payment service providers.",
-    "privacy.p7.title": "7. Contact the Support Team",
-    "privacy.p7.text": "Your trust is our top priority. If you have any further questions, feedback, or concerns regarding these privacy protection practices, please contact our team at any time via the <a href=\\"/en/contact\\" class=\\"text-primary underline\\">Contact Support</a> page."`,
-    
-  "es": `"privacy.doc_title": "Política de Privacidad",
-    "privacy.intro": "TacoPDF está plenamente comprometido con su privacidad y la seguridad de sus datos. Como proveedor de herramientas PDF en línea gratuitas, somos pioneros en una arquitectura de procesamiento local (Client-Side) para garantizar la máxima protección de los documentos. Esta Política de Privacidad describe cómo protegemos sus datos cuando utiliza nuestros servicios.",
-    "privacy.p1.title": "1. Procesamiento 100% Local (Sin Cargas al Servidor)",
-    "privacy.p1.text": "Todas las manipulaciones de archivos (como Unir PDF, Dividir PDF y otros formatos de conversión) se procesan exclusivamente dentro de la memoria del navegador en su dispositivo utilizando tecnologías modernas de WebAssembly y JavaScript. Nunca cargamos, almacenamos, leemos ni distribuimos sus documentos. Sus archivos PDF nunca tocan ni pasan por los servidores de TacoPDF. La confidencialidad de sus documentos está enteramente en sus manos.",
-    "privacy.p2.title": "2. Uso de Cookies y Preferencias Locales",
-    "privacy.p2.text": "Para ofrecer una experiencia de usuario (UX) fluida y receptiva, TacoPDF utiliza cookies básicas almacenadas en su navegador. Estas cookies son extremadamente pequeñas y solo tienen la función de guardar las preferencias de interfaz de su herramienta (como la selección de idioma o la configuración de pantalla). Al continuar utilizando nuestros servicios, usted acepta el uso de estas cookies esenciales para la comodidad de su navegación.",
-    "privacy.p3.title": "3. Publicidad de Terceros",
-    "privacy.p3.text": "Para poder seguir ofreciendo estos servicios PDF de alto rendimiento de forma gratuita al público, TacoPDF muestra anuncios patrocinados. Los proveedores externos, incluido Google, utilizan cookies de publicidad para publicar anuncios basados en sus visitas anteriores a este sitio web u otros sitios web en Internet. El uso de cookies publicitarias por parte de Google permite a Google y a sus socios publicar los anuncios más relevantes para los usuarios con el fin de respaldar el mantenimiento de nuestra infraestructura.",
-    "privacy.p4.title": "4. Control y Exclusión (Opt-out) de la Publicidad Personalizada",
-    "privacy.p4.text": "Usted tiene control total sobre su privacidad publicitaria. Los usuarios pueden excluirse (opt-out) de la publicidad personalizada en cualquier momento visitando la <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Configuración de Anuncios de Google</a>. Alternativamente, también puede desactivar el uso de cookies por parte de proveedores externos para publicidad basada en intereses a través del sitio web <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a>.",
-    "privacy.p5.title": "5. Analítica Web y Archivos de Registro",
-    "privacy.p5.text": "Para garantizar que el sitio web funcione de manera estable y continúe desarrollándose, recopilamos datos analíticos de tráfico estándar. Estos datos incluyen información básica como el tipo de navegador, la hora de la visita, las páginas de herramientas a las que se accedió y las direcciones IP anonimizadas. Es muy importante tener en cuenta que este seguimiento se limita puramente a las interacciones de la página web y de ninguna manera rastrea, recopila ni tiene acceso al contenido de los documentos PDF que usted procesa localmente en su dispositivo.",
-    "privacy.p6.title": "6. Donaciones y Procesamiento de Pagos de Terceros",
-    "privacy.p6.text": "Para apoyar nuestros costos operativos y el desarrollo de infraestructura, TacoPDF acepta donaciones voluntarias de los usuarios. El proceso de transacción de donaciones es manejado en su totalidad por plataformas seguras de terceros, a saber, Saweria (para la región de Indonesia) y Ko-Fi (para nivel internacional).<br><br>TacoPDF nunca solicita, procesa ni almacena su información financiera confidencial (como números de tarjetas de crédito o datos bancarios) en nuestros servidores. Cualquier forma de datos que usted proporcione al realizar una transacción de donación (como nombre o dirección de correo electrónico) se rige por la Política de Privacidad de los respectivos proveedores de servicios de pago.",
-    "privacy.p7.title": "7. Contactar al Equipo de Soporte",
-    "privacy.p7.text": "Su confianza es nuestra principal prioridad. Si tiene más preguntas, comentarios o inquietudes con respecto a estas prácticas de protección de la privacidad, comuníquese con nuestro equipo en cualquier momento a través de la página de <a href=\\"/es/contact\\" class=\\"text-primary underline\\">Contactar Soporte</a>."`,
-
-  "fr": `"privacy.doc_title": "Politique de Confidentialité",
-    "privacy.intro": "TacoPDF s'engage pleinement à respecter votre confidentialité et la sécurité de vos données. En tant que fournisseur d'outils PDF en ligne gratuits, nous sommes pionniers d'une architecture de traitement local (Client-Side) pour garantir une protection maximale des documents. La présente Politique de Confidentialité décrit comment nous protégeons vos données lorsque vous utilisez nos services.",
-    "privacy.p1.title": "1. Traitement 100 % Local (Aucun Téléversement sur Serveur)",
-    "privacy.p1.text": "Toutes les manipulations de fichiers (telles que Fusionner PDF, Diviser PDF et d'autres formats de conversion) sont traitées exclusivement dans la mémoire du navigateur de votre appareil à l'aide de technologies modernes WebAssembly et JavaScript. Nous ne téléversons, ne stockons, ne lisons ni ne distribuons jamais vos documents. Vos fichiers PDF ne touchent ni ne transitent jamais par les serveurs de TacoPDF. La confidentialité de vos documents est entièrement entre vos mains.",
-    "privacy.p2.title": "2. Utilisation de Cookies et Préférences Locales",
-    "privacy.p2.text": "Pour offrir une expérience utilisateur (UX) fluide et réactive, TacoPDF utilise des cookies de base stockés dans votre navigateur. Ces cookies sont extrêmement petits et ont pour seule fonction de sauvegarder les préférences de l'interface de votre outil (telles que le choix de la langue ou les paramètres d'affichage). En continuant à utiliser nos services, vous consentez à l'utilisation de ces cookies essentiels pour le confort de votre navigation.",
-    "privacy.p3.title": "3. Publicité de Tiers",
-    "privacy.p3.text": "Afin de pouvoir continuer à fournir gratuitement ces services PDF de haute performance au public, TacoPDF affiche des annonces sponsorisées. Des fournisseurs tiers, y compris Google, utilisent des cookies publicitaires pour diffuser des annonces en fonction de vos visites antérieures sur ce site Web ou d'autres sites Web sur Internet. L'utilisation de cookies publicitaires par Google permet à Google et à ses partenaires de diffuser des annonces les plus pertinentes pour les utilisateurs afin de soutenir la maintenance de notre infrastructure.",
-    "privacy.p4.title": "4. Contrôle et Désactivation (Opt-out) de la Publicité Personnalisée",
-    "privacy.p4.text": "Vous avez un contrôle total sur votre confidentialité publicitaire. Les utilisateurs peuvent se désinscrire (opt-out) de la publicité personnalisée à tout moment en visitant les <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Paramètres des annonces Google</a>. Alternativement, vous pouvez également désactiver l'utilisation de cookies par des fournisseurs tiers pour la publicité ciblée par centres d'intérêt via le site Web <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a>.",
-    "privacy.p5.title": "5. Analyse Web et Fichiers Journaux",
-    "privacy.p5.text": "Pour s'assurer que le site Web fonctionne de manière stable et continue de se développer, nous collectons des données analytiques de trafic standard. Ces données comprennent des informations de base telles que le type de navigateur, l'heure de la visite, les pages d'outils consultées et les adresses IP anonymisées. Il est extrêmement important de noter que ce suivi est purement limité aux interactions des pages Web et qu'il ne suit, ne collecte ni n'a en aucun cas accès au contenu des documents PDF que vous traitez localement sur votre appareil.",
-    "privacy.p6.title": "6. Dons et Traitement des Paiements par des Tiers",
-    "privacy.p6.text": "Pour soutenir nos coûts opérationnels et le développement de notre infrastructure, TacoPDF accepte les dons volontaires des utilisateurs. Le processus de transaction des dons est entièrement géré par des plateformes tierces sécurisées, à savoir Saweria (pour la région indonésienne) et Ko-Fi (à l'international).<br><br>TacoPDF ne demande, ne traite ni ne stocke jamais vos informations financières sensibles (telles que les numéros de carte de crédit ou les coordonnées bancaires) sur nos serveurs. Toute forme de données que vous fournissez lors d'une transaction de don (telle que le nom ou l'adresse e-mail) est régie par la Politique de Confidentialité des fournisseurs de services de paiement respectifs.",
-    "privacy.p7.title": "7. Contacter l'Équipe d'Assistance",
-    "privacy.p7.text": "Votre confiance est notre priorité absolue. Si vous avez d'autres questions, des commentaires ou des préoccupations concernant ces pratiques de protection de la confidentialité, veuillez contacter notre équipe à tout moment via la page <a href=\\"/fr/contact\\" class=\\"text-primary underline\\">Contacter l'Assistance</a>."`,
-
-  "de": `"privacy.doc_title": "Datenschutzerklärung",
-    "privacy.intro": "TacoPDF verpflichtet sich in vollem Umfang dem Schutz Ihrer Privatsphäre und Ihrer Datensicherheit. Als Anbieter von kostenlosen Online-PDF-Tools sind wir Vorreiter bei einer lokalen Verarbeitungsarchitektur (Client-Side), um einen maximalen Dokumentenschutz zu gewährleisten. Diese Datenschutzrichtlinie beschreibt, wie wir Ihre Daten schützen, wenn Sie unsere Dienste nutzen.",
-    "privacy.p1.title": "1. 100 % Lokale Verarbeitung (Kein Server-Upload)",
-    "privacy.p1.text": "Alle Dateimanipulationen (wie PDF Zusammenfügen, PDF Teilen und andere Konvertierungsformate) werden ausschließlich im Arbeitsspeicher des Browsers auf Ihrem Gerät unter Verwendung moderner WebAssembly- und JavaScript-Technologien verarbeitet. Wir laden Ihre Dokumente niemals hoch, speichern, lesen oder verbreiten sie. Ihre PDF-Dateien berühren oder passieren niemals die Server von TacoPDF. Die Vertraulichkeit Ihrer Dokumente liegt vollständig in Ihren Händen.",
-    "privacy.p2.title": "2. Verwendung von Cookies & Lokalen Präferenzen",
-    "privacy.p2.text": "Um eine reibungslose und reaktionsschnelle Benutzeroberfläche (UX) zu bieten, verwendet TacoPDF grundlegende Cookies, die in Ihrem Browser gespeichert werden. Diese Cookies sind extrem klein und dienen ausschließlich dazu, die Schnittstellenpräferenzen Ihres Tools (wie Sprachauswahl oder Anzeigeeinstellungen) zu speichern. Durch die weitere Nutzung unserer Dienste stimmen Sie der Verwendung dieser wesentlichen Cookies für Ihren Navigationskomfort zu.",
-    "privacy.p3.title": "3. Werbung Dritter",
-    "privacy.p3.text": "Um diese leistungsstarken PDF-Dienste der Öffentlichkeit weiterhin kostenlos zur Verfügung stellen zu können, schaltet TacoPDF gesponserte Werbung. Drittanbieter, einschließlich Google, verwenden Werbe-Cookies, um Anzeigen basierend auf Ihren vorherigen Besuchen auf dieser Website oder anderen Websites im Internet zu schalten. Die Verwendung von Werbe-Cookies durch Google ermöglicht es Google und seinen Partnern, Anzeigen zu schalten, die für die Benutzer am relevantesten sind, um die Aufrechterhaltung unserer Infrastruktur zu unterstützen.",
-    "privacy.p4.title": "4. Kontrolle & Abmeldung (Opt-out) von Personalisierter Werbung",
-    "privacy.p4.text": "Sie haben die volle Kontrolle über Ihre Werbeprivatsphäre. Benutzer können sich jederzeit von personalisierter Werbung abmelden (Opt-out), indem sie die <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Google-Anzeigeneinstellungen</a> besuchen. Alternativ können Sie auch die Verwendung von Cookies durch Drittanbieter für interessenbezogene Werbung über die Website <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a> deaktivieren.",
-    "privacy.p5.title": "5. Webanalyse und Protokolldateien",
-    "privacy.p5.text": "Um sicherzustellen, dass die Website stabil läuft und sich kontinuierlich weiterentwickelt, erfassen wir standardmäßige Traffic-Analysedaten. Diese Daten umfassen grundlegende Informationen wie Browsertyp, Besuchszeit, aufgerufene Tool-Seiten und anonymisierte IP-Adressen. Es ist äußerst wichtig zu beachten, dass sich dieses Tracking ausschließlich auf Webseiteninteraktionen beschränkt und den Inhalt der PDF-Dokumente, die Sie lokal auf Ihrem Gerät verarbeiten, in keiner Weise verfolgt, sammelt oder darauf zugreift.",
-    "privacy.p6.title": "6. Spenden und Zahlungsabwicklung durch Dritte",
-    "privacy.p6.text": "Um unsere Betriebskosten und die Infrastrukturentwicklung zu unterstützen, akzeptiert TacoPDF freiwillige Spenden von Benutzern. Der Spendentransaktionsprozess wird vollständig von sicheren Drittanbieter-Plattformen abgewickelt, nämlich Saweria (für die indonesische Region) und Ko-Fi (für den internationalen Bereich).<br><br>TacoPDF fragt niemals nach Ihren sensiblen Finanzinformationen (wie Kreditkartennummern oder Bankdaten), verarbeitet oder speichert diese auf unseren Servern. Jegliche Form von Daten, die Sie bei der Durchführung einer Spendentransaktion angeben (wie Name oder E-Mail-Adresse), unterliegen der Datenschutzrichtlinie der jeweiligen Zahlungsdienstleister.",
-    "privacy.p7.title": "7. Kontakt zum Support-Team",
-    "privacy.p7.text": "Ihr Vertrauen ist unsere oberste Priorität. Wenn Sie weitere Fragen, Feedback oder Bedenken bezüglich dieser Datenschutzpraktiken haben, wenden Sie sich bitte jederzeit über die Seite <a href=\\"/de/contact\\" class=\\"text-primary underline\\">Support Kontaktieren</a> an unser Team."`,
-
-  "pt": `"privacy.doc_title": "Política de Privacidade",
-    "privacy.intro": "A TacoPDF está totalmente comprometida com a sua privacidade e segurança de dados. Como um provedor de ferramentas de PDF online gratuitas, fomos pioneiros em uma arquitetura de processamento local (Client-Side) para garantir a máxima proteção de documentos. Esta Política de Privacidade descreve como protegemos seus dados quando você utiliza nossos serviços.",
-    "privacy.p1.title": "1. Processamento 100% Local (Sem Uploads para o Servidor)",
-    "privacy.p1.text": "Todas as manipulações de arquivos (como Juntar PDF, Dividir PDF e outros formatos de conversão) são processadas exclusivamente na memória do navegador em seu dispositivo, utilizando tecnologias modernas de WebAssembly e JavaScript. Nós nunca enviamos, armazenamos, lemos ou distribuímos seus documentos. Seus arquivos PDF nunca tocam ou passam pelos servidores da TacoPDF. A confidencialidade de seus documentos está inteiramente em suas mãos.",
-    "privacy.p2.title": "2. Uso de Cookies e Preferências Locais",
-    "privacy.p2.text": "Para oferecer uma experiência de usuário (UX) contínua e responsiva, a TacoPDF utiliza cookies básicos armazenados em seu navegador. Esses cookies são extremamente pequenos e têm a única função de salvar as preferências de interface de sua ferramenta (como seleção de idioma ou configurações de exibição). Ao continuar a utilizar nossos serviços, você consente com o uso desses cookies essenciais para a conveniência de sua navegação.",
-    "privacy.p3.title": "3. Publicidade de Terceiros",
-    "privacy.p3.text": "Para continuar fornecendo esses serviços de PDF de alto desempenho gratuitamente ao público, a TacoPDF exibe anúncios patrocinados. Fornecedores de terceiros, incluindo o Google, utilizam cookies de publicidade para veicular anúncios com base em suas visitas anteriores a este site ou a outros sites na internet. O uso de cookies de publicidade pelo Google permite que o Google e seus parceiros veiculem os anúncios mais relevantes para os usuários, a fim de apoiar a manutenção de nossa infraestrutura.",
-    "privacy.p4.title": "4. Controle e Exclusão (Opt-out) de Publicidade Personalizada",
-    "privacy.p4.text": "Você tem controle total sobre sua privacidade publicitária. Os usuários podem optar por não receber (opt-out) publicidade personalizada a qualquer momento visitando as <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Configurações de Anúncios do Google</a>. Alternativamente, você também pode desativar o uso de cookies por fornecedores de terceiros para publicidade baseada em interesses através do site <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a>.",
-    "privacy.p5.title": "5. Web Analytics e Arquivos de Log",
-    "privacy.p5.text": "Para garantir que o site funcione de forma estável e continue a se desenvolver, coletamos dados padrão de análise de tráfego. Esses dados incluem informações básicas, como tipo de navegador, horário da visita, páginas de ferramentas acessadas e endereços IP anonimizados. É fundamental observar que este rastreamento é puramente limitado às interações da página da web e, de forma alguma, rastreia, coleta ou tem acesso ao conteúdo dos documentos PDF que você processa localmente em seu dispositivo.",
-    "privacy.p6.title": "6. Doações e Processamento de Pagamentos de Terceiros",
-    "privacy.p6.text": "Para apoiar nossos custos operacionais e o desenvolvimento de infraestrutura, a TacoPDF aceita doações voluntárias de usuários. O processo de transação de doações é tratado inteiramente por plataformas seguras de terceiros, a saber, Saweria (para a região da Indonésia) e Ko-Fi (para a área internacional).<br><br>A TacoPDF nunca solicita, processa ou armazena suas informações financeiras confidenciais (como números de cartão de crédito ou dados bancários) em nossos servidores. Qualquer forma de dado que você fornecer ao realizar uma transação de doação (como nome ou endereço de e-mail) é regida pela Política de Privacidade dos respectivos provedores de serviços de pagamento.",
-    "privacy.p7.title": "7. Contatar a Equipe de Suporte",
-    "privacy.p7.text": "Sua confiança é a nossa principal prioridade. Se você tiver mais perguntas, comentários ou preocupações sobre essas práticas de proteção de privacidade, entre em contato com nossa equipe a qualquer momento através da página de <a href=\\"/pt/contact\\" class=\\"text-primary underline\\">Contatar Suporte</a>."`,
-
-  "ja": `"privacy.doc_title": "プライバシーポリシー",
-    "privacy.intro": "TacoPDFは、お客様のプライバシーとデータセキュリティに全面的に取り組んでいます。無料のオンラインPDFツールのプロバイダーとして、弊社は文書の最大限の保護を保証するために、ローカル処理（Client-Side）アーキテクチャを先駆けて導入しています。本プライバシーポリシーでは、お客様が弊社のサービスをご利用になる際に、弊社がどのようにお客様のデータを保護するかを規定しています。",
-    "privacy.p1.title": "1. 100%ローカル処理（サーバーへのアップロードなし）",
-    "privacy.p1.text": "PDFの結合、PDFの分割、その他の変換フォーマットなどのすべてのファイル操作は、最新のWebAssemblyおよびJavaScriptテクノロジーを使用して、お客様のデバイス上のブラウザのメモリ内でのみ処理されます。弊社がお客様の文書をアップロード、保存、読み取り、または配布することは決してありません。お客様のPDFファイルがTacoPDFのサーバーに触れたり、通過したりすることは一度もありません。文書の機密性はお客様の手によって完全に守られています。",
-    "privacy.p2.title": "2. Cookieの使用とローカル設定",
-    "privacy.p2.text": "シームレスで応答性の高いユーザーエクスペリエンス（UX）を提供するために、TacoPDFはお客様のブラウザに保存される基本的なCookieを使用します。これらのCookieは非常に小さく、ツールのインターフェース設定（言語の選択や表示設定など）を保存する役割のみを果たします。弊社のサービスを継続して利用することにより、お客様はナビゲーションの利便性のためにこれらの必須のCookieを使用することに同意したものとみなされます。",
-    "privacy.p3.title": "3. 第三者広告",
-    "privacy.p3.text": "これらの高性能なPDFサービスを一般に無料で提供し続けるために、TacoPDFはスポンサー広告を表示しています。Googleを含む第三者ベンダーは、広告Cookieを使用して、当ウェブサイトまたはインターネット上の他のウェブサイトへのお客様の過去のアクセス情報に基づいて広告を配信します。Googleによる広告Cookieの使用により、Googleとそのパートナーは、インフラストラクチャの維持をサポートするために、ユーザーに最も関連性の高い広告を配信することができます。",
-    "privacy.p4.title": "4. パーソナライズされた広告の管理とオプトアウト（Opt-out）",
-    "privacy.p4.text": "お客様は広告に関するプライバシーを完全に管理できます。ユーザーは、<a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Google 広告設定</a>にアクセスすることで、いつでもパーソナライズされた広告をオプトアウト（Opt-out）することができます。また、<a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a> のウェブサイトにアクセスして、第三者ベンダーによるインタレストベース広告のためのCookieの使用を無効にすることもできます。",
-    "privacy.p5.title": "5. ウェブ分析とログファイル",
-    "privacy.p5.text": "ウェブサイトが安定して動作し、継続的に発展するように、弊社は標準的なトラフィック分析データを収集します。このデータには、ブラウザの種類、訪問時間、アクセスしたツールページ、匿名化されたIPアドレスなどの基本的な情報が含まれます。この追跡はウェブページでのやり取りに純粋に限定されており、お客様がデバイス上でローカルに処理するPDF文書のコンテンツを追跡したり、収集したり、アクセスしたりすることは絶対にないことにご留意ください。",
-    "privacy.p6.title": "6. 寄付および第三者の支払い処理",
-    "privacy.p6.text": "運営コストとインフラストラクチャの開発をサポートするために、TacoPDFはユーザーからの自発的な寄付を受け付けています。寄付の取引処理は、Saweria（インドネシア地域向け）およびKo-Fi（国際向け）という安全な第三者プラットフォームによって完全に処理されます。<br><br>TacoPDFが、お客様の機密性の高い財務情報（クレジットカード番号や銀行の詳細など）を弊社のサーバーで要求、処理、または保存することは決してありません。寄付の取引を行う際にお客様が提供するあらゆる形式のデータ（名前やメールアドレスなど）は、それぞれの決済サービスプロバイダーのプライバシーポリシーによって管理されます。",
-    "privacy.p7.title": "7. サポートチームへの問い合わせ",
-    "privacy.p7.text": "お客様の信頼は弊社の最優先事項です。これらのプライバシー保護の慣行に関してご質問、ご意見、またはご懸念がある場合は、<a href=\\"/ja/contact\\" class=\\"text-primary underline\\">サポートへの問い合わせ</a>ページを通じていつでも弊社チームにお問い合わせください。"`,
-
-  "id": `"privacy.doc_title": "Kebijakan Privasi",
-    "privacy.intro": "TacoPDF berkomitmen penuh terhadap privasi dan keamanan data Anda. Sebagai penyedia alat PDF online gratis, kami memelopori arsitektur pemrosesan lokal (Client-Side) untuk menjamin perlindungan dokumen tingkat maksimal. Kebijakan Privasi ini menguraikan bagaimana kami melindungi data Anda saat Anda menggunakan layanan kami.",
-    "privacy.p1.title": "1. Pemrosesan Lokal 100% (Tanpa Unggah ke Server)",
-    "privacy.p1.text": "Semua manipulasi file (seperti Gabung PDF, Pisah PDF, dan format konversi lainnya) diproses secara eksklusif di dalam memori browser pada perangkat Anda menggunakan teknologi WebAssembly dan JavaScript modern. Kami tidak pernah mengunggah, menyimpan, membaca, atau mendistribusikan dokumen Anda. File PDF Anda tidak pernah sekalipun menyentuh atau melewati server TacoPDF. Kerahasiaan dokumen Anda berada sepenuhnya di tangan Anda.",
-    "privacy.p2.title": "2. Penggunaan Cookie & Preferensi Lokal",
-    "privacy.p2.text": "Untuk menyajikan pengalaman pengguna (UX) yang mulus dan responsif, TacoPDF menggunakan cookie dasar yang tersimpan di browser Anda. Cookie ini berukuran sangat kecil dan hanya bertugas menyimpan preferensi antarmuka alat Anda (seperti pilihan bahasa atau pengaturan layar). Dengan terus menggunakan layanan kami, Anda menyetujui penggunaan cookie esensial ini demi kenyamanan navigasi Anda.",
-    "privacy.p3.title": "3. Iklan Pihak Ketiga",
-    "privacy.p3.text": "Agar dapat terus menyediakan layanan PDF berkinerja tinggi ini secara gratis kepada publik, TacoPDF menampilkan iklan sponsor. Vendor pihak ketiga, termasuk Google, menggunakan cookie periklanan untuk menayangkan iklan berdasarkan kunjungan Anda sebelumnya ke situs web ini atau situs web lain di internet. Penggunaan cookie oleh Google memungkinkan Google dan mitranya menyajikan iklan yang paling relevan bagi pengguna untuk mendukung pemeliharaan infrastruktur kami.",
-    "privacy.p4.title": "4. Kontrol & Penyisihan Iklan yang Dipersonalisasi",
-    "privacy.p4.text": "Anda memiliki kendali penuh atas privasi periklanan Anda. Pengguna dapat menyisih (opt-out) dari iklan hasil personalisasi kapan saja dengan mengunjungi <a href=\\"https://myadcenter.google.com/\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">Setelan Iklan Google</a>. Sebagai alternatif, Anda juga dapat menonaktifkan penggunaan cookie oleh vendor pihak ketiga untuk iklan berbasis minat melalui situs <a href=\\"https://www.aboutads.info\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\" class=\\"text-primary underline\\">www.aboutads.info</a>.",
-    "privacy.p5.title": "5. Analisis Web dan File Log",
-    "privacy.p5.text": "Untuk memastikan situs web berjalan dengan stabil dan terus berkembang, kami mengumpulkan data analitik lalu lintas standar. Data ini mencakup informasi dasar seperti jenis browser, waktu kunjungan, halaman alat yang diakses, dan alamat IP yang telah dianonimkan. Sangat penting dicatat bahwa pelacakan ini murni terbatas pada interaksi halaman web, dan sama sekali tidak melacak, mengumpulkan, atau memiliki akses ke isi dokumen PDF yang Anda proses secara lokal di perangkat Anda.",
-    "privacy.p6.title": "6. Donasi dan Pemrosesan Pembayaran Pihak Ketiga",
-    "privacy.p6.text": "Untuk mendukung biaya operasional dan pengembangan infrastruktur kami, TacoPDF menerima donasi sukarela dari pengguna. Proses transaksi donasi ditangani sepenuhnya oleh platform pihak ketiga yang aman, yaitu Saweria (untuk wilayah Indonesia) dan Ko-Fi (untuk internasional).<br><br>TacoPDF tidak pernah meminta, memproses, atau menyimpan informasi keuangan sensitif Anda (seperti nomor kartu kredit atau detail perbankan) di server kami. Segala bentuk data yang Anda berikan saat melakukan transaksi donasi (seperti nama atau alamat email) diatur oleh Kebijakan Privasi dari masing-masing penyedia layanan pembayaran tersebut.",
-    "privacy.p7.title": "7. Hubungi Tim Dukungan",
-    "privacy.p7.text": "Kepercayaan Anda adalah prioritas utama kami. Jika Anda memiliki pertanyaan lebih lanjut, masukan, atau kekhawatiran mengenai praktik perlindungan privasi ini, silakan hubungi tim kami kapan saja melalui halaman <a href=\\"/id/contact\\" class=\\"text-primary underline\\">Hubungi Dukungan</a>."`
+const data = {
+  'en': {
+    'about.founder.text': 'Welcome! My name is Muhammad Bayu Edi from Central Java, Indonesia. The initial idea for creating TacoPDF was born purely out of personal experiences and challenges I often faced in my daily work routine.<br/><br/>While managing various data and documents, I always struggled to find an online PDF manipulation tool that was both practical and secure. Most existing services often limit file sizes, forcefully add watermarks, require account registration, or most alarmingly: silently upload our personal documents to their servers.<br/><br/>Stemming from this concern, I decided to build this solution. Prioritizing a clean and intuitive user interface (UI), I created TacoPDF—a document utility tool that is secure, fast, and reliable for anyone without frustrating limitations.',
+    'about.p1.title': 'Why Use the Name \\\'TacoPDF\\\'?',
+    'about.p1.text1': 'You might be wondering, why does an application from Indonesia use the name of a traditional Mexican food?',
+    'about.p1.text2': 'A while ago, while visiting Jakarta, I had the opportunity to taste a Taco dish for the first time. I immediately loved it. A Taco is a food with a very simple concept and easy to hold, yet it has a very dense, flavorful, and satisfying filling.',
+    'about.p1.text3': 'This philosophy is the main foundation of this website. I want TacoPDF to be a platform with a very simple and user-friendly visual appearance, but beneath that, possess complete and robust operational features to solve all your document management needs.',
+    'about.p2.title': 'Top Priority on Privacy (100% Client Technology)',
+    'about.p2.text1': 'For me, high productivity must not sacrifice data privacy.',
+    'about.p2.text2': 'That is the main reason why TacoPDF is built using cutting-edge WebAssembly (WASM) technology. Thanks to this architecture, the entire process of merging, splitting, or converting documents occurs entirely within your browser\\\'s memory on your device.',
+    'about.p2.text3': 'Your sensitive documents will never be uploaded, sent, or stored on our servers. As soon as the process is complete or the browser tab is closed, all data is automatically deleted from memory. What is processed on your device, will forever remain safely on your device.',
+    'about.p3.title': 'Commitment to Free Service & Community Support',
+    'about.p3.text1': 'TacoPDF is committed to providing professional-grade document tools for everyone, without charging expensive subscription fees. We maintain this platform to remain 100% free.',
+    'about.p3.text2': 'To fund server operations and infrastructure maintenance, we rely on two things: the placement of sponsored ads designed not to disrupt your workspace, as well as voluntary donation support from our loyal users. Donations from the community greatly help TacoPDF to remain operating independently and free from user data selling practices.',
+    'about.p4.title': 'Let\\\'s Connect!',
+    'about.p4.text1': 'This platform is designed to simplify daily administrative tasks for students, freelancers, and professionals alike.',
+    'about.p4.text2': 'If you have suggestions for adding new features, encounter technical issues (bugs), or just want to say hello, do not hesitate to send me a message through the <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Contact Support</a> page.',
+    'about.p4.text3': 'Thank you for entrusting your document management and security to TacoPDF. Work safely and productively!'
+  },
+  'es': {
+    'about.founder.text': '¡Bienvenidos! Mi nombre es Muhammad Bayu Edi, de Java Central, Indonesia. La idea inicial de crear TacoPDF nació puramente de experiencias personales y desafíos que solía enfrentar en mi rutina de trabajo diaria.<br/><br/>Al gestionar varios datos y documentos, siempre me resultaba difícil encontrar una herramienta de manipulación de PDF en línea que fuera práctica y segura a la vez. La mayoría de los servicios existentes a menudo limitan el tamaño de los archivos, añaden marcas de agua a la fuerza, requieren el registro de una cuenta o, lo más alarmante: suben nuestros documentos personales a sus servidores en secreto.<br/><br/>A partir de esta preocupación, decidí construir esta solución. Priorizando una interfaz de usuario (UI) limpia e intuitiva, creé TacoPDF: una herramienta de utilidad de documentos que es segura, rápida y confiable para cualquier persona, sin limitaciones frustrantes.',
+    'about.p1.title': '¿Por qué usar el nombre \\\'TacoPDF\\\'?',
+    'about.p1.text1': 'Tal vez se pregunte, ¿por qué una aplicación de Indonesia usa el nombre de una comida tradicional mexicana?',
+    'about.p1.text2': 'Hace un tiempo, mientras visitaba Yakarta, tuve la oportunidad de probar un plato de tacos por primera vez. Me encantó de inmediato. Un taco es una comida con un concepto muy simple y fácil de sostener, pero que tiene un relleno muy denso, sabroso y satisfactorio.',
+    'about.p1.text3': 'Esta filosofía es la base principal de este sitio web. Quiero que TacoPDF sea una plataforma con una apariencia visual muy simple y fácil de usar, pero que, detrás de eso, posea funciones operativas completas y sólidas para resolver todas sus necesidades de gestión de documentos.',
+    'about.p2.title': 'Máxima prioridad a la privacidad (Tecnología 100% del cliente)',
+    'about.p2.text1': 'Para mí, la alta productividad no debe sacrificar la privacidad de los datos.',
+    'about.p2.text2': 'Esa es la razón principal por la que TacoPDF está construido utilizando tecnología de vanguardia WebAssembly (WASM). Gracias a esta arquitectura, todo el proceso de fusión, división o conversión de documentos ocurre completamente dentro de la memoria del navegador en su dispositivo.',
+    'about.p2.text3': 'Sus documentos confidenciales nunca serán subidos, enviados ni almacenados en nuestros servidores. Tan pronto como se completa el proceso o se cierra la pestaña del navegador, todos los datos se eliminan automáticamente de la memoria. Lo que se procesa en su dispositivo, permanecerá seguro para siempre en su dispositivo.',
+    'about.p3.title': 'Compromiso con el servicio gratuito y apoyo de la comunidad',
+    'about.p3.text1': 'TacoPDF se compromete a proporcionar herramientas de documentos de nivel profesional para todos, sin cobrar tarifas de suscripción costosas. Mantenemos esta plataforma para que siga siendo 100% gratuita.',
+    'about.p3.text2': 'Para financiar las operaciones de los servidores y el mantenimiento de la infraestructura, dependemos de dos cosas: la colocación de anuncios patrocinados diseñados para no interrumpir su espacio de trabajo, así como el apoyo de donaciones voluntarias de nuestros fieles usuarios. Las donaciones de la comunidad ayudan enormemente a que TacoPDF siga operando de manera independiente y libre de prácticas de venta de datos de usuarios.',
+    'about.p4.title': '¡Conectemos!',
+    'about.p4.text1': 'Esta plataforma está diseñada para simplificar las tareas administrativas diarias de estudiantes, profesionales independientes (freelancers) y profesionales por igual.',
+    'about.p4.text2': 'Si tiene sugerencias para agregar nuevas funciones, encuentra problemas técnicos (errores) o simplemente quiere saludar, no dude en enviarme un mensaje a través de la página de <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Soporte</a>.',
+    'about.p4.text3': 'Gracias por confiar la gestión y seguridad de sus documentos a TacoPDF. ¡Trabaje de forma segura y productiva!'
+  },
+  'ja': {
+    'about.founder.text': 'ようこそ！私はインドネシアの中部ジャワ州出身のムハンマド・バユ・エディと申します。TacoPDFを作成した最初のアイデアは、私が日常業務で頻繁に直面していた個人的な経験と課題から純粋に生まれました。<br/><br/>様々なデータや文書を管理する中で、実用的かつ安全なオンラインPDF操作ツールを見つけるのにいつも苦労していました。既存のサービスの多くは、ファイルサイズを制限したり、強制的に透かしを追加したり、アカウント登録を要求したり、さらに最も懸念すべきことには、個人文書をこっそりと彼らのサーバーにアップロードしたりすることがよくあります。<br/><br/>こうした懸念から、私はこのソリューションを構築することにしました。クリーンで直感的なユーザーインターフェース（UI）を最優先し、面倒な制限なしに、誰にとっても安全で高速、かつ信頼性の高い文書ユーティリティツールであるTacoPDFを作成しました。',
+    'about.p1.title': 'なぜ「TacoPDF」という名前なのか？',
+    'about.p1.text1': 'インドネシアのアプリケーションがなぜメキシコの伝統料理の名前を使っているのか、疑問に思うかもしれません。',
+    'about.p1.text2': '少し前、ジャカルタを訪れた際、初めてタコスを食べる機会がありました。私はすぐにそれが気に入りました。タコスは非常にシンプルなコンセプトで持ちやすい食べ物ですが、中身がぎっしり詰まっていて、風味が豊かで満足感があります。',
+    'about.p1.text3': 'この哲学こそが、このウェブサイトの主な基盤です。私はTacoPDFを、視覚的には非常にシンプルで使いやすいプラットフォームでありながら、その裏にはあらゆる文書管理のニーズを解決するための完全で強力な操作機能を備えたものにしたいと考えています。',
+    'about.p2.title': 'プライバシーへの最優先事項（100％クライアント技術）',
+    'about.p2.text1': '私にとって、高い生産性のためにデータのプライバシーを犠牲にしてはなりません。',
+    'about.p2.text2': 'それがTacoPDFが最先端のWebAssembly（WASM）技術を使用して構築されている主な理由です。このアーキテクチャのおかげで、文書の結合、分割、または変換の全プロセスは、お使いのデバイス上のブラウザメモリ内で完全に実行されます。',
+    'about.p2.text3': 'お客様の機密文書が当社のサーバーにアップロード、送信、または保存されることは決してありません。プロセスが完了するか、ブラウザのタブが閉じられるとすぐに、すべてのデータは自動的にメモリから削除されます。お使いのデバイスで処理されたものは、永遠にそのデバイス内で安全に保たれます。',
+    'about.p3.title': '無料サービスとコミュニティサポートへの取り組み',
+    'about.p3.text1': 'TacoPDFは、高額なサブスクリプション料金を請求することなく、プロ仕様の文書ツールをすべての人に提供することをお約束します。私たちはこのプラットフォームを100％無料に維持します。',
+    'about.p3.text2': 'サーバーの運用とインフラの保守資金を調達するために、私たちは2つのことに依存しています。ワークスペースを妨げないように設計されたスポンサー広告の配置と、忠実なユーザーからの自発的な寄付によるサポートです。コミュニティからの寄付は、TacoPDFが独立して運営され、ユーザーデータの販売などの慣行から自由であり続けるために大いに役立ちます。',
+    'about.p4.title': '繋がりましょう！',
+    'about.p4.text1': 'このプラットフォームは、学生、フリーランサー、専門家などの日常的な管理業務を簡素化するために設計されています。',
+    'about.p4.text2': '新機能の追加に関する提案がある場合、技術的な問題（バグ）に遭遇した場合、または単に挨拶をしたい場合は、遠慮なく<a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>サポートへのお問い合わせ</a>ページからメッセージを送信してください。',
+    'about.p4.text3': '文書の管理とセキュリティをTacoPDFに任せていただきありがとうございます。安全かつ生産的に作業を進めてください！'
+  },
+  'pt': {
+    'about.founder.text': 'Bem-vindo! Meu nome é Muhammad Bayu Edi, de Java Central, Indonésia. A ideia inicial de criar o TacoPDF nasceu puramente de experiências pessoais e desafios que eu frequentemente enfrentava na minha rotina de trabalho diária.<br/><br/>Ao gerenciar vários dados e documentos, sempre tive dificuldade em encontrar uma ferramenta de manipulação de PDF online que fosse prática e segura ao mesmo tempo. A maioria dos serviços existentes frequentemente limita o tamanho dos arquivos, adiciona marcas d\\\'água à força, exige registro de conta ou, o mais alarmante: faz o upload secreto dos nossos documentos pessoais para os seus servidores.<br/><br/>A partir dessa preocupação, decidi construir esta solução. Priorizando uma interface de usuário (UI) limpa e intuitiva, criei o TacoPDF—uma ferramenta de utilitário de documentos que é segura, rápida e confiável para qualquer pessoa, sem limitações frustrantes.',
+    'about.p1.title': 'Por que usar o nome \\\'TacoPDF\\\'?',
+    'about.p1.text1': 'Você pode estar se perguntando, por que um aplicativo da Indonésia usa o nome de uma comida tradicional mexicana?',
+    'about.p1.text2': 'Um tempo atrás, enquanto visitava Jacarta, tive a oportunidade de provar um prato de Taco pela primeira vez. Eu imediatamente amei. Um Taco é uma comida com um conceito muito simples e fácil de segurar, mas que tem um recheio muito denso, saboroso e satisfatório.',
+    'about.p1.text3': 'Essa filosofia é a principal base deste site. Eu quero que o TacoPDF seja uma plataforma com uma aparência visual muito simples e fácil de usar, mas que por trás disso possua recursos operacionais completos e robustos para resolver todas as suas necessidades de gerenciamento de documentos.',
+    'about.p2.title': 'Prioridade Máxima em Privacidade (Tecnologia 100% do Cliente)',
+    'about.p2.text1': 'Para mim, alta produtividade não deve sacrificar a privacidade dos dados.',
+    'about.p2.text2': 'Esse é o principal motivo pelo qual o TacoPDF é construído usando a tecnologia de ponta WebAssembly (WASM). Graças a essa arquitetura, todo o processo de fusão, divisão ou conversão de documentos ocorre inteiramente na memória do navegador do seu dispositivo.',
+    'about.p2.text3': 'Seus documentos sensíveis nunca serão enviados, transferidos ou armazenados em nossos servidores. Assim que o processo é concluído ou a guia do navegador é fechada, todos os dados são excluídos automaticamente da memória. O que é processado em seu dispositivo, permanecerá seguro para sempre em seu dispositivo.',
+    'about.p3.title': 'Compromisso com o Serviço Gratuito e Apoio da Comunidade',
+    'about.p3.text1': 'O TacoPDF está comprometido em fornecer ferramentas de documentos de nível profissional para todos, sem cobrar taxas de assinatura caras. Mantemos esta plataforma para permanecer 100% gratuita.',
+    'about.p3.text2': 'Para financiar as operações dos servidores e a manutenção da infraestrutura, contamos com duas coisas: a colocação de anúncios patrocinados projetados para não interromper o seu espaço de trabalho, bem como o apoio de doações voluntárias de nossos usuários fiéis. As doações da comunidade ajudam muito o TacoPDF a continuar operando de forma independente e livre de práticas de venda de dados de usuários.',
+    'about.p4.title': 'Vamos nos Conectar!',
+    'about.p4.text1': 'Esta plataforma foi projetada para simplificar as tarefas administrativas diárias de estudantes, freelancers e profissionais.',
+    'about.p4.text2': 'Se você tiver sugestões para adicionar novos recursos, encontrar problemas técnicos (bugs) ou apenas quiser dizer olá, não hesite em me enviar uma mensagem através da página de <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Suporte</a>.',
+    'about.p4.text3': 'Obrigado por confiar o gerenciamento e a segurança de seus documentos ao TacoPDF. Trabalhe com segurança e produtividade!'
+  },
+  'de': {
+    'about.founder.text': 'Willkommen! Mein Name ist Muhammad Bayu Edi aus Zentraljava, Indonesien. Die ursprüngliche Idee zur Entwicklung von TacoPDF entstand rein aus persönlichen Erfahrungen und Herausforderungen, mit denen ich in meinem täglichen Arbeitsalltag oft konfrontiert war.<br/><br/>Bei der Verwaltung verschiedener Daten und Dokumente hatte ich immer Schwierigkeiten, ein Online-Tool zur PDF-Bearbeitung zu finden, das sowohl praktisch als auch sicher war. Die meisten bestehenden Dienste begrenzen oft die Dateigröße, fügen zwangsweise Wasserzeichen hinzu, erfordern eine Kontoregistrierung oder – was am alarmierendsten ist – laden unsere persönlichen Dokumente heimlich auf ihre Server hoch.<br/><br/>Aus dieser Sorge heraus habe ich mich entschlossen, diese Lösung zu entwickeln. Unter Priorisierung einer sauberen und intuitiven Benutzeroberfläche (UI) schuf ich TacoPDF – ein Dokumenten-Dienstprogramm, das für jeden sicher, schnell und zuverlässig ist, ohne frustrierende Einschränkungen.',
+    'about.p1.title': 'Warum der Name \\\'TacoPDF\\\'?',
+    'about.p1.text1': 'Sie fragen sich vielleicht, warum eine Anwendung aus Indonesien den Namen eines traditionellen mexikanischen Essens trägt?',
+    'about.p1.text2': 'Vor einiger Zeit, während eines Besuchs in Jakarta, hatte ich die Gelegenheit, zum ersten Mal ein Taco-Gericht zu probieren. Ich habe es sofort geliebt. Ein Taco ist ein Lebensmittel mit einem sehr einfachen Konzept und leicht zu halten, aber es hat eine sehr dichte, geschmackvolle und sättigende Füllung.',
+    'about.p1.text3': 'Diese Philosophie ist das Hauptfundament dieser Website. Ich möchte, dass TacoPDF eine Plattform mit einem sehr einfachen und benutzerfreundlichen visuellen Erscheinungsbild ist, die dahinter jedoch vollständige und robuste operative Funktionen besitzt, um alle Ihre Anforderungen an die Dokumentenverwaltung zu lösen.',
+    'about.p2.title': 'Höchste Priorität für Datenschutz (100% Client-Technologie)',
+    'about.p2.text1': 'Für mich darf hohe Produktivität nicht die Datenprivatsphäre opfern.',
+    'about.p2.text2': 'Das ist der Hauptgrund, warum TacoPDF mit modernster WebAssembly (WASM)-Technologie entwickelt wurde. Dank dieser Architektur findet der gesamte Prozess des Zusammenführens, Teilens oder Konvertierens von Dokumenten vollständig im Arbeitsspeicher Ihres Browsers auf Ihrem Gerät statt.',
+    'about.p2.text3': 'Ihre vertraulichen Dokumente werden niemals hochgeladen, gesendet oder auf unseren Servern gespeichert. Sobald der Vorgang abgeschlossen ist oder der Browser-Tab geschlossen wird, werden alle Daten automatisch aus dem Speicher gelöscht. Was auf Ihrem Gerät verarbeitet wird, bleibt für immer sicher auf Ihrem Gerät.',
+    'about.p3.title': 'Engagement für kostenlosen Service und Community-Support',
+    'about.p3.text1': 'TacoPDF hat sich verpflichtet, professionelle Dokumenten-Tools für alle bereitzustellen, ohne teure Abonnementgebühren zu erheben. Wir pflegen diese Plattform, damit sie zu 100 % kostenlos bleibt.',
+    'about.p3.text2': 'Zur Finanzierung des Serverbetriebs und der Wartung der Infrastruktur stützen wir uns auf zwei Dinge: die Platzierung von gesponserten Anzeigen, die Ihren Arbeitsbereich nicht stören, sowie die Unterstützung durch freiwillige Spenden unserer treuen Benutzer. Spenden aus der Community helfen TacoPDF enorm dabei, unabhängig zu bleiben und frei von Praktiken des Verkaufs von Benutzerdaten zu operieren.',
+    'about.p4.title': 'Lassen Sie uns in Kontakt treten!',
+    'about.p4.text1': 'Diese Plattform wurde entwickelt, um die täglichen Verwaltungsaufgaben für Studenten, Freiberufler und Fachleute gleichermaßen zu vereinfachen.',
+    'about.p4.text2': 'Wenn Sie Vorschläge für das Hinzufügen neuer Funktionen haben, auf technische Probleme (Bugs) stoßen oder einfach nur Hallo sagen möchten, zögern Sie nicht, mir eine Nachricht über die Seite <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Support kontaktieren</a> zu senden.',
+    'about.p4.text3': 'Vielen Dank, dass Sie die Verwaltung und Sicherheit Ihrer Dokumente TacoPDF anvertrauen. Arbeiten Sie sicher und produktiv!'
+  },
+  'fr': {
+    'about.founder.text': 'Bienvenue ! Je m\\\'appelle Muhammad Bayu Edi, originaire de Java central, en Indonésie. L\\\'idée initiale de créer TacoPDF est née purement d\\\'expériences personnelles et des défis auxquels je faisais souvent face dans mon travail quotidien.<br/><br/>En gérant divers données et documents, j\\\'ai toujours eu du mal à trouver un outil de manipulation de PDF en ligne qui soit à la fois pratique et sécurisé. La plupart des services existants limitent souvent la taille des fichiers, ajoutent des filigranes de force, nécessitent la création d\\\'un compte ou, ce qui est le plus alarmant : téléchargent secrètement nos documents personnels sur leurs serveurs.<br/><br/>Face à cette préoccupation, j\\\'ai décidé de créer cette solution. En privilégiant une interface utilisateur (UI) épurée et intuitive, j\\\'ai créé TacoPDF — un outil utilitaire pour documents qui est sécurisé, rapide et fiable pour tous, sans limitations frustrantes.',
+    'about.p1.title': 'Pourquoi utiliser le nom \\\'TacoPDF\\\' ?',
+    'about.p1.text1': 'Vous vous demandez peut-être pourquoi une application originaire d\\\'Indonésie utilise le nom d\\\'un plat mexicain traditionnel ?',
+    'about.p1.text2': 'Il y a quelque temps, lors d\\\'une visite à Jakarta, j\\\'ai eu l\\\'occasion de goûter un Taco pour la première fois. J\\\'ai tout de suite adoré. Un Taco est un aliment au concept très simple et facile à tenir, mais il possède une garniture très dense, savoureuse et satisfaisante.',
+    'about.p1.text3': 'Cette philosophie est le fondement principal de ce site Web. Je veux que TacoPDF soit une plateforme à l\\\'apparence visuelle très simple et conviviale, mais qui, en arrière-plan, possède des fonctionnalités opérationnelles complètes et robustes pour répondre à tous vos besoins en matière de gestion de documents.',
+    'about.p2.title': 'Priorité absolue à la confidentialité (Technologie 100% Client)',
+    'about.p2.text1': 'Pour moi, une productivité élevée ne doit pas sacrifier la confidentialité des données.',
+    'about.p2.text2': 'C\\\'est la raison principale pour laquelle TacoPDF est construit à l\\\'aide de la technologie de pointe WebAssembly (WASM). Grâce à cette architecture, l\\\'ensemble du processus de fusion, de division ou de conversion de documents se déroule entièrement dans la mémoire de votre navigateur sur votre appareil.',
+    'about.p2.text3': 'Vos documents sensibles ne seront jamais téléchargés, envoyés ou stockés sur nos serveurs. Dès que le processus est terminé ou que l\\\'onglet du navigateur est fermé, toutes les données sont automatiquement supprimées de la mémoire. Ce qui est traité sur votre appareil restera pour toujours en sécurité sur votre appareil.',
+    'about.p3.title': 'Engagement envers le service gratuit et le soutien de la communauté',
+    'about.p3.text1': 'TacoPDF s\\\'engage à fournir des outils documentaires de qualité professionnelle pour tous, sans facturer de frais d\\\'abonnement coûteux. Nous maintenons cette plateforme pour qu\\\'elle reste 100 % gratuite.',
+    'about.p3.text2': 'Pour financer les opérations des serveurs et la maintenance de l\\\'infrastructure, nous nous appuyons sur deux éléments : le placement d\\\'annonces sponsorisées conçues pour ne pas perturber votre espace de travail, ainsi que le soutien sous forme de dons volontaires de la part de nos utilisateurs fidèles. Les dons de la communauté aident grandement TacoPDF à continuer à fonctionner de manière indépendante et à l\\\'abri des pratiques de vente de données d\\\'utilisateurs.',
+    'about.p4.title': 'Connectons-nous !',
+    'about.p4.text1': 'Cette plateforme est conçue pour simplifier les tâches administratives quotidiennes des étudiants, des indépendants (freelances) et des professionnels.',
+    'about.p4.text2': 'Si vous avez des suggestions pour ajouter de nouvelles fonctionnalités, si vous rencontrez des problèmes techniques (bugs) ou si vous voulez simplement dire bonjour, n\\\'hésitez pas à m\\\'envoyer un message via la page <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Contacter le support</a>.',
+    'about.p4.text3': 'Merci de confier la gestion et la sécurité de vos documents à TacoPDF. Travaillez en toute sécurité et de manière productive !'
+  },
+  'id': {
+    'about.founder.text': 'Selamat datang! Nama saya Muhammad Bayu Edi dari Jawa Tengah, Indonesia. Ide awal pembuatan TacoPDF murni lahir dari pengalaman dan tantangan pribadi yang sering saya hadapi dalam rutinitas pekerjaan sehari-hari.<br/><br/>Saat mengelola berbagai macam data dan dokumen, saya selalu kesulitan menemukan alat manipulasi PDF daring (online) yang praktis sekaligus aman. Sebagian besar layanan yang ada sering kali membatasi ukuran berkas, menambahkan tanda air (watermark) secara paksa, mewajibkan pendaftaran akun, atau yang paling mengkhawatirkan: secara diam-diam mengunggah dokumen pribadi kita ke peladen (server) mereka.<br/><br/>Berangkat dari keresahan tersebut, saya memutuskan untuk membangun solusi ini. Dengan mengutamakan desain antarmuka (UI) yang bersih dan intuitif, saya menciptakan TacoPDF—sebuah alat utilitas dokumen yang aman, cepat, dan dapat diandalkan oleh siapa saja tanpa batasan yang menyulitkan.',
+    'about.p1.title': 'Mengapa Menggunakan Nama \\\'TacoPDF\\\'?',
+    'about.p1.text1': 'Anda mungkin bertanya-tanya, mengapa aplikasi dari Indonesia menggunakan nama makanan khas Meksiko?',
+    'about.p1.text2': 'Beberapa waktu yang lalu, saat sedang berkunjung ke Jakarta, saya berkesempatan untuk mencicipi hidangan Taco untuk pertama kalinya. Saya langsung menyukainya. Taco adalah makanan yang konsepnya sangat sederhana dan mudah dipegang, namun memiliki isian yang sangat padat, kaya rasa, dan memuaskan.',
+    'about.p1.text3': 'Filosofi inilah yang menjadi fondasi utama situs web ini. Saya ingin TacoPDF menjadi platform dengan tampilan visual yang sangat sederhana dan ramah pengguna, tetapi di balik itu, memiliki fitur operasional yang lengkap dan tangguh untuk menyelesaikan semua kebutuhan pengelolaan dokumen Anda.',
+    'about.p2.title': 'Prioritas Utama pada Privasi (Teknologi 100% Klien)',
+    'about.p2.text1': 'Bagi saya, produktivitas tinggi tidak boleh mengorbankan privasi data.',
+    'about.p2.text2': 'Itulah alasan utama mengapa TacoPDF dibangun menggunakan teknologi mutakhir WebAssembly (WASM). Berkat arsitektur ini, seluruh proses penggabungan, pemotongan, atau konversi dokumen terjadi sepenuhnya di dalam memori peramban (browser) pada perangkat Anda.',
+    'about.p2.text3': 'Dokumen sensitif Anda tidak akan pernah diunggah, dikirim, maupun disimpan di peladen kami. Segera setelah proses selesai atau tab peramban ditutup, seluruh data akan terhapus secara otomatis dari memori. Apa yang diproses di perangkat Anda, akan selamanya tetap aman berada di perangkat Anda.',
+    'about.p3.title': 'Komitmen Layanan Gratis & Dukungan Komunitas',
+    'about.p3.text1': 'TacoPDF berkomitmen untuk menyediakan alat dokumen setara kelas profesional bagi semua orang, tanpa membebankan biaya langganan yang mahal. Kami menjaga platform ini agar tetap 100% gratis.',
+    'about.p3.text2': 'Untuk membiayai operasional peladen dan pemeliharaan infrastruktur, kami mengandalkan dua hal: penempatan iklan sponsor yang dirancang agar tidak mengganggu ruang kerja Anda, serta dukungan donasi sukarela dari para pengguna setia kami. Donasi dari komunitas sangat membantu TacoPDF untuk tetap beroperasi secara independen dan terbebas dari praktik penjualan data pengguna.',
+    'about.p4.title': 'Mari Terhubung!',
+    'about.p4.text1': 'Platform ini dirancang untuk mempermudah pekerjaan administrasi sehari-hari bagi pelajar, pekerja lepas (freelancer), maupun kalangan profesional.',
+    'about.p4.text2': 'Jika Anda memiliki saran untuk penambahan fitur baru, menemukan kendala teknis (bug), atau sekadar ingin menyapa, jangan ragu untuk mengirimkan pesan kepada saya melalui halaman <a href=\'/contact\' class=\'text-primary hover:underline font-bold\'>Hubungi Dukungan</a>.',
+    'about.p4.text3': 'Terima kasih telah mempercayakan pengelolaan dan keamanan dokumen Anda pada TacoPDF. Selamat bekerja dengan aman dan produktif!'
+  }
 };
 
-for (const lang of Object.keys(replacements)) {
-  const langKey = '"' + lang + '": {';
-  const langKeyIndex = content.indexOf(langKey);
-  const privacyStart = content.indexOf('"privacy.doc_title":', langKeyIndex);
-  let nextKey = content.indexOf('"contact.back":', privacyStart);
-  if (nextKey === -1) nextKey = content.indexOf('"workspace.preview.close_hint_mobile":', privacyStart); // DE case
+let content = fs.readFileSync('d:/Tacopdf/src/data/translations.ts', 'utf8');
+
+for (const lang of Object.keys(data)) {
+  const translations = data[lang];
   
-  if (privacyStart !== -1 && nextKey !== -1) {
-    const startIdx = content.lastIndexOf('\\n', privacyStart) + 1;
-    const endIdx = content.lastIndexOf('\\n', nextKey);
-    
-    const blockToReplace = content.substring(startIdx, endIdx);
-    content = content.replace(blockToReplace, replacements[lang] + '\\n\\n');
+  const langStartRegex = new RegExp(`"${lang}"\\s*:\\s*\\{`);
+  const match = langStartRegex.exec(content);
+  if (!match) {
+    console.error(`Language block ${lang} not found!`);
+    continue;
   }
+  const startIndex = match.index;
+  
+  let openBraces = 0;
+  let endIndex = -1;
+  for (let i = startIndex + match[0].length - 1; i < content.length; i++) {
+    if (content[i] === '{') openBraces++;
+    else if (content[i] === '}') {
+      openBraces--;
+      if (openBraces === 0) {
+        endIndex = i;
+        break;
+      }
+    }
+  }
+  
+  if (endIndex === -1) {
+    console.error(`End of language block ${lang} not found!`);
+    continue;
+  }
+  
+  let blockContent = content.substring(startIndex, endIndex + 1);
+  
+  for (const key of Object.keys(translations)) {
+    const newValue = translations[key];
+    const escapedValue = newValue.replace(/"/g, '\\"').replace(/\\'/g, "'").replace(/\n/g, '\\n');
+    const keyRegex = new RegExp(`"${key.replace(/\\./g, '\\\\.')}"\\s*:\\s*"(?:\\\\\\\\.|[^"\\\\\\\\])*"`);
+    if (!keyRegex.test(blockContent)) {
+      console.warn(`Warning: Key ${key} not found in language ${lang}`);
+    }
+    blockContent = blockContent.replace(keyRegex, `"${key}": "${escapedValue}"`);
+  }
+  
+  content = content.substring(0, startIndex) + blockContent + content.substring(endIndex + 1);
 }
 
-fs.writeFileSync('src/data/translations.ts', content, 'utf8');
+fs.writeFileSync('d:/Tacopdf/src/data/translations.ts', content, 'utf8');
+console.log('Update complete!');
