@@ -74,12 +74,12 @@ function StaticPageContent({ pageType }: StaticPageClientProps) {
         return (
           <div className="flex flex-col gap-6 md:gap-14 items-center">
             {/* Top Banner: Photo & Socials Box */}
-            <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-6 bg-surface-container-lowest p-5 md:p-12 rounded-2xl md:rounded-[2rem] border border-outline-variant/50 shadow-sm relative overflow-hidden">
+            <div className="w-full flex flex-col items-center justify-center gap-4 md:gap-5 bg-surface-container-lowest py-6 px-5 md:py-8 md:px-10 rounded-2xl md:rounded-[2rem] border border-outline-variant/50 shadow-sm relative overflow-hidden">
               <div className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-primary/5 to-transparent"></div>
               <img 
                 src="/profile.webp" 
                 alt="Founder" 
-                className="w-28 h-28 md:w-48 md:h-48 rounded-full object-cover shadow-xl border-4 md:border-[6px] border-surface relative z-10"
+                className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover shadow-xl border-4 md:border-[6px] border-surface relative z-10"
               />
               <div className="flex items-center justify-center gap-4 md:gap-6 relative z-10 mt-1 md:mt-2">
                 <a href="https://facebook.com/baylightyear04/" target="_blank" rel="noopener noreferrer" className="p-2.5 md:p-4 rounded-full bg-blue-600/10 text-blue-600 hover:bg-blue-600 hover:text-white hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300" title="Facebook">
