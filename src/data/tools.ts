@@ -21,11 +21,17 @@ export const TOOLS: PDFTool[] = [
   
   // Editing
   { id: 'add-watermark', name: 'Add Watermark', description: "Add custom text or image watermarks to your PDF files to protect your documents.", category: 'editing', icon: 'add-watermark', active: true },
-  { id: 'add-page-numbers', name: 'Add Page Numbers', description: "Add page numbers to PDF documents easily with customizable formatting and placement.", category: 'editing', icon: 'add-page-numbers', active: true }
+  { id: 'add-page-numbers', name: 'Add Page Numbers', description: "Add page numbers to PDF documents easily with customizable formatting and placement.", category: 'editing', icon: 'add-page-numbers', active: true },
+
+  // Optimization & Utility (Beta)
+  { id: 'compress', name: 'Compress PDF', description: "Reduce PDF file size significantly while maintaining good quality for web sharing and email.", category: 'optimization', icon: 'compress', active: true, isBeta: true },
+  { id: 'ocr', name: 'OCR PDF', description: "Extract text from scanned PDFs and images using Optical Character Recognition (OCR).", category: 'conversion', icon: 'scan-text', active: true, isBeta: true },
+  { id: 'organize', name: 'Organize PDF', description: "Reorder, delete, and manage PDF pages visually with an intuitive interface.", category: 'manipulation', icon: 'layers', active: true, isBeta: true }
 ];
 
 export const CATEGORIES = [
   { id: 'manipulation', name: 'Page Manipulation' },
+  { id: 'optimization', name: 'Optimization' },
   { id: 'security', name: 'Security' },
   { id: 'conversion', name: 'Format Conversion' },
   { id: 'editing', name: 'Editing' }
@@ -47,7 +53,10 @@ export const TOOL_ALIASES: Record<string, string> = {
   'pdf-to-image': 'pdf-to-image',
   'html-to-pdf': 'html-to-pdf',
   'add-watermark': 'add-watermark',
-  'add-page-numbers': 'add-page-numbers'
+  'add-page-numbers': 'add-page-numbers',
+  'compress-pdf': 'compress',
+  'ocr-pdf': 'ocr',
+  'organize-pdf': 'organize'
 };
 
 export const getToolSeoPath = (id: string) => {

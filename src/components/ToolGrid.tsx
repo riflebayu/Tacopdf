@@ -69,6 +69,10 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
           <span className="absolute -top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm">
             {setting.badge.toUpperCase()}
           </span>
+        ) : tool.isBeta ? (
+          <span className="absolute -top-3 left-3 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
+            🧪 Beta (Not Stable)
+          </span>
         ) : isPopular ? (
           <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
             🔥 {t('badge.popular', 'Popular Tools')}
@@ -138,6 +142,16 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
           {getToolsByCategory('manipulation').map(t => renderToolCard(t, false))}
+        </div>
+      </div>
+
+      {/* Optimization */}
+      <div id="optimization" className="space-y-4 scroll-mt-20">
+        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
+          {t('cat.optimization', 'Optimization & Utility')}
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
+          {getToolsByCategory('optimization').map(t => renderToolCard(t, false))}
         </div>
       </div>
 

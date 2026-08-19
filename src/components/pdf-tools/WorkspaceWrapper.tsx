@@ -1,5 +1,8 @@
 import React, { Suspense } from 'react';
 import Workspace from '../Workspace';
+import CompressWorkspace from './CompressWorkspace';
+import OCRWorkspace from './OCRWorkspace';
+import OrganizeWorkspace from './OrganizeWorkspace';
 import { LanguageProvider } from '../../context/LanguageContext';
 
 export default function WorkspaceWrapper(props: any) {
@@ -17,9 +20,23 @@ export default function WorkspaceWrapper(props: any) {
           </div>
         </div>
       }>
-        <Workspace tool={props.tool} initialFiles={[]} onBack={() => {
-          if (typeof window !== 'undefined') window.location.href = '/';
-        }} />
+        {props.tool.id === 'compress' ? (
+          <CompressWorkspace tool={props.tool} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        ) : props.tool.id === 'ocr' ? (
+          <OCRWorkspace tool={props.tool} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        ) : props.tool.id === 'organize' ? (
+          <OrganizeWorkspace tool={props.tool} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        ) : (
+          <Workspace tool={props.tool} initialFiles={[]} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        )}
       </Suspense>
       </div>
     </LanguageProvider>
