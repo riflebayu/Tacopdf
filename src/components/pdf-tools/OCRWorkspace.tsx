@@ -428,6 +428,18 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             });
             
             const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => b - a);
+            
+            // Calculate standard line spacing (median gap) to dynamically detect paragraphs
+            const gaps: number[] = [];
+            for (let j = 0; j < sortedY.length - 1; j++) {
+               const gap = Math.abs(sortedY[j] - sortedY[j+1]);
+               // Ignore extremely small or negative gaps
+               if (gap > 2) gaps.push(gap);
+            }
+            gaps.sort((a, b) => a - b);
+            const medianGap = gaps.length > 0 ? gaps[Math.floor(gaps.length / 2)] : 12;
+            const paragraphThreshold = medianGap * 1.25; // 25% larger than normal line spacing
+            
             let pageText = '';
             let lastLineY = -1;
             
@@ -436,13 +448,11 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               let lineStr = '';
               let lastX = -1;
               let lastWidth = 0;
-              let sumHeight = 0;
               
               lineItems.forEach((item: any) => {
                 const x = item.transform[4];
                 const charWidth = item.width || 0;
                 const charHeight = item.height || Math.abs(item.transform[3]) || 12;
-                sumHeight += charHeight;
                 
                 // 15% of height is a safe threshold for a space (prevents merging "thefirst")
                 const spaceThreshold = charHeight * 0.15; 
@@ -455,10 +465,8 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                 lastWidth = charWidth;
               });
               
-              const avgLineHeight = sumHeight / lineItems.length;
-              
-              // Paragraph breaks: if vertical gap is larger than 1.35x the average line height
-              if (lastLineY !== -1 && Math.abs(lastLineY - y) > (avgLineHeight * 1.35)) {
+              // Paragraph breaks: if vertical gap is larger than our calculated median paragraph threshold
+              if (lastLineY !== -1 && Math.abs(lastLineY - y) > paragraphThreshold) {
                  pageText += '\n\n' + lineStr.trim();
               } else {
                  pageText += '\n' + lineStr.trim();
