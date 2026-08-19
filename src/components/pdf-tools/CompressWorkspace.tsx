@@ -1,22 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { ArrowLeft, Upload, FileText, Download, AlertCircle, RefreshCw } from 'lucide-react';
-import { PDFDocument } from 'pdf-lib';
-import * as pdfjsLib from 'pdfjs-dist';
-// @ts-ignore
-import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 import { useLanguage } from '../../context/LanguageContext';
-
-const getPdfJs = (() => {
-  let initialized = false;
-  return () => {
-    if (!initialized) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
-      initialized = true;
-    }
-    return pdfjsLib;
-  };
-})();
+import { loadPyMuPDF } from '../../utils/pymupdf-loader';
 
 export default function CompressWorkspace({ tool, onBack }: any) {
   const { t } = useLanguage();
@@ -41,58 +27,47 @@ export default function CompressWorkspace({ tool, onBack }: any) {
     setProgress(10);
     
     try {
-      const pdfjs = getPdfJs();
-      const arrayBuffer = await file.arrayBuffer();
+      // Import the huge PyMuPDF/Ghostscript WASM (lazy load so it doesn't freeze initial page load)
+      setProgress(20);
+      const pymupdf = await loadPyMuPDF();
+      setProgress(40);
       
-      const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
-      const pdfDoc = await loadingTask.promise;
-      const numPages = pdfDoc.numPages;
+      let dpiTarget = 96;
+      let imgQuality = 75;
       
-      const newPdfDoc = await PDFDocument.create();
-      
-      let scale = 1.5;
-      let jpegQuality = 0.65;
-      if (quality === 'low') { scale = 1.0; jpegQuality = 0.35; }
-      if (quality === 'high') { scale = 2.0; jpegQuality = 0.85; }
+      if (quality === 'low') { dpiTarget = 72; imgQuality = 50; }
+      if (quality === 'high') { dpiTarget = 150; imgQuality = 90; }
 
-      for (let i = 1; i <= numPages; i++) {
-        setProgress(10 + Math.round((i / numPages) * 70));
-        
-        const page = await pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale });
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
-        
-        if (ctx) {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          
-          const jpegDataUrl = canvas.toDataURL('image/jpeg', jpegQuality);
-          const jpegBytes = await fetch(jpegDataUrl).then(res => res.arrayBuffer());
-          const jpegImage = await newPdfDoc.embedJpg(jpegBytes);
-          
-          const newPage = newPdfDoc.addPage([viewport.width, viewport.height]);
-          newPage.drawImage(jpegImage, {
-            x: 0,
-            y: 0,
-            width: viewport.width,
-            height: viewport.height,
-          });
-          
-          canvas.width = 0;
-          canvas.height = 0;
-        }
-        
-        await new Promise(r => setTimeout(r, 25)); // Yield to prevent crash
-      }
+      const options = {
+        images: {
+          enabled: true,
+          quality: imgQuality,
+          dpiTarget,
+          dpiThreshold: Math.max(150, dpiTarget + 10),
+          convertToGray: false,
+        },
+        scrub: {
+          metadata: true,
+          thumbnails: true,
+          xmlMetadata: true,
+        },
+        subsetFonts: true,
+        save: {
+          garbage: 4,
+          deflate: true,
+          clean: true,
+          useObjstms: true,
+        },
+      };
+
+      setProgress(60);
+      
+      // Perform compression using WASM
+      const result = await pymupdf.compressPdf(file, options);
       
       setProgress(90);
-      const pdfBytes = await newPdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      
+      const blob = result.blob;
       const url = URL.createObjectURL(blob);
       
       setDownloadUrl(url);
