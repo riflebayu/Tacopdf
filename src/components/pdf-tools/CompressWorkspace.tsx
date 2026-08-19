@@ -29,6 +29,13 @@ export default function CompressWorkspace({ tool, onBack }: any) {
     setProgress(10);
     setStatusText('Initializing...');
     
+    // Smooth fake progress animator
+    let currentProgress = 10;
+    const progressInterval = setInterval(() => {
+      currentProgress += (95 - currentProgress) * 0.05; // Asymptotic approach to 95%
+      setProgress(Math.round(currentProgress));
+    }, 500);
+    
     try {
       // Import the huge PyMuPDF/Ghostscript WASM (lazy load so it doesn't freeze initial page load)
       setProgress(20);
@@ -75,7 +82,8 @@ export default function CompressWorkspace({ tool, onBack }: any) {
       // Perform compression using WASM
       const result = await pymupdf.compressPdf(file, options);
       
-      setProgress(90);
+      clearInterval(progressInterval);
+      setProgress(100);
       setStatusText('Finalizing...');
       
       const blob = result.blob;
@@ -86,6 +94,10 @@ export default function CompressWorkspace({ tool, onBack }: any) {
       
       const originalSize = file.size;
       const newSize = blob.size;
+      
+      // Small delay for smooth UI transition to 100%
+      await new Promise(r => setTimeout(r, 400));
+      
       if (newSize < originalSize) {
         const percent = Math.round((1 - (newSize / originalSize)) * 100);
         setSavings(`Reduced by ${percent}% (${(newSize / 1024 / 1024).toFixed(2)} MB)`);
@@ -94,6 +106,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
       }
       
     } catch (err: any) {
+      clearInterval(progressInterval);
       console.error(err);
       setErrorMessage(err.message || 'An unknown error occurred during compression.');
       setStatus('error');
