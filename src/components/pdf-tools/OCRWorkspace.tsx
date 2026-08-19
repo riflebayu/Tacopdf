@@ -312,7 +312,9 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                 className="w-full p-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none font-medium"
               >
                 {Object.entries(TESSERACT_LANGUAGES).map(([code, name]) => (
-                  <option key={code} value={code}>{name}</option>
+                  <option key={code} value={code} className="bg-zinc-800 text-zinc-100 py-1">
+                    {name}
+                  </option>
                 ))}
               </select>
             </div>
