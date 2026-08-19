@@ -158,129 +158,171 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     if (!file) return;
     setStatus('processing');
     setProgress(5);
-    setStatusMsg('Initializing OCR Engine...');
     
     try {
-      const pdfjs = getPdfJs();
-      const arrayBuffer = await file.arrayBuffer();
-      
-      const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
-      const pdfDoc = await loadingTask.promise;
-      const numPages = pdfDoc.numPages;
-      
       let fullText = '';
       let ocrWorker: Tesseract.Worker | null = null;
+      const langStr = languages.join('+') || 'eng';
       
-      for (let i = 1; i <= numPages; i++) {
-        setStatusMsg(`Processing page ${i} of ${numPages}...`);
-        const page = await pdfDoc.getPage(i);
-        
-        // 1. Direct Text Layer Extraction
-        const textContent = await page.getTextContent();
-        const textItems = textContent.items.filter((item: any) => item.str.trim().length > 0);
-        
-        const totalChars = textItems.reduce((acc: number, item: any) => acc + item.str.length, 0);
-        
-        if (totalChars > 20) {
-          // It's a digital PDF, reconstruct spatial layout
-          setStatusMsg(`Extracting digital text from page ${i}...`);
-          
-          // Group items by Y coordinate (transform[5])
-          // PDF coordinates usually have Y origin at bottom, so higher Y is higher on page.
-          const linesMap: { [y: number]: any[] } = {};
-          
-          textItems.forEach((item: any) => {
-            const y = item.transform[5];
-            // Find an existing line within a small margin (e.g., 3px)
-            const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < 3);
-            if (existingY) {
-              linesMap[parseFloat(existingY)].push(item);
-            } else {
-              linesMap[y] = [item];
+      const getWorker = async () => {
+        if (!ocrWorker) {
+          ocrWorker = await Tesseract.createWorker(langStr, 1, {
+            workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
+            corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
+            logger: m => {
+              if (m.status === 'recognizing text') {
+                 // For images, we just use the raw progress
+                 setProgress(Math.round(m.progress * 100));
+              }
             }
           });
-          
-          // Sort lines by Y descending (top to bottom)
-          const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => b - a);
-          
-          let pageText = '';
-          sortedY.forEach(y => {
-            // Sort items in the line by X coordinate (transform[4]) left to right
-            const lineItems = linesMap[y].sort((a: any, b: any) => a.transform[4] - b.transform[4]);
-            
-            // Reconstruct the line string, adding spaces based on X gaps
-            let lineStr = '';
-            let lastX = -1;
-            let lastWidth = 0;
-            
-            lineItems.forEach((item: any) => {
-              const x = item.transform[4];
-              if (lastX !== -1 && (x - (lastX + lastWidth)) > 5) {
-                 // Add space if there's a significant gap
-                 lineStr += ' ';
-              }
-              lineStr += item.str;
-              lastX = x;
-              lastWidth = item.width || 0;
-            });
-            pageText += lineStr.trim() + '\n';
+          await ocrWorker.setParameters({
+            tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
           });
+        }
+        return ocrWorker;
+      };
+
+      if (file.type.startsWith('image/')) {
+        setStatusMsg('Loading image...');
+        const imageUrl = URL.createObjectURL(file);
+        
+        const img = new Image();
+        img.src = imageUrl;
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          setStatusMsg('Pre-processing image...');
           
-          fullText += `\n--- Page ${i} ---\n` + pageText + '\n';
-          setProgress(Math.round((i / numPages) * 100));
-          
-        } else {
-          // 2. Fallback OCR (High-Precision OCR Pipeline)
-          setStatusMsg(`Running OCR on scanned page ${i}...`);
-          
-          if (!ocrWorker) {
-            const langStr = languages.join('+') || 'eng';
-            // Initialize OCR worker only when needed for the first scanned page
-            ocrWorker = await Tesseract.createWorker(langStr, 1, {
-              workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
-              corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
-              logger: m => {
-                if (m.status === 'recognizing text') {
-                  // Scale progress relative to current page
-                  const baseProgress = ((i - 1) / numPages) * 100;
-                  const pageProgress = m.progress * (100 / numPages);
-                  setProgress(Math.round(baseProgress + pageProgress));
-                }
-              }
-            });
-            await ocrWorker.setParameters({
-              tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
-            });
+          const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageDataCtx.data;
+          for (let j = 0; j < data.length; j += 4) {
+            const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
+            const color = gray < 160 ? 0 : 255;
+            data[j] = color;
+            data[j + 1] = color;
+            data[j + 2] = color;
           }
+          ctx.putImageData(imageDataCtx, 0, 0);
           
-          const viewport = page.getViewport({ scale: 3.0 }); // High-DPI 300 equivalent
+          setStatusMsg('Running OCR on image...');
+          const worker = await getWorker();
+          const imageData = canvas.toDataURL('image/png');
+          const { data: { text } } = await worker.recognize(imageData);
+          fullText = `--- Image --- \n` + text;
+        }
+        URL.revokeObjectURL(imageUrl);
+        
+      } else {
+        // PDF Processing Pipeline
+        setStatusMsg('Initializing PDF Engine...');
+        const pdfjs = getPdfJs();
+        const arrayBuffer = await file.arrayBuffer();
+        
+        const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
+        const pdfDoc = await loadingTask.promise;
+        const numPages = pdfDoc.numPages;
+        
+        for (let i = 1; i <= numPages; i++) {
+          setStatusMsg(`Processing page ${i} of ${numPages}...`);
+          const page = await pdfDoc.getPage(i);
           
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext('2d');
+          // 1. Direct Text Layer Extraction
+          const textContent = await page.getTextContent();
+          const textItems = textContent.items.filter((item: any) => item.str.trim().length > 0);
           
-          if (ctx) {
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            await page.render({ canvasContext: ctx, viewport }).promise;
+          const totalChars = textItems.reduce((acc: number, item: any) => acc + item.str.length, 0);
+          
+          if (totalChars > 20) {
+            // It's a digital PDF, reconstruct spatial layout
+            setStatusMsg(`Extracting digital text from page ${i}...`);
             
-            // Pre-processing: Grayscale and Binarization
-            const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageDataCtx.data;
-            for (let j = 0; j < data.length; j += 4) {
-              const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
-              const color = gray < 160 ? 0 : 255;
-              data[j] = color;
-              data[j + 1] = color;
-              data[j + 2] = color;
+            const linesMap: { [y: number]: any[] } = {};
+            textItems.forEach((item: any) => {
+              const y = item.transform[5];
+              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < 3);
+              if (existingY) {
+                linesMap[parseFloat(existingY)].push(item);
+              } else {
+                linesMap[y] = [item];
+              }
+            });
+            
+            const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => b - a);
+            let pageText = '';
+            
+            sortedY.forEach(y => {
+              const lineItems = linesMap[y].sort((a: any, b: any) => a.transform[4] - b.transform[4]);
+              let lineStr = '';
+              let lastX = -1;
+              let lastWidth = 0;
+              
+              lineItems.forEach((item: any) => {
+                const x = item.transform[4];
+                if (lastX !== -1 && (x - (lastX + lastWidth)) > 5) {
+                   lineStr += ' ';
+                }
+                lineStr += item.str;
+                lastX = x;
+                lastWidth = item.width || 0;
+              });
+              pageText += lineStr.trim() + '\n';
+            });
+            
+            fullText += `\n--- Page ${i} ---\n` + pageText + '\n';
+            setProgress(Math.round((i / numPages) * 100));
+            
+          } else {
+            // 2. Fallback OCR (High-Precision OCR Pipeline)
+            setStatusMsg(`Running OCR on scanned page ${i}...`);
+            const worker = await getWorker();
+            
+            // Re-bind logger so progress scales by page
+            worker.setLogger(m => {
+              if (m.status === 'recognizing text') {
+                const baseProgress = ((i - 1) / numPages) * 100;
+                const pageProgress = m.progress * (100 / numPages);
+                setProgress(Math.round(baseProgress + pageProgress));
+              }
+            });
+            
+            const viewport = page.getViewport({ scale: 3.0 });
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            
+            if (ctx) {
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              await page.render({ canvasContext: ctx, viewport }).promise;
+              
+              // Pre-processing
+              const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const data = imageDataCtx.data;
+              for (let j = 0; j < data.length; j += 4) {
+                const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
+                const color = gray < 160 ? 0 : 255;
+                data[j] = color;
+                data[j + 1] = color;
+                data[j + 2] = color;
+              }
+              ctx.putImageData(imageDataCtx, 0, 0);
+              
+              const imageData = canvas.toDataURL('image/png');
+              const { data: { text } } = await worker.recognize(imageData);
+              fullText += `\n--- Page ${i} ---\n` + text + '\n';
             }
-            ctx.putImageData(imageDataCtx, 0, 0);
-            
-            const imageData = canvas.toDataURL('image/png');
-            
-            const { data: { text } } = await ocrWorker.recognize(imageData);
-            fullText += `\n--- Page ${i} ---\n` + text + '\n';
           }
         }
       }
