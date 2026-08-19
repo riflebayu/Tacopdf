@@ -382,10 +382,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             
             // Clean up excess newlines
             reconstructedText = reconstructedText.replace(/\n{3,}/g, '\n\n');
-            fullText = `--- Image ---\n\n` + reconstructedText;
+            fullText = reconstructedText;
           } else {
             // Fallback
-            fullText = `--- Image ---\n\n` + resultData.text;
+            fullText = resultData.text;
           }
         }
         URL.revokeObjectURL(imageUrl);
@@ -478,7 +478,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             
             // Trim leading newlines
             pageText = pageText.trim();
-            fullText += `\n--- Page ${i} ---\n\n` + pageText + '\n\n';
+            fullText += pageText + '\n\n';
             setProgress(Math.round((i / numPages) * 100));
             
           } else {
@@ -521,7 +521,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               
               const imageData = canvas.toDataURL('image/png');
               const { data: { text } } = await worker.recognize(imageData);
-              fullText += `\n--- Page ${i} ---\n` + text + '\n';
+              fullText += text + '\n\n';
             }
           }
         }
