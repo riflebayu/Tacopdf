@@ -416,10 +416,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             const linesMap: { [y: number]: any[] } = {};
             textItems.forEach((item: any) => {
               const y = item.transform[5];
-              const fontSize = Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || 12;
+              const itemHeight = item.height || Math.abs(item.transform[3]) || 12;
               
               // Group items into the same line if they are within 40% of the font height
-              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < (fontSize * 0.4));
+              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < (itemHeight * 0.4));
               if (existingY) {
                 linesMap[parseFloat(existingY)].push(item);
               } else {
@@ -436,27 +436,29 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               let lineStr = '';
               let lastX = -1;
               let lastWidth = 0;
-              let maxFontSize = 10;
+              let sumHeight = 0;
               
               lineItems.forEach((item: any) => {
                 const x = item.transform[4];
-                const fontSize = Math.abs(item.transform[0]) || 10;
-                if (fontSize > maxFontSize) maxFontSize = fontSize;
+                const charWidth = item.width || 0;
+                const charHeight = item.height || Math.abs(item.transform[3]) || 12;
+                sumHeight += charHeight;
                 
-                // If gap is wider than 20% of the font size, it's a space. 
-                // Prevents "S 3" (small gap) but allows "File Name" (normal gap)
-                const spaceThreshold = fontSize * 0.25; 
+                // 15% of height is a safe threshold for a space (prevents merging "thefirst")
+                const spaceThreshold = charHeight * 0.15; 
                 
                 if (lastX !== -1 && (x - (lastX + lastWidth)) > spaceThreshold) {
                    lineStr += ' ';
                 }
                 lineStr += item.str;
                 lastX = x;
-                lastWidth = item.width || 0;
+                lastWidth = charWidth;
               });
               
-              // Add double newline for paragraph breaks (if Y gap is > 1.5x font size)
-              if (lastLineY !== -1 && Math.abs(lastLineY - y) > (maxFontSize * 1.5)) {
+              const avgLineHeight = sumHeight / lineItems.length;
+              
+              // Paragraph breaks: if vertical gap is larger than 1.35x the average line height
+              if (lastLineY !== -1 && Math.abs(lastLineY - y) > (avgLineHeight * 1.35)) {
                  pageText += '\n\n' + lineStr.trim();
               } else {
                  pageText += '\n' + lineStr.trim();
