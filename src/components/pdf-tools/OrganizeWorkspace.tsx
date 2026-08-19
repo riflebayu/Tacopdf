@@ -177,10 +177,10 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             {pages.length === 0 ? (
                <div className="text-center text-error mt-10 font-bold">All pages removed. Please upload again.</div>
             ) : (
-               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pb-8">
+               <div className="flex flex-row gap-6 overflow-x-auto pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar">
                  {pages.map((page, index) => (
-                   <div key={page.id} className="relative group bg-surface-container-high rounded-lg p-2 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors">
-                      <div className="absolute top-1 left-1 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow z-10">
+                   <div key={page.id} className="relative group bg-surface-container-high rounded-xl p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-48 sm:w-56 snap-center">
+                      <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10">
                         {index + 1}
                       </div>
                       
