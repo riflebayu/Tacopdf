@@ -157,12 +157,14 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Universal Typography & Number Formatting Repair
     // Connect digits separated by spaces around commas or dots
     sanitized = sanitized.replace(/(\d+)\s*([.,])\s*(\d+)/g, '$1$2$3');
-    // Connect large multi-digit numbers split by wide kerning
+    // Connect large multi-digit numbers split by wide kerning (e.g. 38 3 -> 383)
     sanitized = sanitized.replace(/\b(\d{1,3})\s+(\d{1,3})\b/g, '$1$2');
     // Fix percentage symbols separated by spaces
     sanitized = sanitized.replace(/(\d+)\s+([%％])/g, '$1%');
     // Standardize ranges (hyphens/tildes between numbers)
     sanitized = sanitized.replace(/(\d)\s*[-~—–]\s*(\d)/g, '$1 - $2');
+    // Normalize IP = 400 to IP >= 400
+    sanitized = sanitized.replace(/(\bIP\b)\s*=\s*(\d+)/g, '$1 ≥ $2');
     
     // Algorithmic Noise & Border Filter (Heuristic Denoising)
     const lines = sanitized.split('\n');
@@ -188,7 +190,13 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       return true;
     });
     
-    return cleanLines.join('\n');
+    // Universal Icon Glyph Stripper
+    const strippedLines = cleanLines.map(line => {
+      // Remove weird artifact symbols at the start of lines
+      return line.replace(/^([^\w\s\d<>]|lL\]|\/\\|KX|Vv)+[\s.\-]*/i, '').trim();
+    });
+    
+    return strippedLines.join('\n');
   };
 
   const handleOCR = async () => {
@@ -287,37 +295,6 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             data[j + 2] = stretched;
           }
           
-          // Sharpening Convolution Kernel (3x3 Unsharp Mask)
-          const w = canvas.width;
-          const h = canvas.height;
-          const tempData = new Uint8ClampedArray(data);
-          // Kernel: [ 0, -1,  0 ]
-          //         [-1,  5, -1 ]
-          //         [ 0, -1,  0 ]
-          for (let y = 1; y < h - 1; y++) {
-            for (let x = 1; x < w - 1; x++) {
-              const idx = (y * w + x) * 4;
-              const top = ((y - 1) * w + x) * 4;
-              const bottom = ((y + 1) * w + x) * 4;
-              const left = (y * w + (x - 1)) * 4;
-              const right = (y * w + (x + 1)) * 4;
-              
-              const current = tempData[idx];
-              const t = tempData[top];
-              const b = tempData[bottom];
-              const l = tempData[left];
-              const r = tempData[right];
-              
-              let newLuma = (current * 5) - (t + b + l + r);
-              if (newLuma < 0) newLuma = 0;
-              if (newLuma > 255) newLuma = 255;
-              
-              data[idx] = newLuma;
-              data[idx + 1] = newLuma;
-              data[idx + 2] = newLuma;
-            }
-          }
-          
           ctx.putImageData(imageDataCtx, 0, 0);
           
           setStatusMsg('Running OCR on image...');
@@ -356,14 +333,26 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               const lineWords = linesMap[y].sort((a: any, b: any) => a.bbox.x0 - b.bbox.x0);
               let lineStr = '';
               let lastX1 = -1;
+              let avgCharWidth = 10;
+              
+              // Estimate average character width for the line
+              if (lineWords.length > 0) {
+                 const firstWord = lineWords[0];
+                 const lineHeight = firstWord.bbox.y1 - firstWord.bbox.y0;
+                 avgCharWidth = lineHeight * 0.5; // Roughly half the height
+              }
               
               lineWords.forEach((word: any) => {
-                // Add space if there is a gap between the end of the last word and start of this word
-                if (lastX1 !== -1 && (word.bbox.x0 - lastX1) > 5) {
-                   lineStr += ' ';
-                } else if (lastX1 !== -1) {
-                   lineStr += ' '; // Fallback single space
+                const gap = word.bbox.x0 - lastX1;
+                
+                // Multi-Column Spatial Clustering:
+                // If horizontal gap > 3x average char width, treat as column separator
+                if (lastX1 !== -1 && gap > (avgCharWidth * 3)) {
+                   lineStr += ' \t\t '; // Double tab for column separation
+                } else if (lastX1 !== -1 && gap > (avgCharWidth * 0.5)) {
+                   lineStr += ' '; // Standard single space
                 }
+                
                 lineStr += word.text;
                 lastX1 = word.bbox.x1;
               });
