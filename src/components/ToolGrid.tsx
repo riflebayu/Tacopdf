@@ -70,8 +70,8 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
             {setting.badge.toUpperCase()}
           </span>
         ) : tool.isBeta ? (
-          <span className="absolute -top-3 left-3 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
-            🧪 Beta (Not Stable)
+          <span className="absolute -top-3 left-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full z-20 shadow-md flex items-center gap-1 tracking-widest border border-white/20">
+            BETA
           </span>
         ) : isPopular ? (
           <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
