@@ -155,16 +155,16 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     sanitized = sanitized.replace(/\s+\/\s+/g, '/').replace(/\s+\/\b/g, '/').replace(/\b\/\s+/g, '/');
     
     // Universal Typography & Number Formatting Repair
-    // Connect digits separated by spaces around commas or dots
-    sanitized = sanitized.replace(/(\d+)\s*([.,])\s*(\d+)/g, '$1$2$3');
+    // Connect digits separated by spaces around commas or dots (prevent newline merging)
+    sanitized = sanitized.replace(/(\d+)[ \t]*([.,])[ \t]*(\d+)/g, '$1$2$3');
     // Connect large multi-digit numbers split by wide kerning (e.g. 38 3 -> 383)
-    sanitized = sanitized.replace(/\b(\d{1,3})\s+(\d{1,3})\b/g, '$1$2');
+    sanitized = sanitized.replace(/(\b\d{1,3})[ \t]+(\d{1,3}\b)/g, '$1$2');
     // Fix percentage symbols separated by spaces
-    sanitized = sanitized.replace(/(\d+)\s+([%％])/g, '$1%');
+    sanitized = sanitized.replace(/(\d+)[ \t]+([%％])/g, '$1%');
     // Standardize ranges (hyphens/tildes between numbers)
-    sanitized = sanitized.replace(/(\d)\s*[-~—–]\s*(\d)/g, '$1 - $2');
+    sanitized = sanitized.replace(/(\d)[ \t]*[-~—–][ \t]*(\d)/g, '$1 - $2');
     // Normalize IP = 400 to IP >= 400
-    sanitized = sanitized.replace(/(\bIP\b)\s*=\s*(\d+)/g, '$1 ≥ $2');
+    sanitized = sanitized.replace(/(\bIP\b)[ \t]*=[ \t]*(\d+)/gi, '$1 ≥ $2');
     // Fix end of line quote to exclamation mark
     sanitized = sanitized.replace(/(\w+)'$/gm, '$1!');
     
@@ -181,10 +181,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       // Filter lines with a single character repeating >= 4 times (e.g. "aaaa", "----")
       if (/(.)\1{3,}/.test(trimmed)) return false;
       
-      // Filter lines where unique character ratio is < 30%
+      // Filter lines where unique character ratio is < 30% ONLY for short lines (prevents deleting long paragraphs)
       const uniqueChars = new Set(trimmed.replace(/\s/g, '').split(''));
       const nonSpaceLength = trimmed.replace(/\s/g, '').length;
-      if (nonSpaceLength > 0 && (uniqueChars.size / nonSpaceLength) < 0.3) {
+      if (nonSpaceLength > 0 && nonSpaceLength < 20 && (uniqueChars.size / nonSpaceLength) < 0.3) {
          return false;
       }
       
@@ -199,7 +199,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Universal Icon Glyph Stripper
     const strippedLines = cleanLines.map(line => {
       // Remove weird artifact symbols at the start of lines before the first valid alphanumeric word
-      return line.replace(/^[^a-zA-Z0-9<>\(]+(?=\s*[A-Z0-9])/i, '').trim();
+      return line.replace(/^(?:[^\w\s\d<>\(]+|Ll|lL|Vv|KX|\/\\|\||K)\s*(?=[A-Z0-9])/i, '').trim();
     });
     
     return strippedLines.join('\n');
