@@ -18,9 +18,10 @@ export async function loadPyMuPDF(): Promise<any> {
     try {
       const wrapperUrl = `${PYMUPDF_URL}dist/index.js`;
       
-      // We use a dynamic import from the CDN. Vite might complain if we don't ignore it.
-      // @ts-ignore
-      const module = await import(/* @vite-ignore */ wrapperUrl);
+      // Use a Function to completely bypass Vite/Webpack static analysis
+      // This forces the browser to natively fetch the ES module from the CDN
+      const nativeImport = new Function('url', 'return import(url)');
+      const module = await nativeImport(wrapperUrl);
 
       if (typeof module.PyMuPDF !== 'function') {
         throw new Error('PyMuPDF module did not export expected PyMuPDF class.');
