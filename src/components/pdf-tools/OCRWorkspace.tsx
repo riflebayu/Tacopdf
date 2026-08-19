@@ -145,7 +145,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     let sanitized = text;
     // Normalize comparison symbols
     sanitized = sanitized.replace(/«/g, '<').replace(/»/g, '>');
-    sanitized = sanitized.replace(/["“”](\d)/g, '>$1');
+    sanitized = sanitized.replace(/["“”](\d)/g, '> $1');
     
     // Normalize dashes globally
     sanitized = sanitized.replace(/[—–]/g, '-');
@@ -157,10 +157,12 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Universal Typography & Number Formatting Repair
     // Connect digits separated by spaces around commas or dots
     sanitized = sanitized.replace(/(\d+)\s*([.,])\s*(\d+)/g, '$1$2$3');
+    // Connect large multi-digit numbers split by wide kerning
+    sanitized = sanitized.replace(/\b(\d{1,3})\s+(\d{1,3})\b/g, '$1$2');
     // Fix percentage symbols separated by spaces
-    sanitized = sanitized.replace(/(\d+)\s+%/g, '$1%');
+    sanitized = sanitized.replace(/(\d+)\s+([%％])/g, '$1%');
     // Standardize ranges (hyphens/tildes between numbers)
-    sanitized = sanitized.replace(/(\d)\s*[-~]\s*(\d)/g, '$1-$2');
+    sanitized = sanitized.replace(/(\d)\s*[-~—–]\s*(\d)/g, '$1 - $2');
     
     // Algorithmic Noise & Border Filter (Heuristic Denoising)
     const lines = sanitized.split('\n');
@@ -168,24 +170,18 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       const trimmed = line.trim();
       if (!trimmed) return false;
       
-      // Filter lines with a single character repeating > 4 times (e.g. "aaaa", "----")
-      if (/(.)\1{4,}/.test(trimmed)) return false;
+      // Filter lines with a single character repeating >= 4 times (e.g. "aaaa", "----")
+      if (/(.)\1{3,}/.test(trimmed)) return false;
       
-      // Filter lines where > 60% is a single identical character
-      const charCounts: Record<string, number> = {};
-      let maxCharCount = 0;
-      for (const char of trimmed) {
-         if (char === ' ') continue;
-         charCounts[char] = (charCounts[char] || 0) + 1;
-         if (charCounts[char] > maxCharCount) maxCharCount = charCounts[char];
-      }
+      // Filter lines where unique character ratio is < 30%
+      const uniqueChars = new Set(trimmed.replace(/\s/g, '').split(''));
       const nonSpaceLength = trimmed.replace(/\s/g, '').length;
-      if (nonSpaceLength > 0 && (maxCharCount / nonSpaceLength) > 0.6) {
+      if (nonSpaceLength > 0 && (uniqueChars.size / nonSpaceLength) < 0.3) {
          return false;
       }
       
-      // Filter short garbage lines (< 4 chars) containing no alphanumerics
-      if (trimmed.length < 4 && !/[a-zA-Z0-9]/.test(trimmed)) {
+      // Filter lone icon / artefact removal (length <= 2, weird symbols)
+      if (trimmed.length <= 2 && !/[a-zA-Z0-9]/.test(trimmed)) {
          return false;
       }
       
@@ -250,7 +246,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         const maxDim = Math.max(img.width, img.height);
         
         if (maxDim < 1800) {
-           const scaleFactor = Math.min(2.0, 2500 / maxDim);
+           const scaleFactor = Math.min(3.0, 2500 / maxDim);
            targetWidth = Math.round(img.width * scaleFactor);
            targetHeight = Math.round(img.height * scaleFactor);
         }
@@ -260,17 +256,19 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         const ctx = canvas.getContext('2d');
         
         if (ctx) {
+          // Use high quality image smoothing for upscale
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
           setStatusMsg('Pre-processing image...');
           
           const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imageDataCtx.data;
           
-          // Dynamic Contrast Stretching (Min-Max Normalization)
+          // Adaptive Contrast Stretching (Min-Max Normalization)
           let minLuminance = 255;
           let maxLuminance = 0;
           
-          // First pass: Calculate luminance and find min/max
           const luminanceArray = new Uint8Array(canvas.width * canvas.height);
           for (let j = 0, p = 0; j < data.length; j += 4, p++) {
             const luma = Math.round(0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2]);
@@ -279,27 +277,104 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             if (luma > maxLuminance) maxLuminance = luma;
           }
           
-          // Prevent division by zero
           const luminanceRange = (maxLuminance - minLuminance) || 1;
           
-          // Second pass: Apply stretching
           for (let j = 0, p = 0; j < data.length; j += 4, p++) {
             const originalLuma = luminanceArray[p];
-            // Stretch to 0-255
             const stretched = Math.round(((originalLuma - minLuminance) / luminanceRange) * 255);
             data[j] = stretched;
             data[j + 1] = stretched;
             data[j + 2] = stretched;
-            // Alpha (data[j+3]) remains unchanged
+          }
+          
+          // Sharpening Convolution Kernel (3x3 Unsharp Mask)
+          const w = canvas.width;
+          const h = canvas.height;
+          const tempData = new Uint8ClampedArray(data);
+          // Kernel: [ 0, -1,  0 ]
+          //         [-1,  5, -1 ]
+          //         [ 0, -1,  0 ]
+          for (let y = 1; y < h - 1; y++) {
+            for (let x = 1; x < w - 1; x++) {
+              const idx = (y * w + x) * 4;
+              const top = ((y - 1) * w + x) * 4;
+              const bottom = ((y + 1) * w + x) * 4;
+              const left = (y * w + (x - 1)) * 4;
+              const right = (y * w + (x + 1)) * 4;
+              
+              const current = tempData[idx];
+              const t = tempData[top];
+              const b = tempData[bottom];
+              const l = tempData[left];
+              const r = tempData[right];
+              
+              let newLuma = (current * 5) - (t + b + l + r);
+              if (newLuma < 0) newLuma = 0;
+              if (newLuma > 255) newLuma = 255;
+              
+              data[idx] = newLuma;
+              data[idx + 1] = newLuma;
+              data[idx + 2] = newLuma;
+            }
           }
           
           ctx.putImageData(imageDataCtx, 0, 0);
           
           setStatusMsg('Running OCR on image...');
-          const worker = await getWorker(true); // Pass true to use image-specific PSM config
+          const worker = await getWorker(true);
           const imageData = canvas.toDataURL('image/png');
-          const { data: { text } } = await worker.recognize(imageData);
-          fullText = `--- Image ---\n\n` + text;
+          const { data: resultData } = await worker.recognize(imageData);
+          
+          // 2. Spatial Bounding Box Layout Reconstruction
+          if (resultData.words && resultData.words.length > 0) {
+            const words = resultData.words;
+            const linesMap: { [y: number]: any[] } = {};
+            
+            words.forEach((word: any) => {
+              const text = word.text.trim();
+              if (!text) return;
+              
+              // Calculate center Y of the word's bounding box
+              const yCenter = (word.bbox.y0 + word.bbox.y1) / 2;
+              const lineHeight = word.bbox.y1 - word.bbox.y0;
+              const tolerance = lineHeight * 0.5; // 50% line height tolerance
+              
+              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - yCenter) < tolerance);
+              if (existingY) {
+                linesMap[parseFloat(existingY)].push(word);
+              } else {
+                linesMap[yCenter] = [word];
+              }
+            });
+            
+            // Sort lines from top to bottom (ascending Y in image coordinates)
+            const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => a - b);
+            
+            let reconstructedText = '';
+            sortedY.forEach(y => {
+              // Sort words horizontally left to right
+              const lineWords = linesMap[y].sort((a: any, b: any) => a.bbox.x0 - b.bbox.x0);
+              let lineStr = '';
+              let lastX1 = -1;
+              
+              lineWords.forEach((word: any) => {
+                // Add space if there is a gap between the end of the last word and start of this word
+                if (lastX1 !== -1 && (word.bbox.x0 - lastX1) > 5) {
+                   lineStr += ' ';
+                } else if (lastX1 !== -1) {
+                   lineStr += ' '; // Fallback single space
+                }
+                lineStr += word.text;
+                lastX1 = word.bbox.x1;
+              });
+              reconstructedText += lineStr.trim() + '\n';
+            });
+            
+            fullText = `--- Image ---\n\n` + reconstructedText;
+          } else {
+            // Fallback to raw text if word data is missing
+            fullText = `--- Image ---\n\n` + resultData.text;
+          }
         }
         URL.revokeObjectURL(imageUrl);
         
