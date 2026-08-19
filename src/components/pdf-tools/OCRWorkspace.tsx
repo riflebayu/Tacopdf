@@ -166,12 +166,18 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           }
         }
       });
+      
+      // Set PSM to 6 (Assume a single uniform block of text) which is excellent for preserving tables
+      await worker.setParameters({
+        tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
+      });
 
       for (let i = 1; i <= numPages; i++) {
         setStatusMsg(`Processing page ${i} of ${numPages}...`);
         
         const page = await pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 2.0 });
+        // Increase scale to 2.5 for higher DPI to prevent commas/dots from disappearing
+        const viewport = page.getViewport({ scale: 2.5 });
         
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
@@ -182,6 +188,21 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           await page.render({ canvasContext: ctx, viewport }).promise;
+          
+          // Pre-processing: Grayscale and Contrast Enhancement (Binarization)
+          const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageDataCtx.data;
+          for (let j = 0; j < data.length; j += 4) {
+            // Convert to grayscale using luminance formula
+            const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
+            // Simple thresholding / high contrast (Threshold at 150)
+            const color = gray < 150 ? 0 : 255;
+            data[j] = color;     // Red
+            data[j + 1] = color; // Green
+            data[j + 2] = color; // Blue
+            // Alpha remains unchanged (data[j + 3])
+          }
+          ctx.putImageData(imageDataCtx, 0, 0);
           
           const imageData = canvas.toDataURL('image/png');
           
@@ -195,7 +216,17 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       
       await worker.terminate();
       
-      setExtractedText(fullText.trim());
+      // Post-processing sanitization
+      let sanitizedText = fullText.trim();
+      // Replace false guillemets with angle brackets
+      sanitizedText = sanitizedText.replace(/«/g, '<').replace(/»/g, '>');
+      // Fix wild spaces around hyphens and slashes
+      sanitizedText = sanitizedText.replace(/\s+-\s+/g, '-').replace(/\s+-\b/g, '-').replace(/\b-\s+/g, '-');
+      sanitizedText = sanitizedText.replace(/\s+\/\s+/g, '/').replace(/\s+\/\b/g, '/').replace(/\b\/\s+/g, '/');
+      // Attempt to fix missing decimals in small ranges like "10-12" to "1.0-1.2" if applicable
+      // But a general regex for that might break other numbers, so we rely on the high-res canvas fix.
+      
+      setExtractedText(sanitizedText);
       setStatus('success');
       
     } catch (err) {
