@@ -146,12 +146,53 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Normalize comparison symbols
     sanitized = sanitized.replace(/«/g, '<').replace(/»/g, '>');
     sanitized = sanitized.replace(/["“”](\d)/g, '>$1');
-    // Normalize dashes
+    
+    // Normalize dashes globally
     sanitized = sanitized.replace(/[—–]/g, '-');
+    
     // Fix wild spaces around hyphens and slashes
     sanitized = sanitized.replace(/\s+-\s+/g, '-').replace(/\s+-\b/g, '-').replace(/\b-\s+/g, '-');
     sanitized = sanitized.replace(/\s+\/\s+/g, '/').replace(/\s+\/\b/g, '/').replace(/\b\/\s+/g, '/');
-    return sanitized;
+    
+    // Universal Typography & Number Formatting Repair
+    // Connect digits separated by spaces around commas or dots
+    sanitized = sanitized.replace(/(\d+)\s*([.,])\s*(\d+)/g, '$1$2$3');
+    // Fix percentage symbols separated by spaces
+    sanitized = sanitized.replace(/(\d+)\s+%/g, '$1%');
+    // Standardize ranges (hyphens/tildes between numbers)
+    sanitized = sanitized.replace(/(\d)\s*[-~]\s*(\d)/g, '$1-$2');
+    
+    // Algorithmic Noise & Border Filter (Heuristic Denoising)
+    const lines = sanitized.split('\n');
+    const cleanLines = lines.filter(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return false;
+      
+      // Filter lines with a single character repeating > 4 times (e.g. "aaaa", "----")
+      if (/(.)\1{4,}/.test(trimmed)) return false;
+      
+      // Filter lines where > 60% is a single identical character
+      const charCounts: Record<string, number> = {};
+      let maxCharCount = 0;
+      for (const char of trimmed) {
+         if (char === ' ') continue;
+         charCounts[char] = (charCounts[char] || 0) + 1;
+         if (charCounts[char] > maxCharCount) maxCharCount = charCounts[char];
+      }
+      const nonSpaceLength = trimmed.replace(/\s/g, '').length;
+      if (nonSpaceLength > 0 && (maxCharCount / nonSpaceLength) > 0.6) {
+         return false;
+      }
+      
+      // Filter short garbage lines (< 4 chars) containing no alphanumerics
+      if (trimmed.length < 4 && !/[a-zA-Z0-9]/.test(trimmed)) {
+         return false;
+      }
+      
+      return true;
+    });
+    
+    return cleanLines.join('\n');
   };
 
   const handleOCR = async () => {
@@ -164,21 +205,28 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       let ocrWorker: Tesseract.Worker | null = null;
       const langStr = languages.join('+') || 'eng';
       
-      const getWorker = async () => {
+      const getWorker = async (isImage: boolean = false) => {
         if (!ocrWorker) {
           ocrWorker = await Tesseract.createWorker(langStr, 1, {
             workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
             corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
             logger: m => {
               if (m.status === 'recognizing text') {
-                 // For images, we just use the raw progress
                  setProgress(Math.round(m.progress * 100));
               }
             }
           });
-          await ocrWorker.setParameters({
-            tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
-          });
+          
+          if (isImage) {
+            await ocrWorker.setParameters({
+              tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+              tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;-_+=/\\|<>≤≥()[]{}%$€£¥#@&*~\'"` ',
+            });
+          } else {
+            await ocrWorker.setParameters({
+              tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
+            });
+          }
         }
         return ocrWorker;
       };
@@ -195,30 +243,63 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         });
         
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        
+        // 1. Universal Image Pre-Processing: DPI Upscaling
+        let targetWidth = img.width;
+        let targetHeight = img.height;
+        const maxDim = Math.max(img.width, img.height);
+        
+        if (maxDim < 1800) {
+           const scaleFactor = Math.min(2.0, 2500 / maxDim);
+           targetWidth = Math.round(img.width * scaleFactor);
+           targetHeight = Math.round(img.height * scaleFactor);
+        }
+        
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
         const ctx = canvas.getContext('2d');
         
         if (ctx) {
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
           setStatusMsg('Pre-processing image...');
           
           const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imageDataCtx.data;
-          for (let j = 0; j < data.length; j += 4) {
-            const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
-            const color = gray < 160 ? 0 : 255;
-            data[j] = color;
-            data[j + 1] = color;
-            data[j + 2] = color;
+          
+          // Dynamic Contrast Stretching (Min-Max Normalization)
+          let minLuminance = 255;
+          let maxLuminance = 0;
+          
+          // First pass: Calculate luminance and find min/max
+          const luminanceArray = new Uint8Array(canvas.width * canvas.height);
+          for (let j = 0, p = 0; j < data.length; j += 4, p++) {
+            const luma = Math.round(0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2]);
+            luminanceArray[p] = luma;
+            if (luma < minLuminance) minLuminance = luma;
+            if (luma > maxLuminance) maxLuminance = luma;
           }
+          
+          // Prevent division by zero
+          const luminanceRange = (maxLuminance - minLuminance) || 1;
+          
+          // Second pass: Apply stretching
+          for (let j = 0, p = 0; j < data.length; j += 4, p++) {
+            const originalLuma = luminanceArray[p];
+            // Stretch to 0-255
+            const stretched = Math.round(((originalLuma - minLuminance) / luminanceRange) * 255);
+            data[j] = stretched;
+            data[j + 1] = stretched;
+            data[j + 2] = stretched;
+            // Alpha (data[j+3]) remains unchanged
+          }
+          
           ctx.putImageData(imageDataCtx, 0, 0);
           
           setStatusMsg('Running OCR on image...');
-          const worker = await getWorker();
+          const worker = await getWorker(true); // Pass true to use image-specific PSM config
           const imageData = canvas.toDataURL('image/png');
           const { data: { text } } = await worker.recognize(imageData);
-          fullText = `--- Image --- \n` + text;
+          fullText = `--- Image ---\n\n` + text;
         }
         URL.revokeObjectURL(imageUrl);
         
