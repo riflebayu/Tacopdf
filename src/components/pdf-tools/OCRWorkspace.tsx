@@ -132,6 +132,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
   const [progress, setProgress] = useState<number>(0);
   const [extractedText, setExtractedText] = useState<string>('');
   const [statusMsg, setStatusMsg] = useState<string>('');
+  const [forceOcr, setForceOcr] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -412,7 +413,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           
           const totalChars = textItems.reduce((acc: number, item: any) => acc + item.str.length, 0);
           
-          if (totalChars > 20) {
+          if (totalChars > 20 && !forceOcr) {
             // It's a digital PDF, reconstruct spatial layout
             setStatusMsg(`Extracting digital text from page ${i}...`);
             
@@ -674,6 +675,21 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl flex gap-3 text-amber-500 text-sm mt-6">
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
               <p>For best results, ensure your document has a clear background and high contrast.</p>
+            </div>
+
+            <div className="mt-4">
+              <label className="flex items-start gap-3 p-3 rounded-xl border border-outline-variant hover:border-primary/50 transition-colors cursor-pointer bg-surface-container-lowest">
+                <input 
+                  type="checkbox" 
+                  checked={forceOcr}
+                  onChange={(e) => setForceOcr(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container cursor-pointer"
+                />
+                <div>
+                  <div className="text-sm font-bold text-on-surface">Force Image OCR</div>
+                  <div className="text-xs text-on-surface-variant mt-0.5">Check this to scan images inside Digital PDFs (like charts or scanned photos). This will be slower.</div>
+                </div>
+              </label>
             </div>
          </div>
          
