@@ -18,6 +18,111 @@ const getPdfJs = (() => {
   };
 })();
 
+const TESSERACT_LANGUAGES: Record<string, string> = {
+  eng: 'English',
+  afr: 'Afrikaans',
+  amh: 'Amharic',
+  ara: 'Arabic',
+  asm: 'Assamese',
+  aze: 'Azerbaijani',
+  aze_cyrl: 'Azerbaijani - Cyrillic',
+  bel: 'Belarusian',
+  ben: 'Bengali',
+  bod: 'Tibetan',
+  bos: 'Bosnian',
+  bul: 'Bulgarian',
+  cat: 'Catalan; Valencian',
+  ceb: 'Cebuano',
+  ces: 'Czech',
+  chi_sim: 'Chinese - Simplified',
+  chi_tra: 'Chinese - Traditional',
+  chr: 'Cherokee',
+  cym: 'Welsh',
+  dan: 'Danish',
+  deu: 'German',
+  dzo: 'Dzongkha',
+  ell: 'Greek, Modern',
+  enm: 'English, Middle',
+  epo: 'Esperanto',
+  est: 'Estonian',
+  eus: 'Basque',
+  fas: 'Persian',
+  fin: 'Finnish',
+  fra: 'French',
+  frk: 'German Fraktur',
+  frm: 'French, Middle',
+  gle: 'Irish',
+  glg: 'Galician',
+  grc: 'Greek, Ancient',
+  guj: 'Gujarati',
+  hat: 'Haitian; Haitian Creole',
+  heb: 'Hebrew',
+  hin: 'Hindi',
+  hrv: 'Croatian',
+  hun: 'Hungarian',
+  iku: 'Inuktitut',
+  ind: 'Indonesian',
+  isl: 'Icelandic',
+  ita: 'Italian',
+  ita_old: 'Italian - Old',
+  jav: 'Javanese',
+  jpn: 'Japanese',
+  kan: 'Kannada',
+  kat: 'Georgian',
+  kat_old: 'Georgian - Old',
+  kaz: 'Kazakh',
+  khm: 'Central Khmer',
+  kir: 'Kirghiz; Kyrgyz',
+  kor: 'Korean',
+  kur: 'Kurdish',
+  lao: 'Lao',
+  lat: 'Latin',
+  lav: 'Latvian',
+  lit: 'Lithuanian',
+  mal: 'Malayalam',
+  mar: 'Marathi',
+  mkd: 'Macedonian',
+  mlt: 'Maltese',
+  msa: 'Malay',
+  mya: 'Burmese',
+  nep: 'Nepali',
+  nld: 'Dutch; Flemish',
+  nor: 'Norwegian',
+  ori: 'Oriya',
+  pan: 'Panjabi; Punjabi',
+  pol: 'Polish',
+  por: 'Portuguese',
+  pus: 'Pushto; Pashto',
+  ron: 'Romanian',
+  rus: 'Russian',
+  san: 'Sanskrit',
+  sin: 'Sinhala; Sinhalese',
+  slk: 'Slovak',
+  slv: 'Slovenian',
+  spa: 'Spanish; Castilian',
+  spa_old: 'Spanish; Castilian - Old',
+  sqi: 'Albanian',
+  srp: 'Serbian',
+  srp_latn: 'Serbian - Latin',
+  swa: 'Swahili',
+  swe: 'Swedish',
+  syr: 'Syriac',
+  tam: 'Tamil',
+  tel: 'Telugu',
+  tgk: 'Tajik',
+  tgl: 'Tagalog',
+  tha: 'Thai',
+  tir: 'Tigrinya',
+  tur: 'Turkish',
+  uig: 'Uighur; Uyghur',
+  ukr: 'Ukrainian',
+  urd: 'Urdu',
+  uzb: 'Uzbek',
+  uzb_cyrl: 'Uzbek - Cyrillic',
+  vie: 'Vietnamese',
+  yid: 'Yiddish',
+};
+
 export default function OCRWorkspace({ tool, onBack }: any) {
   const { t } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
@@ -206,11 +311,9 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                 onChange={e => setLanguage(e.target.value)}
                 className="w-full p-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none font-medium"
               >
-                <option value="eng">English</option>
-                <option value="ind">Indonesian</option>
-                <option value="spa">Spanish</option>
-                <option value="fra">French</option>
-                <option value="deu">German</option>
+                {Object.entries(TESSERACT_LANGUAGES).map(([code, name]) => (
+                  <option key={code} value={code}>{name}</option>
+                ))}
               </select>
             </div>
 
