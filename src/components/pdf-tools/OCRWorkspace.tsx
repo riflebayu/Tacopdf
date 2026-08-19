@@ -140,6 +140,19 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     }
   };
 
+  const sanitizeExtractedText = (text: string) => {
+    let sanitized = text;
+    // Normalize comparison symbols
+    sanitized = sanitized.replace(/«/g, '<').replace(/»/g, '>');
+    sanitized = sanitized.replace(/["“”](\d)/g, '>$1');
+    // Normalize dashes
+    sanitized = sanitized.replace(/[—–]/g, '-');
+    // Fix wild spaces around hyphens and slashes
+    sanitized = sanitized.replace(/\s+-\s+/g, '-').replace(/\s+-\b/g, '-').replace(/\b-\s+/g, '-');
+    sanitized = sanitized.replace(/\s+\/\s+/g, '/').replace(/\s+\/\b/g, '/').replace(/\b\/\s+/g, '/');
+    return sanitized;
+  };
+
   const handleOCR = async () => {
     if (!file) return;
     setStatus('processing');
@@ -155,77 +168,126 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       const numPages = pdfDoc.numPages;
       
       let fullText = '';
+      let ocrWorker: Tesseract.Worker | null = null;
       
-      // Specify JSDelivr paths explicitly to avoid Unpkg which is blocked by our CSP
-      const worker = await Tesseract.createWorker(language, 1, {
-        workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
-        corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            setProgress(Math.round(m.progress * 100));
-          }
-        }
-      });
-      
-      // Set PSM to 6 (Assume a single uniform block of text) which is excellent for preserving tables
-      await worker.setParameters({
-        tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
-      });
-
       for (let i = 1; i <= numPages; i++) {
         setStatusMsg(`Processing page ${i} of ${numPages}...`);
-        
         const page = await pdfDoc.getPage(i);
-        // Increase scale to 2.5 for higher DPI to prevent commas/dots from disappearing
-        const viewport = page.getViewport({ scale: 2.5 });
         
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
+        // 1. Direct Text Layer Extraction
+        const textContent = await page.getTextContent();
+        const textItems = textContent.items.filter((item: any) => item.str.trim().length > 0);
         
-        if (ctx) {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          await page.render({ canvasContext: ctx, viewport }).promise;
+        const totalChars = textItems.reduce((acc: number, item: any) => acc + item.str.length, 0);
+        
+        if (totalChars > 20) {
+          // It's a digital PDF, reconstruct spatial layout
+          setStatusMsg(`Extracting digital text from page ${i}...`);
           
-          // Pre-processing: Grayscale and Contrast Enhancement (Binarization)
-          const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageDataCtx.data;
-          for (let j = 0; j < data.length; j += 4) {
-            // Convert to grayscale using luminance formula
-            const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
-            // Simple thresholding / high contrast (Threshold at 150)
-            const color = gray < 150 ? 0 : 255;
-            data[j] = color;     // Red
-            data[j + 1] = color; // Green
-            data[j + 2] = color; // Blue
-            // Alpha remains unchanged (data[j + 3])
+          // Group items by Y coordinate (transform[5])
+          // PDF coordinates usually have Y origin at bottom, so higher Y is higher on page.
+          const linesMap: { [y: number]: any[] } = {};
+          
+          textItems.forEach((item: any) => {
+            const y = item.transform[5];
+            // Find an existing line within a small margin (e.g., 3px)
+            const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < 3);
+            if (existingY) {
+              linesMap[parseFloat(existingY)].push(item);
+            } else {
+              linesMap[y] = [item];
+            }
+          });
+          
+          // Sort lines by Y descending (top to bottom)
+          const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => b - a);
+          
+          let pageText = '';
+          sortedY.forEach(y => {
+            // Sort items in the line by X coordinate (transform[4]) left to right
+            const lineItems = linesMap[y].sort((a: any, b: any) => a.transform[4] - b.transform[4]);
+            
+            // Reconstruct the line string, adding spaces based on X gaps
+            let lineStr = '';
+            let lastX = -1;
+            let lastWidth = 0;
+            
+            lineItems.forEach((item: any) => {
+              const x = item.transform[4];
+              if (lastX !== -1 && (x - (lastX + lastWidth)) > 5) {
+                 // Add space if there's a significant gap
+                 lineStr += ' ';
+              }
+              lineStr += item.str;
+              lastX = x;
+              lastWidth = item.width || 0;
+            });
+            pageText += lineStr.trim() + '\n';
+          });
+          
+          fullText += `\n--- Page ${i} ---\n` + pageText + '\n';
+          setProgress(Math.round((i / numPages) * 100));
+          
+        } else {
+          // 2. Fallback OCR (High-Precision OCR Pipeline)
+          setStatusMsg(`Running OCR on scanned page ${i}...`);
+          
+          if (!ocrWorker) {
+            // Initialize OCR worker only when needed for the first scanned page
+            ocrWorker = await Tesseract.createWorker(language, 1, {
+              workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
+              corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
+              logger: m => {
+                if (m.status === 'recognizing text') {
+                  // Scale progress relative to current page
+                  const baseProgress = ((i - 1) / numPages) * 100;
+                  const pageProgress = m.progress * (100 / numPages);
+                  setProgress(Math.round(baseProgress + pageProgress));
+                }
+              }
+            });
+            await ocrWorker.setParameters({
+              tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
+            });
           }
-          ctx.putImageData(imageDataCtx, 0, 0);
           
-          const imageData = canvas.toDataURL('image/png');
+          const viewport = page.getViewport({ scale: 3.0 }); // High-DPI 300 equivalent
           
-          const { data: { text } } = await worker.recognize(imageData);
-          fullText += `\n--- Page ${i} ---\n` + text + '\n';
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
           
-          canvas.width = 0;
-          canvas.height = 0;
+          if (ctx) {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            
+            // Pre-processing: Grayscale and Binarization
+            const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageDataCtx.data;
+            for (let j = 0; j < data.length; j += 4) {
+              const gray = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
+              const color = gray < 160 ? 0 : 255;
+              data[j] = color;
+              data[j + 1] = color;
+              data[j + 2] = color;
+            }
+            ctx.putImageData(imageDataCtx, 0, 0);
+            
+            const imageData = canvas.toDataURL('image/png');
+            
+            const { data: { text } } = await ocrWorker.recognize(imageData);
+            fullText += `\n--- Page ${i} ---\n` + text + '\n';
+          }
         }
       }
       
-      await worker.terminate();
+      if (ocrWorker) {
+        await ocrWorker.terminate();
+      }
       
-      // Post-processing sanitization
-      let sanitizedText = fullText.trim();
-      // Replace false guillemets with angle brackets
-      sanitizedText = sanitizedText.replace(/«/g, '<').replace(/»/g, '>');
-      // Fix wild spaces around hyphens and slashes
-      sanitizedText = sanitizedText.replace(/\s+-\s+/g, '-').replace(/\s+-\b/g, '-').replace(/\b-\s+/g, '-');
-      sanitizedText = sanitizedText.replace(/\s+\/\s+/g, '/').replace(/\s+\/\b/g, '/').replace(/\b\/\s+/g, '/');
-      // Attempt to fix missing decimals in small ranges like "10-12" to "1.0-1.2" if applicable
-      // But a general regex for that might break other numbers, so we rely on the high-res canvas fix.
-      
+      const sanitizedText = sanitizeExtractedText(fullText.trim());
       setExtractedText(sanitizedText);
       setStatus('success');
       
