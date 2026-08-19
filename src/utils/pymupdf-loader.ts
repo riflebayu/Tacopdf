@@ -17,23 +17,13 @@ export async function loadPyMuPDF(): Promise<any> {
   loadPromise = (async () => {
     try {
       const wrapperUrl = `${PYMUPDF_URL}dist/index.js`;
-      // Fetch the file manually to bypass any Vite interception or module loader issues
-      const response = await fetch(wrapperUrl);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
       
-      const text = await response.text();
-      // Create a blob from the text
-      const blob = new Blob([text], { type: 'application/javascript' });
-      const blobUrl = URL.createObjectURL(blob);
-      
-      // Import from the local blob URL
+      // We now load directly from the CDN URL. This is possible because we
+      // added cdn.jsdelivr.net to the Content-Security-Policy.
+      // We use a Function to completely bypass Vite/Webpack static analysis
+      // and force the browser to do a native dynamic import.
       const nativeImport = new Function('url', 'return import(url)');
-      const module = await nativeImport(blobUrl);
-      
-      // Cleanup the blob URL
-      URL.revokeObjectURL(blobUrl);
+      const module = await nativeImport(wrapperUrl);
 
       if (typeof module.PyMuPDF !== 'function') {
         throw new Error('PyMuPDF module did not export expected PyMuPDF class.');
