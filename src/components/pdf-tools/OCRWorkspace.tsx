@@ -156,15 +156,15 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     
     // Universal Typography & Number Formatting Repair
     // Connect digits separated by spaces around commas or dots (prevent newline merging)
-    sanitized = sanitized.replace(/(\d+)[ \t]*([.,])[ \t]*(\d+)/g, '$1$2$3');
+    sanitized = sanitized.replace(/(\d+)[ \t\xA0]*([.,])[ \t\xA0]*(\d+)/g, '$1$2$3');
     // Connect large multi-digit numbers split by wide kerning (e.g. 38 3 -> 383)
-    sanitized = sanitized.replace(/(\b\d{1,3})[ \t]+(\d{1,3}\b)/g, '$1$2');
+    sanitized = sanitized.replace(/(\b\d{1,3})[ \t\xA0]+(\d{1,3}\b)/g, '$1$2');
     // Fix percentage symbols separated by spaces
-    sanitized = sanitized.replace(/(\d+)[ \t]+([%％])/g, '$1%');
+    sanitized = sanitized.replace(/(\d+)[ \t\xA0]+([%％])/g, '$1%');
     // Standardize ranges (hyphens/tildes between numbers)
-    sanitized = sanitized.replace(/(\d)[ \t]*[-~—–][ \t]*(\d)/g, '$1 - $2');
+    sanitized = sanitized.replace(/(\d)[ \t\xA0]*[-~—–][ \t\xA0]*(\d)/g, '$1 - $2');
     // Normalize IP = 400 to IP >= 400
-    sanitized = sanitized.replace(/(\bIP\b)[ \t]*=[ \t]*(\d+)/gi, '$1 ≥ $2');
+    sanitized = sanitized.replace(/(\bIP\b)[ \t\xA0]*=[ \t\xA0]*(\d+)/gi, '$1 ≥ $2');
     // Fix end of line quote to exclamation mark
     sanitized = sanitized.replace(/(\w+)'$/gm, '$1!');
     
@@ -198,8 +198,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     
     // Universal Icon Glyph Stripper
     const strippedLines = cleanLines.map(line => {
-      // Remove weird artifact symbols at the start of lines before the first valid alphanumeric word
-      return line.replace(/^(?:[^\w\s\d<>\(]+|Ll|lL|Vv|KX|\/\\|\||K)\s*(?=[A-Z0-9])/i, '').trim();
+      let trimmed = line.trim();
+      // Remove weird artifact symbols at the start of lines before the first valid alphanumeric word.
+      // Require at least one space after the isolated symbol to prevent chopping words like "Kalkulator"
+      return trimmed.replace(/^(?:[^\w\s\d<>\(]+|Ll|lL|Vv|KX|\/\\|\||K|3%)[ \t\xA0]+(?=[a-zA-Z0-9])/i, '').trim();
     });
     
     return strippedLines.join('\n');
