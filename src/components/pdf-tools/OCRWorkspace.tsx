@@ -168,6 +168,19 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Fix end of line quote to exclamation mark
     sanitized = sanitized.replace(/(\w+)'$/gm, '$1!');
     
+    // Technical Text, URLs, and Versioning Repair (Developer Mode)
+    // Connect broken URLs
+    sanitized = sanitized.replace(/(https?:\/\/)[^\S\r\n]+/gi, '$1');
+    // Connect broken file paths / API endpoints
+    sanitized = sanitized.replace(/(\w+)[^\S\r\n]*\/[^\S\r\n]*(\w+)/g, '$1/$2');
+    // Clean up spaces in HTTP status codes [ 200 ]
+    sanitized = sanitized.replace(/\[[^\S\r\n]*(\d{3})[^\S\r\n]*\]/g, '[$1]');
+    // Clean up spaces in brackets and braces
+    sanitized = sanitized.replace(/\[[^\S\r\n]+/g, '[').replace(/[^\S\r\n]+\]/g, ']');
+    sanitized = sanitized.replace(/\{[^\S\r\n]+/g, '{').replace(/[^\S\r\n]+\}/g, '}');
+    // Clean up version numbers (v 1 beta -> v1 beta)
+    sanitized = sanitized.replace(/\b([vV])[^\S\r\n]+(\d+)\b/g, '$1$2');
+    
     // Auto-space glued numbers and letters (bounding box collisions)
     sanitized = sanitized.replace(/([0-9])([a-zA-Z])/g, '$1 $2');
     sanitized = sanitized.replace(/([a-zA-Z])([0-9])/g, '$1 $2');
@@ -281,23 +294,35 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imageDataCtx.data;
           
-          // Adaptive Contrast Stretching (Min-Max Normalization)
+          // Adaptive Contrast Stretching (Min-Max Normalization) & Dark Mode Inversion
           let minLuminance = 255;
           let maxLuminance = 0;
+          let sumLuminance = 0;
           
           const luminanceArray = new Uint8Array(canvas.width * canvas.height);
           for (let j = 0, p = 0; j < data.length; j += 4, p++) {
             const luma = Math.round(0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2]);
             luminanceArray[p] = luma;
+            sumLuminance += luma;
             if (luma < minLuminance) minLuminance = luma;
             if (luma > maxLuminance) maxLuminance = luma;
           }
+          
+          // Auto-detect Dark Mode (Average luminance < 120 means dark background)
+          const avgLuminance = sumLuminance / (canvas.width * canvas.height);
+          const isDarkMode = avgLuminance < 120;
           
           const luminanceRange = (maxLuminance - minLuminance) || 1;
           
           for (let j = 0, p = 0; j < data.length; j += 4, p++) {
             const originalLuma = luminanceArray[p];
-            const stretched = Math.round(((originalLuma - minLuminance) / luminanceRange) * 255);
+            let stretched = Math.round(((originalLuma - minLuminance) / luminanceRange) * 255);
+            
+            // If dark mode, invert the pixels so Tesseract reads black text on white background
+            if (isDarkMode) {
+               stretched = 255 - stretched;
+            }
+            
             data[j] = stretched;
             data[j + 1] = stretched;
             data[j + 2] = stretched;
