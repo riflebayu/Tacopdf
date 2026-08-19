@@ -12,9 +12,10 @@ import { useLanguage } from '../context/LanguageContext';
 interface ToolGridProps {
   onSelectTool?: (id: string) => void;
   toolSettings?: Record<string, { enabled: boolean; badge: string }>;
+  showBeta?: boolean;
 }
 
-export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) {
+export default function ToolGrid({ onSelectTool, toolSettings, showBeta = false }: ToolGridProps) {
   const { t } = useLanguage();
   
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -42,7 +43,9 @@ export default function ToolGrid({ onSelectTool, toolSettings }: ToolGridProps) 
   };
 
   const getToolsByCategory = (catId: string) => {
-    return TOOLS.filter((t) => t.category === catId).filter(t => toolSettings?.[t.id]?.enabled !== false);
+    return TOOLS.filter((t) => t.category === catId)
+      .filter(t => toolSettings?.[t.id]?.enabled !== false)
+      .filter(t => showBeta ? t.isBeta : !t.isBeta);
   };
 
   const POPULAR_TOOL_IDS = ['merge'];

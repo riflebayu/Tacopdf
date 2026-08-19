@@ -3,6 +3,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /test/
+Disallow: /beta/
 
 User-agent: Mediapartners-Google
 Allow: /

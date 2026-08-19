@@ -60,6 +60,8 @@ export const TOOL_ALIASES: Record<string, string> = {
 };
 
 export const getToolSeoPath = (id: string) => {
+  const tool = TOOLS.find(t => t.id === id);
   const entry = Object.entries(TOOL_ALIASES).find(([alias, toolId]) => toolId === id);
-  return entry ? `/${entry[0]}` : `/tools/${id}`;
+  const path = entry ? `/${entry[0]}` : `/tools/${id}`;
+  return tool?.isBeta ? `/beta${path}` : path;
 };

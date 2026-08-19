@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TRANSLATIONS } from '../../data/translations';
+import { LanguageProvider } from '../../context/LanguageContext';
+import ToolGrid from '../../components/ToolGrid';
+
+const lang = 'en';
+const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+const title = 'Beta PDF Tools | TacoPDF';
+const description = 'Test out our experimental, in-browser PDF tools like OCR, Compress, and Organize. These tools are currently in Beta.';
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <meta name="robots" content="noindex, nofollow" slot="head" />
+  <LanguageProvider initialLang={lang} client:load>
+    <main class="flex flex-col w-full bg-background min-h-screen pt-20">
+      <div class="max-w-4xl mx-auto px-4 text-center mb-12">
+        <h1 class="text-3xl md:text-5xl font-black text-on-surface mb-4">
+          Beta Tools Playground
+        </h1>
+        <p class="text-on-surface-variant font-medium max-w-2xl mx-auto">
+          Help us test these upcoming features! These tools are fully local but might still have some bugs. Do not use for highly sensitive production documents.
+        </p>
+      </div>
+      
+      {/* We pass showBeta={true} so the ToolGrid renders the beta tools */}
+      <ToolGrid showBeta={true} client:load />
+    </main>
+  </LanguageProvider>
+</BaseLayout>

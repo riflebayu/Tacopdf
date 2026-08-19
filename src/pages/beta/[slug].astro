@@ -1,24 +1,23 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import WorkspaceWrapper from '../components/pdf-tools/WorkspaceWrapper';
-import TacoIcon from '../components/TacoIcon';
-import { ToolSeoArticle } from '../components/ToolSeoArticle';
-import { TOOLS, TOOL_ALIASES, getToolSeoPath } from '../data/tools';
-import { TRANSLATIONS } from '../data/translations';
-import StaticPageClient from '../components/StaticPageClient';
-import FAQSection from '../components/FAQSection';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorkspaceWrapper from '../../components/pdf-tools/WorkspaceWrapper';
+import TacoIcon from '../../components/TacoIcon';
+import { ToolSeoArticle } from '../../components/ToolSeoArticle';
+import { TOOLS, TOOL_ALIASES, getToolSeoPath } from '../../data/tools';
+import { TRANSLATIONS } from '../../data/translations';
+import StaticPageClient from '../../components/StaticPageClient';
+import FAQSection from '../../components/FAQSection';
 
 export async function getStaticPaths() {
-  const activeTools = (TOOLS || []).filter(t => !t.isBeta);
-  const activeToolIds = activeTools.map(t => t.id);
-  const activeAliases = Object.keys(TOOL_ALIASES || {}).filter(alias => {
+  const betaTools = (TOOLS || []).filter(t => t.isBeta);
+  const betaToolIds = betaTools.map(t => t.id);
+  const betaAliases = Object.keys(TOOL_ALIASES || {}).filter(alias => {
     const targetId = TOOL_ALIASES[alias];
     const targetTool = TOOLS.find(t => t.id === targetId);
-    return targetTool && !targetTool.isBeta;
+    return targetTool && targetTool.isBeta;
   });
   
-  const staticPages = ['privacy', 'terms', 'cookie', 'disclaimer', 'retention', 'how-it-works', 'about', 'contact', 'faq', 'sitemap'];
-  const allPaths = Array.from(new Set([...activeAliases, ...activeToolIds, ...staticPages]));
+  const allPaths = Array.from(new Set([...betaAliases, ...betaToolIds]));
   
   return allPaths.map(slug => ({ params: { slug } }));
 }
@@ -110,7 +109,7 @@ if (tool && !isStaticPage) {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": translatedName,
-    "url": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/${slug}`,
+    "url": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta/${slug}`,
     "description": translatedDescription,
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
@@ -152,13 +151,13 @@ const breadcrumbsSchema = JSON.stringify({
       "@type": "ListItem",
       "position": 2,
       "name": dict['nav.tools' as keyof typeof dict] || "PDF Tools",
-      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/#beranda-bawah`
+      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta`
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": translatedName,
-      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/${slug}`
+      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta/${slug}`
     }
   ]
 });
@@ -166,6 +165,7 @@ const breadcrumbsSchema = JSON.stringify({
 ---
 
 <BaseLayout title={title} description={translatedDescription} lang={lang} schema={toolSchemaStr}>
+  <meta name="robots" content="noindex, nofollow" slot="head" />
   {isStaticPage ? (
     slug === 'faq' ? (
       <div class="flex-1 w-full bg-background animate-fade-in pb-12">
@@ -256,8 +256,8 @@ const breadcrumbsSchema = JSON.stringify({
             <span class="hidden sm:inline">{dict['nav.home' as keyof typeof dict] || 'Home'}</span>
           </a>
           <span class="text-outline-variant/60">/</span>
-          <a href={lang === 'en' ? '/#beranda-bawah' : `/${lang}/#beranda-bawah`} class="hover:text-primary transition-colors">
-            {dict['nav.tools' as keyof typeof dict] || 'PDF Tools'}
+          <a href={lang === 'en' ? '/beta' : `/${lang}/beta`} class="hover:text-primary transition-colors">
+            Beta Tools
           </a>
           <span class="text-outline-variant/60">/</span>
           <span class="text-primary truncate" aria-current="page">
