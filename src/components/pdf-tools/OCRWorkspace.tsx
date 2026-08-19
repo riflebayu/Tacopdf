@@ -51,15 +51,16 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       
       let fullText = '';
       
-      const worker = await Tesseract.createWorker({
+      // Specify JSDelivr paths explicitly to avoid Unpkg which is blocked by our CSP
+      const worker = await Tesseract.createWorker(language, 1, {
+        workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
+        corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
         logger: m => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100));
           }
         }
       });
-      await worker.loadLanguage(language);
-      await worker.initialize(language);
 
       for (let i = 1; i <= numPages; i++) {
         setStatusMsg(`Processing page ${i} of ${numPages}...`);
