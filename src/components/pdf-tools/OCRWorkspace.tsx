@@ -165,6 +165,8 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     sanitized = sanitized.replace(/(\d)\s*[-~—–]\s*(\d)/g, '$1 - $2');
     // Normalize IP = 400 to IP >= 400
     sanitized = sanitized.replace(/(\bIP\b)\s*=\s*(\d+)/g, '$1 ≥ $2');
+    // Fix end of line quote to exclamation mark
+    sanitized = sanitized.replace(/(\w+)'$/gm, '$1!');
     
     // Algorithmic Noise & Border Filter (Heuristic Denoising)
     const lines = sanitized.split('\n');
@@ -192,8 +194,8 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     
     // Universal Icon Glyph Stripper
     const strippedLines = cleanLines.map(line => {
-      // Remove weird artifact symbols at the start of lines
-      return line.replace(/^([^\w\s\d<>]|lL\]|\/\\|KX|Vv)+[\s.\-]*/i, '').trim();
+      // Remove weird artifact symbols at the start of lines before the first valid alphanumeric word
+      return line.replace(/^[^a-zA-Z0-9<>\(]+(?=\s*[A-Z0-9])/i, '').trim();
     });
     
     return strippedLines.join('\n');
@@ -248,12 +250,12 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         
         const canvas = document.createElement('canvas');
         
-        // 1. Universal Image Pre-Processing: DPI Upscaling
+        // 1. Universal Image Pre-Processing: DPI Upscaling (max 2048px)
         let targetWidth = img.width;
         let targetHeight = img.height;
         const maxDim = Math.max(img.width, img.height);
         
-        if (maxDim < 1800) {
+        if (maxDim < 2048) {
            const scaleFactor = Math.min(3.0, 2500 / maxDim);
            targetWidth = Math.round(img.width * scaleFactor);
            targetHeight = Math.round(img.height * scaleFactor);
@@ -264,7 +266,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         const ctx = canvas.getContext('2d');
         
         if (ctx) {
-          // Use high quality image smoothing for upscale
+          // Use high quality image smoothing for upscale (Lanczos/Bicubic equivalent)
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
@@ -302,66 +304,56 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           const imageData = canvas.toDataURL('image/png');
           const { data: resultData } = await worker.recognize(imageData);
           
-          // 2. Spatial Bounding Box Layout Reconstruction
-          if (resultData.words && resultData.words.length > 0) {
-            const words = resultData.words;
-            const linesMap: { [y: number]: any[] } = {};
-            
-            words.forEach((word: any) => {
-              const text = word.text.trim();
-              if (!text) return;
-              
-              // Calculate center Y of the word's bounding box
-              const yCenter = (word.bbox.y0 + word.bbox.y1) / 2;
-              const lineHeight = word.bbox.y1 - word.bbox.y0;
-              const tolerance = lineHeight * 0.5; // 50% line height tolerance
-              
-              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - yCenter) < tolerance);
-              if (existingY) {
-                linesMap[parseFloat(existingY)].push(word);
-              } else {
-                linesMap[yCenter] = [word];
-              }
-            });
-            
-            // Sort lines from top to bottom (ascending Y in image coordinates)
-            const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => a - b);
-            
+          // 2. Column-Aware Spatial Layout & Reading Order
+          if (resultData.blocks && resultData.blocks.length > 0) {
             let reconstructedText = '';
-            sortedY.forEach(y => {
-              // Sort words horizontally left to right
-              const lineWords = linesMap[y].sort((a: any, b: any) => a.bbox.x0 - b.bbox.x0);
-              let lineStr = '';
-              let lastX1 = -1;
-              let avgCharWidth = 10;
-              
-              // Estimate average character width for the line
-              if (lineWords.length > 0) {
-                 const firstWord = lineWords[0];
-                 const lineHeight = firstWord.bbox.y1 - firstWord.bbox.y0;
-                 avgCharWidth = lineHeight * 0.5; // Roughly half the height
-              }
-              
-              lineWords.forEach((word: any) => {
-                const gap = word.bbox.x0 - lastX1;
-                
-                // Multi-Column Spatial Clustering:
-                // If horizontal gap > 3x average char width, treat as column separator
-                if (lastX1 !== -1 && gap > (avgCharWidth * 3)) {
-                   lineStr += ' \t\t '; // Double tab for column separation
-                } else if (lastX1 !== -1 && gap > (avgCharWidth * 0.5)) {
-                   lineStr += ' '; // Standard single space
-                }
-                
-                lineStr += word.text;
-                lastX1 = word.bbox.x1;
+            
+            // Tesseract blocks automatically separate columns and distinct paragraphs
+            resultData.blocks.forEach((block: any) => {
+              block.paragraphs.forEach((paragraph: any) => {
+                paragraph.lines.forEach((line: any) => {
+                  let lineStr = '';
+                  let lastX1 = -1;
+                  let avgCharWidth = 10;
+                  
+                  if (line.words.length > 0) {
+                     const firstWord = line.words[0];
+                     const lineHeight = firstWord.bbox.y1 - firstWord.bbox.y0;
+                     avgCharWidth = lineHeight * 0.5;
+                  }
+                  
+                  line.words.forEach((word: any) => {
+                    // Confidence & Aspect Ratio Filter (Universal Glyph/Icon Stripper)
+                    if (word.confidence < 40 && word.text.length <= 2 && !/[a-zA-Z0-9]/.test(word.text)) {
+                       return; // Skip this garbage token
+                    }
+                    
+                    const gap = word.bbox.x0 - lastX1;
+                    
+                    // Column separation inside a block (though blocks usually split columns anyway)
+                    if (lastX1 !== -1 && gap > (avgCharWidth * 3)) {
+                       lineStr += ' \t\t ';
+                    } else if (lastX1 !== -1) {
+                       lineStr += ' ';
+                    }
+                    
+                    lineStr += word.text;
+                    lastX1 = word.bbox.x1;
+                  });
+                  if (lineStr.trim()) {
+                    reconstructedText += lineStr.trim() + '\n';
+                  }
+                });
+                reconstructedText += '\n'; // Separate paragraphs
               });
-              reconstructedText += lineStr.trim() + '\n';
+              reconstructedText += '\n'; // Separate blocks (columns)
             });
             
+            // Clean up excess newlines
+            reconstructedText = reconstructedText.replace(/\n{3,}/g, '\n\n');
             fullText = `--- Image ---\n\n` + reconstructedText;
           } else {
-            // Fallback to raw text if word data is missing
+            // Fallback
             fullText = `--- Image ---\n\n` + resultData.text;
           }
         }
