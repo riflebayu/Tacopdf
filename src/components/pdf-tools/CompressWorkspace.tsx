@@ -9,9 +9,10 @@ export default function CompressWorkspace({ tool, onBack }: any) {
   const [file, setFile] = useState<File | null>(null);
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
-  const [downloadUrl, setDownloadUrl] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
   const [savings, setSavings] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [statusText, setStatusText] = useState<string>('');
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -25,12 +26,19 @@ export default function CompressWorkspace({ tool, onBack }: any) {
     if (!file) return;
     setStatus('processing');
     setProgress(10);
+    setStatusText('Initializing...');
     
     try {
       // Import the huge PyMuPDF/Ghostscript WASM (lazy load so it doesn't freeze initial page load)
       setProgress(20);
+      setStatusText('Downloading compression engine (this may take a while on first run)...');
+      
+      // Let the UI render the text before blocking
+      await new Promise(r => setTimeout(r, 100));
+      
       const pymupdf = await loadPyMuPDF();
       setProgress(40);
+      setStatusText('Engine loaded. Optimizing PDF structure...');
       
       let dpiTarget = 96;
       let imgQuality = 75;
@@ -61,11 +69,13 @@ export default function CompressWorkspace({ tool, onBack }: any) {
       };
 
       setProgress(60);
+      setStatusText('Compressing images and subsetting fonts...');
       
       // Perform compression using WASM
       const result = await pymupdf.compressPdf(file, options);
       
       setProgress(90);
+      setStatusText('Finalizing...');
       
       const blob = result.blob;
       const url = URL.createObjectURL(blob);
@@ -82,9 +92,11 @@ export default function CompressWorkspace({ tool, onBack }: any) {
         setSavings(`No significant reduction (Output: ${(newSize / 1024 / 1024).toFixed(2)} MB)`);
       }
       
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorMessage(err.message || 'An unknown error occurred during compression.');
       setStatus('error');
+      setStatusText('');
     }
   };
 
@@ -101,6 +113,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low relative">
             <RefreshCw className="animate-spin text-primary mb-4" size={48} />
             <h3 className="text-xl font-bold text-on-surface mb-2">Compressing PDF...</h3>
+            <p className="text-on-surface-variant text-sm text-center mb-4 max-w-sm h-10">{statusText}</p>
             <div className="w-64 h-3 bg-surface-container-high rounded-full overflow-hidden mb-4">
               <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }}></div>
             </div>
@@ -127,6 +140,22 @@ export default function CompressWorkspace({ tool, onBack }: any) {
                className="mt-6 text-primary font-semibold hover:underline"
              >
                Compress another file
+             </button>
+          </div>
+        ) : status === 'error' ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
+             <div className="w-20 h-20 bg-error/20 text-error rounded-full flex items-center justify-center mb-6 border border-error/30">
+               <AlertCircle size={40} />
+             </div>
+             <h3 className="text-2xl font-bold text-on-surface mb-2">Compression Failed</h3>
+             <p className="text-error mb-6 text-center max-w-md font-mono text-sm break-words bg-error/10 p-3 rounded-lg border border-error/20">
+               {errorMessage}
+             </p>
+             <button 
+               onClick={() => { setStatus('idle'); setErrorMessage(''); }}
+               className="px-6 py-3 bg-surface-variant text-on-surface font-bold rounded-lg hover:bg-surface-container-highest transition-colors"
+             >
+               Try Again
              </button>
           </div>
         ) : file ? (
