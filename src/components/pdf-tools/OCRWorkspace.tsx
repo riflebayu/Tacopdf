@@ -126,7 +126,8 @@ const TESSERACT_LANGUAGES: Record<string, string> = {
 export default function OCRWorkspace({ tool, onBack }: any) {
   const { t } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
-  const [language, setLanguage] = useState('eng');
+  const [languages, setLanguages] = useState<string[]>(['eng']);
+  const [searchLang, setSearchLang] = useState('');
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const [progress, setProgress] = useState<number>(0);
   const [extractedText, setExtractedText] = useState<string>('');
@@ -233,8 +234,9 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           setStatusMsg(`Running OCR on scanned page ${i}...`);
           
           if (!ocrWorker) {
+            const langStr = languages.join('+') || 'eng';
             // Initialize OCR worker only when needed for the first scanned page
-            ocrWorker = await Tesseract.createWorker(language, 1, {
+            ocrWorker = await Tesseract.createWorker(langStr, 1, {
               workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/worker.min.js',
               corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@7',
               logger: m => {
@@ -396,20 +398,43 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             </div>
          </div>
          
-         <div className="p-5 flex-1 overflow-y-auto">
-            <div className="mb-6">
-              <label className="block text-sm font-bold text-on-surface mb-3">Document Language</label>
-              <select 
-                value={language} 
-                onChange={e => setLanguage(e.target.value)}
-                className="w-full p-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none font-medium"
-              >
-                {Object.entries(TESSERACT_LANGUAGES).map(([code, name]) => (
-                  <option key={code} value={code} className="bg-zinc-800 text-zinc-100">
-                    {name}
-                  </option>
+         <div className="p-5 flex-1 flex flex-col min-h-0 overflow-hidden">
+            <div className="flex-1 flex flex-col min-h-0">
+              <label className="block text-sm font-bold text-on-surface mb-3 shrink-0">Document Language(s)</label>
+              
+              <input
+                type="text"
+                placeholder="Search for languages..."
+                value={searchLang}
+                onChange={e => setSearchLang(e.target.value)}
+                className="w-full p-3 rounded-t-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors font-medium text-sm mb-0 shrink-0"
+              />
+              
+              <div className="flex-1 overflow-y-auto border border-t-0 border-outline-variant rounded-b-xl bg-surface-container-lowest p-2 max-h-[300px] min-h-[150px]">
+                {Object.entries(TESSERACT_LANGUAGES)
+                  .filter(([code, name]) => name.toLowerCase().includes(searchLang.toLowerCase()))
+                  .map(([code, name]) => (
+                  <label key={code} className="flex items-center gap-3 p-2 hover:bg-surface-container rounded-lg cursor-pointer transition-colors group">
+                    <input 
+                      type="checkbox" 
+                      value={code}
+                      checked={languages.includes(code)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setLanguages(prev => [...prev, code]);
+                        } else {
+                          // Ensure at least one language is selected
+                          if (languages.length > 1) {
+                             setLanguages(prev => prev.filter(l => l !== code));
+                          }
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container cursor-pointer"
+                    />
+                    <span className="text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{name}</span>
+                  </label>
                 ))}
-              </select>
+              </div>
             </div>
 
             <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl flex gap-3 text-amber-500 text-sm mt-6">
