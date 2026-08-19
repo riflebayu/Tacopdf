@@ -186,7 +186,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     const lines = sanitized.split('\n');
     const cleanLines = lines.filter(line => {
       const trimmed = line.trim();
-      if (!trimmed) return false;
+      if (!trimmed) return true; // PRESERVE EMPTY LINES FOR PARAGRAPHS!
       
       // Filter lines with a single character repeating >= 4 times (e.g. "aaaa", "----")
       if (/(.)\1{3,}/.test(trimmed)) return false;
@@ -209,6 +209,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Universal Icon Glyph Stripper
     const strippedLines = cleanLines.map(line => {
       let trimmed = line.trim();
+      if (!trimmed) return ''; // preserve empty line
       // Remove weird artifact symbols at the start of lines before the first valid alphanumeric word.
       // Require at least one space after the isolated symbol to prevent chopping words like "Kalkulator"
       return trimmed.replace(/^(?:[^\w\s\d<>\(]+|Ll|lL|Vv|KX|\/\\|\||K|3%)+[^\S\r\n]+(?=[a-zA-Z0-9])/i, '').trim();
