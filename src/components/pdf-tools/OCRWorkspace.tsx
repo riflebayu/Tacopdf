@@ -235,7 +235,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             <p className="text-on-surface-variant text-sm font-medium">{progress}%</p>
           </div>
         ) : status === 'success' ? (
-          <div className="flex-1 flex flex-col p-4 sm:p-8 bg-surface-container-low">
+          <div className="flex-1 flex flex-col p-4 sm:p-8 pt-16 sm:pt-16 bg-surface-container-low">
              <h3 className="text-xl font-bold text-on-surface mb-4">Extracted Text</h3>
              <textarea 
                className="flex-1 w-full p-4 rounded-xl border border-outline-variant bg-surface-container focus:outline-none focus:border-primary transition-colors resize-none mb-4 font-mono text-sm shadow-inner text-on-surface"
@@ -312,7 +312,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                 className="w-full p-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none font-medium"
               >
                 {Object.entries(TESSERACT_LANGUAGES).map(([code, name]) => (
-                  <option key={code} value={code} className="bg-zinc-800 text-zinc-100 py-1">
+                  <option key={code} value={code} className="bg-zinc-800 text-zinc-100">
                     {name}
                   </option>
                 ))}
