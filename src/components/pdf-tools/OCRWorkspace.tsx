@@ -182,10 +182,6 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Clean up version numbers (v 1 beta -> v1 beta)
     sanitized = sanitized.replace(/\b([vV])[^\S\r\n]+(\d+)\b/g, '$1$2');
     
-    // Auto-space glued numbers and letters (bounding box collisions)
-    sanitized = sanitized.replace(/([0-9])([a-zA-Z])/g, '$1 $2');
-    sanitized = sanitized.replace(/([a-zA-Z])([0-9])/g, '$1 $2');
-    
     // Algorithmic Noise & Border Filter (Heuristic Denoising)
     const lines = sanitized.split('\n');
     const cleanLines = lines.filter(line => {
