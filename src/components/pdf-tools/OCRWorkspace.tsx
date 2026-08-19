@@ -419,7 +419,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             const linesMap: { [y: number]: any[] } = {};
             textItems.forEach((item: any) => {
               const y = item.transform[5];
-              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < 3);
+              const fontSize = Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || 12;
+              
+              // Group items into the same line if they are within 40% of the font height
+              const existingY = Object.keys(linesMap).find(key => Math.abs(parseFloat(key) - y) < (fontSize * 0.4));
               if (existingY) {
                 linesMap[parseFloat(existingY)].push(item);
               } else {
@@ -429,26 +432,45 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             
             const sortedY = Object.keys(linesMap).map(Number).sort((a, b) => b - a);
             let pageText = '';
+            let lastLineY = -1;
             
             sortedY.forEach(y => {
               const lineItems = linesMap[y].sort((a: any, b: any) => a.transform[4] - b.transform[4]);
               let lineStr = '';
               let lastX = -1;
               let lastWidth = 0;
+              let maxFontSize = 10;
               
               lineItems.forEach((item: any) => {
                 const x = item.transform[4];
-                if (lastX !== -1 && (x - (lastX + lastWidth)) > 5) {
+                const fontSize = Math.abs(item.transform[0]) || 10;
+                if (fontSize > maxFontSize) maxFontSize = fontSize;
+                
+                // If gap is wider than 20% of the font size, it's a space. 
+                // Prevents "S 3" (small gap) but allows "File Name" (normal gap)
+                const spaceThreshold = fontSize * 0.25; 
+                
+                if (lastX !== -1 && (x - (lastX + lastWidth)) > spaceThreshold) {
                    lineStr += ' ';
                 }
                 lineStr += item.str;
                 lastX = x;
                 lastWidth = item.width || 0;
               });
-              pageText += lineStr.trim() + '\n';
+              
+              // Add double newline for paragraph breaks (if Y gap is > 1.5x font size)
+              if (lastLineY !== -1 && Math.abs(lastLineY - y) > (maxFontSize * 1.5)) {
+                 pageText += '\n\n' + lineStr.trim();
+              } else {
+                 pageText += '\n' + lineStr.trim();
+              }
+              
+              lastLineY = y;
             });
             
-            fullText += `\n--- Page ${i} ---\n` + pageText + '\n';
+            // Trim leading newlines
+            pageText = pageText.trim();
+            fullText += `\n--- Page ${i} ---\n\n` + pageText + '\n\n';
             setProgress(Math.round((i / numPages) * 100));
             
           } else {
