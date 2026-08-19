@@ -9,6 +9,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
   const [file, setFile] = useState<File | null>(null);
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
+  const [downloadUrl, setDownloadUrl] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
   const [savings, setSavings] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
