@@ -168,6 +168,10 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     // Fix end of line quote to exclamation mark
     sanitized = sanitized.replace(/(\w+)'$/gm, '$1!');
     
+    // Auto-space glued numbers and letters (bounding box collisions)
+    sanitized = sanitized.replace(/([0-9])([a-zA-Z])/g, '$1 $2');
+    sanitized = sanitized.replace(/([a-zA-Z])([0-9])/g, '$1 $2');
+    
     // Algorithmic Noise & Border Filter (Heuristic Denoising)
     const lines = sanitized.split('\n');
     const cleanLines = lines.filter(line => {
@@ -315,10 +319,11 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                   let lineStr = '';
                   let lastX1 = -1;
                   let avgCharWidth = 10;
+                  let lineHeight = 10;
                   
                   if (line.words.length > 0) {
                      const firstWord = line.words[0];
-                     const lineHeight = firstWord.bbox.y1 - firstWord.bbox.y0;
+                     lineHeight = firstWord.bbox.y1 - firstWord.bbox.y0;
                      avgCharWidth = lineHeight * 0.5;
                   }
                   
@@ -331,10 +336,11 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                     const gap = word.bbox.x0 - lastX1;
                     
                     // Column separation inside a block (though blocks usually split columns anyway)
-                    if (lastX1 !== -1 && gap > (avgCharWidth * 3)) {
+                    // If gap is greater than 2.5x line height, add a double tab for strong separation
+                    if (lastX1 !== -1 && gap > (lineHeight * 2.5)) {
                        lineStr += ' \t\t ';
                     } else if (lastX1 !== -1) {
-                       lineStr += ' ';
+                       lineStr += ' '; // Always guarantee at least one space between tokens
                     }
                     
                     lineStr += word.text;
