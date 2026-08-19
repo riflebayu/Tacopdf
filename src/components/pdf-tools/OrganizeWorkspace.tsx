@@ -27,6 +27,15 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
   // Array of page indices (0-indexed) representing current order
   const [pages, setPages] = useState<{ id: string, originalIndex: number, url: string }[]>([]);
   const [isGeneratingThumbs, setIsGeneratingThumbs] = useState(false);
+  
+  // Drag to scroll state
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // HTML5 Drag and Drop for Reordering
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -102,30 +111,56 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
     }
   };
 
-  const moveLeft = (index: number) => {
-    if (index === 0) return;
-    setPages(prev => {
-      const newPages = [...prev];
-      const temp = newPages[index - 1];
-      newPages[index - 1] = newPages[index];
-      newPages[index] = temp;
-      return newPages;
-    });
-  };
-
-  const moveRight = (index: number) => {
-    if (index === pages.length - 1) return;
-    setPages(prev => {
-      const newPages = [...prev];
-      const temp = newPages[index + 1];
-      newPages[index + 1] = newPages[index];
-      newPages[index] = temp;
-      return newPages;
-    });
-  };
-
   const removePage = (index: number) => {
     setPages(prev => prev.filter((_, i) => i !== index));
+  };
+  
+  // Drag to scroll handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsScrolling(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => { setIsScrolling(false); };
+  const handleMouseUp = () => { setIsScrolling(false); };
+  
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isScrolling || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  // Drag and Drop reordering handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    // Small delay to allow the drag image to generate before we hide it or add opacity
+    setTimeout(() => {}, 0);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      return;
+    }
+    setPages(prev => {
+      const newPages = [...prev];
+      const draggedPage = newPages[draggedIndex];
+      newPages.splice(draggedIndex, 1);
+      newPages.splice(dropIndex, 0, draggedPage);
+      return newPages;
+    });
+    setDraggedIndex(null);
   };
 
   return (
@@ -177,10 +212,25 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             {pages.length === 0 ? (
                <div className="text-center text-error mt-10 font-bold">All pages removed. Please upload again.</div>
             ) : (
-               <div className="flex flex-row gap-6 overflow-x-auto pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar">
+               <div 
+                 ref={scrollRef}
+                 onMouseDown={handleMouseDown}
+                 onMouseLeave={handleMouseLeave}
+                 onMouseUp={handleMouseUp}
+                 onMouseMove={handleMouseMove}
+                 className="flex flex-row gap-6 overflow-x-auto pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar cursor-grab active:cursor-grabbing"
+               >
                  {pages.map((page, index) => (
-                   <div key={page.id} className="relative group bg-surface-container-high rounded-xl p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-48 sm:w-56 snap-center">
-                      <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10">
+                   <div 
+                     key={page.id} 
+                     draggable
+                     onDragStart={(e) => handleDragStart(e, index)}
+                     onDragOver={(e) => handleDragOver(e, index)}
+                     onDrop={(e) => handleDrop(e, index)}
+                     onDragEnd={() => setDraggedIndex(null)}
+                     className={`relative group bg-surface-container-high rounded-xl p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-48 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
+                   >
+                      <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
                         {index + 1}
                       </div>
                       
@@ -190,24 +240,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                          </button>
                       </div>
 
-                      <img src={page.url} className="w-full h-auto object-contain bg-white mb-2 shadow-sm pointer-events-none" />
-                      
-                      <div className="flex justify-between items-center px-1">
-                         <button 
-                           onClick={() => moveLeft(index)} 
-                           disabled={index === 0}
-                           className="p-1 rounded-md hover:bg-surface-variant disabled:opacity-30 disabled:hover:bg-transparent"
-                         >
-                           <ChevronLeft size={16} />
-                         </button>
-                         <button 
-                           onClick={() => moveRight(index)} 
-                           disabled={index === pages.length - 1}
-                           className="p-1 rounded-md hover:bg-surface-variant disabled:opacity-30 disabled:hover:bg-transparent"
-                         >
-                           <ChevronRight size={16} />
-                         </button>
-                      </div>
+                      <img src={page.url} className="w-full h-auto object-contain bg-white mb-2 shadow-sm pointer-events-none select-none" />
                    </div>
                  ))}
                </div>
@@ -248,9 +281,9 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
          <div className="p-5 flex-1 overflow-y-auto">
             <div className="text-sm text-on-surface-variant space-y-3">
               <p><strong>1.</strong> Upload a PDF file to see its pages.</p>
-              <p><strong>2.</strong> Use the left and right arrows below each page to reorder them.</p>
-              <p><strong>3.</strong> Click the trash icon to remove a page completely.</p>
-              <p><strong>4.</strong> Click "Save Changes" to download the organized PDF.</p>
+              <p><strong>2.</strong> Drag and drop any page to reorder them.</p>
+              <p><strong>3.</strong> Click and drag the background to scroll horizontally.</p>
+              <p><strong>4.</strong> Click the trash icon to remove a page completely.</p>
             </div>
          </div>
          
