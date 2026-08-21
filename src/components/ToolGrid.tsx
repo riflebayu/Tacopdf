@@ -148,15 +148,6 @@ export default function ToolGrid({ onSelectTool, toolSettings, showBeta = false 
         </div>
       </div>
 
-      {/* Optimization */}
-      <div id="optimization" className="space-y-4 scroll-mt-20">
-        <h2 className="text-2xl font-bold text-primary border-b border-outline-variant pb-2 flex items-center gap-2">
-          {t('cat.optimization', 'Optimization & Utility')}
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mt-2 pt-4 mb-10">
-          {getToolsByCategory('optimization').map(t => renderToolCard(t, false))}
-        </div>
-      </div>
 
       {/* Security */}
       <div id="security" className="space-y-4 scroll-mt-20">
