@@ -636,17 +636,17 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                   BETA
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-medium mt-0.5">Not stable for production</p>
+              <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t('tool.ocr.beta_warning', 'Not stable for production')}</p>
             </div>
          </div>
          
-         <div className="p-5 flex-1 flex flex-col min-h-0 overflow-hidden">
+          <div className="p-5 flex-1 flex flex-col min-h-0 overflow-hidden">
             <div className="flex-1 flex flex-col min-h-0">
-              <label className="block text-sm font-bold text-on-surface mb-3 shrink-0">Document Language(s)</label>
+              <label className="block text-sm font-bold text-on-surface mb-3 shrink-0">{t('tool.ocr.lang_label', 'Document Language(s)')}</label>
               
               <input
                 type="text"
-                placeholder="Search for languages..."
+                placeholder={t('tool.ocr.search_ph', 'Search for languages...')}
                 value={searchLang}
                 onChange={e => setSearchLang(e.target.value)}
                 className="w-full p-3 rounded-t-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary transition-colors font-medium text-sm mb-0 shrink-0"
@@ -681,7 +681,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
 
             <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl flex gap-3 text-amber-500 text-sm mt-6">
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
-              <p>For best results, ensure your document has a clear background and high contrast.</p>
+              <p>{t('tool.ocr.warning', 'For best results, ensure your document has a clear background and high contrast.')}</p>
             </div>
 
             <div className="mt-4">
@@ -693,8 +693,8 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                   className="mt-1 w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container cursor-pointer"
                 />
                 <div>
-                  <div className="text-sm font-bold text-on-surface">Force Image OCR</div>
-                  <div className="text-xs text-on-surface-variant mt-0.5">Check this to scan images inside Digital PDFs (like charts or scanned photos). This will be slower.</div>
+                  <div className="text-sm font-bold text-on-surface">{t('tool.ocr.force', 'Force Image OCR')}</div>
+                  <div className="text-xs text-on-surface-variant mt-0.5">{t('tool.ocr.force_desc', 'Check this to scan images inside Digital PDFs (like charts or scanned photos). This will be slower.')}</div>
                 </div>
               </label>
             </div>
@@ -707,7 +707,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-primary text-on-primary hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'processing' ? <RefreshCw className="animate-spin" size={20} /> : <ScanText size={20} />}
-              {status === 'processing' ? 'Extracting...' : 'Extract Text'}
+              {status === 'processing' ? t('tool.ocr.btn_processing', 'Extracting...') : t('tool.ocr.btn_extract', 'Extract Text')}
             </button>
          </div>
       </div>

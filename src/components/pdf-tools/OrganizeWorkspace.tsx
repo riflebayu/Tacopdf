@@ -274,16 +274,16 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                   BETA
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-medium mt-0.5">Not stable for production</p>
+              <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t('tool.organize_pdf.beta_warning', 'Not stable for production')}</p>
             </div>
          </div>
          
          <div className="p-5 flex-1 overflow-y-auto">
             <div className="text-sm text-on-surface-variant space-y-3">
-              <p><strong>1.</strong> Upload a PDF file to see its pages.</p>
-              <p><strong>2.</strong> Drag and drop any page to reorder them.</p>
-              <p><strong>3.</strong> Click and drag the background to scroll horizontally.</p>
-              <p><strong>4.</strong> Click the trash icon to remove a page completely.</p>
+              <p><strong>1.</strong> {t('tool.organize_pdf.instruction.1', 'Upload a PDF file to see its pages.')}</p>
+              <p><strong>2.</strong> {t('tool.organize_pdf.instruction.2', 'Drag and drop any page to reorder them.')}</p>
+              <p><strong>3.</strong> {t('tool.organize_pdf.instruction.3', 'Click and drag the background to scroll horizontally.')}</p>
+              <p><strong>4.</strong> {t('tool.organize_pdf.instruction.4', 'Click the trash icon to remove a page completely.')}</p>
             </div>
          </div>
          
@@ -294,7 +294,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
               className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-primary text-on-primary hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'processing' ? <RefreshCw className="animate-spin" size={20} /> : <Layers size={20} />}
-              {status === 'processing' ? 'Processing...' : 'Save Changes'}
+              {status === 'processing' ? t('tool.organize_pdf.btn_processing', 'Processing...') : t('tool.organize_pdf.btn_save', 'Save Changes')}
             </button>
          </div>
       </div>

@@ -214,36 +214,36 @@ export default function CompressWorkspace({ tool, onBack }: any) {
                   BETA
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-medium mt-0.5">Not stable for production</p>
+              <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t('tool.compress_pdf.beta_warning', 'Not stable for production')}</p>
             </div>
          </div>
          
          <div className="p-5 flex-1 overflow-y-auto">
             <div className="mb-6">
-              <label className="block text-sm font-bold text-on-surface mb-3">Compression Level</label>
+              <label className="block text-sm font-bold text-on-surface mb-3">{t('tool.compress_pdf.level', 'Compression Level')}</label>
               
               <div className="space-y-3">
                 <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${quality === 'low' ? 'bg-primary-container/20 border-primary' : 'bg-surface-container-lowest border-outline-variant hover:border-primary/50'}`}>
                   <input type="radio" name="quality" checked={quality === 'low'} onChange={() => setQuality('low')} className="mt-1" />
                   <div>
-                    <div className="font-bold text-sm text-on-surface">Maximum Compression</div>
-                    <div className="text-xs text-on-surface-variant">Smallest file size, lower visual quality.</div>
+                    <div className="font-bold text-sm text-on-surface">{t('tool.compress_pdf.max', 'Maximum Compression')}</div>
+                    <div className="text-xs text-on-surface-variant">{t('tool.compress_pdf.max_desc', 'Smallest file size, lower visual quality.')}</div>
                   </div>
                 </label>
                 
                 <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${quality === 'medium' ? 'bg-primary-container/20 border-primary' : 'bg-surface-container-lowest border-outline-variant hover:border-primary/50'}`}>
                   <input type="radio" name="quality" checked={quality === 'medium'} onChange={() => setQuality('medium')} className="mt-1" />
                   <div>
-                    <div className="font-bold text-sm text-on-surface">Balanced (Recommended)</div>
-                    <div className="text-xs text-on-surface-variant">Good compression and good quality.</div>
+                    <div className="font-bold text-sm text-on-surface">{t('tool.compress_pdf.balanced', 'Balanced (Recommended)')}</div>
+                    <div className="text-xs text-on-surface-variant">{t('tool.compress_pdf.balanced_desc', 'Good compression and good quality.')}</div>
                   </div>
                 </label>
 
                 <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${quality === 'high' ? 'bg-primary-container/20 border-primary' : 'bg-surface-container-lowest border-outline-variant hover:border-primary/50'}`}>
                   <input type="radio" name="quality" checked={quality === 'high'} onChange={() => setQuality('high')} className="mt-1" />
                   <div>
-                    <div className="font-bold text-sm text-on-surface">Low Compression</div>
-                    <div className="text-xs text-on-surface-variant">Preserves high quality, larger file size.</div>
+                    <div className="font-bold text-sm text-on-surface">{t('tool.compress_pdf.low', 'Low Compression')}</div>
+                    <div className="text-xs text-on-surface-variant">{t('tool.compress_pdf.low_desc', 'Preserves high quality, larger file size.')}</div>
                   </div>
                 </label>
               </div>
@@ -251,7 +251,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
 
             <div className="bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl flex gap-3 text-blue-400 text-sm mt-6">
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
-              <p>This tool flattens the PDF into images. Text will no longer be selectable.</p>
+              <p>{t('tool.compress_pdf.warning', 'This tool flattens the PDF into images. Text will no longer be selectable.')}</p>
             </div>
          </div>
          
@@ -262,7 +262,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
               className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-primary text-on-primary hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'processing' ? <RefreshCw className="animate-spin" size={20} /> : <RefreshCw size={20} />}
-              {status === 'processing' ? 'Compressing...' : 'Compress PDF'}
+              {status === 'processing' ? t('tool.compress_pdf.btn_processing', 'Compressing...') : t('tool.compress_pdf.btn_compress', 'Compress PDF')}
             </button>
          </div>
       </div>

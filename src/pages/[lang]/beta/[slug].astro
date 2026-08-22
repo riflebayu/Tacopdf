@@ -1,0 +1,340 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import WorkspaceWrapper from '../../../components/pdf-tools/WorkspaceWrapper';
+import TacoIcon from '../../../components/TacoIcon';
+import { ToolSeoArticle } from '../../../components/ToolSeoArticle';
+import { TOOLS, TOOL_ALIASES, getToolSeoPath } from '../../../data/tools';
+import { TRANSLATIONS } from '../../../data/translations';
+import StaticPageClient from '../../../components/StaticPageClient';
+import FAQSection from '../../../components/FAQSection';
+import { LANGUAGES } from '../../../context/LanguageContext';
+
+export async function getStaticPaths() {
+  const betaTools = (TOOLS || []).filter(t => t.isBeta);
+  const betaToolIds = betaTools.map(t => t.id);
+  const betaAliases = Object.keys(TOOL_ALIASES || {}).filter(alias => {
+    const targetId = TOOL_ALIASES[alias];
+    const targetTool = TOOLS.find(t => t.id === targetId);
+    return targetTool && targetTool.isBeta;
+  });
+  
+  const allPaths = Array.from(new Set([...betaAliases, ...betaToolIds]));
+  
+  const otherLanguages = LANGUAGES.filter(l => l.code !== 'en');
+  
+  const paths: any[] = [];
+  otherLanguages.forEach(lang => {
+     allPaths.forEach(slug => {
+        paths.push({ params: { lang: lang.code, slug } });
+     });
+  });
+  
+  return paths;
+}
+
+const { lang, slug } = Astro.params;
+
+const staticPagesMap: Record<string, string> = {
+  'how-it-works': 'how',
+  'about': 'about',
+  'contact': 'contact',
+  'privacy': 'privacy',
+  'terms': 'terms',
+  'cookie': 'cookie',
+  'disclaimer': 'disclaimer',
+  'retention': 'retention'
+};
+
+const isStaticPage = staticPagesMap[slug] || ['faq', 'sitemap'].includes(slug);
+const pageType = staticPagesMap[slug];
+const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+
+// Tool Logic
+const toolId = TOOL_ALIASES?.[slug] || slug;
+const tool = TOOLS?.find(t => t.id === toolId);
+
+if (!isStaticPage && !tool) {
+  return Astro.redirect('/404');
+}
+
+// Data fetching for tool
+let translatedName = '';
+let translatedDescription = '';
+let title = 'TacoPDF';
+const howToSteps: string[] = [];
+const tips: string[] = [];
+
+if (tool) {
+  const toolNameKey = `tool_name.${tool.id.replace(/-/g, '_')}`;
+  translatedName = dict[toolNameKey as keyof typeof dict] || TRANSLATIONS['en'][toolNameKey as keyof typeof TRANSLATIONS['en']] || tool.name;
+
+  const descriptionKey = `seo.features.${tool.id.replace(/-/g, '_')}`;
+  translatedDescription = dict[descriptionKey as keyof typeof dict] || TRANSLATIONS['en'][descriptionKey as keyof typeof TRANSLATIONS['en']] || tool.description;
+  
+  for (let i = 1; i <= 5; i++) {
+    const key = `tool.${tool.id.replace(/-/g, '_')}.howto.${i}`;
+    const step = dict[key as keyof typeof dict] || TRANSLATIONS['en'][key as keyof typeof TRANSLATIONS['en']];
+    if (step && step !== key) howToSteps.push(step);
+  }
+  if (howToSteps.length === 0) {
+    howToSteps.push(
+      dict['tool.default.howto.1' as keyof typeof dict] || 'Select the PDF file you wish to process.',
+      dict['tool.default.howto.2' as keyof typeof dict] || 'Configure the parameters in the settings panel.',
+      dict['tool.default.howto.3' as keyof typeof dict] || 'Click the action button to execute the tool locally.'
+    );
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const key = `tool.${tool.id.replace(/-/g, '_')}.tips.${i}`;
+    const tip = dict[key as keyof typeof dict] || TRANSLATIONS['en'][key as keyof typeof TRANSLATIONS['en']];
+    if (tip && tip !== key) tips.push(tip);
+  }
+  if (tips.length === 0) {
+    tips.push(
+      dict['tool.default.tips.1' as keyof typeof dict] || 'Preview your output before downloading.',
+      dict['tool.default.tips.2' as keyof typeof dict] || 'All processing happens locally for maximum privacy.',
+      dict['tool.default.tips.3' as keyof typeof dict] || 'Use custom output naming to keep files organized.'
+    );
+  }
+  title = `${translatedName} - TacoPDF`;
+} else if (isStaticPage) {
+  let pageTitleStr = slug.charAt(0).toUpperCase() + slug.slice(1);
+  if (slug === 'faq') pageTitleStr = 'FAQ';
+  if (slug === 'sitemap') pageTitleStr = 'Sitemap';
+  if (pageType) {
+      if (pageType === 'how') pageTitleStr = dict['page.how.title' as keyof typeof dict] || 'How It Works';
+      else if (pageType === 'about') pageTitleStr = dict['page.about.title' as keyof typeof dict] || 'About Us';
+      else if (pageType === 'retention') pageTitleStr = dict['page.retention.title' as keyof typeof dict] || 'Data Retention Policy';
+      else pageTitleStr = dict[`footer.${pageType}` as keyof typeof dict] || pageTitleStr;
+  }
+  title = `${pageTitleStr} - TacoPDF`;
+  translatedDescription = dict['footer.desc' as keyof typeof dict] || 'Free & Secure Online PDF Tools';
+}
+
+// [SEO FIX: Dynamic Schema for Specific Tools]
+let toolSchemaStr = undefined;
+if (tool && !isStaticPage) {
+  const toolSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": translatedName,
+    "url": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta/${slug}`,
+    "description": translatedDescription,
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript and WebAssembly support.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Muhammad Bayu Edi",
+      "url": "https://www.instagram.com/riflebayu",
+      "sameAs": [
+        "https://github.com/riflebayu",
+        "https://www.facebook.com/profile.php?id=100004429534685"
+      ]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "TacoPDF",
+      "url": "https://tacopdf.com"
+    }
+  };
+  toolSchemaStr = JSON.stringify(toolSchema);
+}
+
+const breadcrumbsSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": dict['nav.home' as keyof typeof dict] || "Home",
+      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": dict['nav.tools' as keyof typeof dict] || "PDF Tools",
+      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": translatedName,
+      "item": `https://tacopdf.com${lang === 'en' ? '' : `/${lang}`}/beta/${slug}`
+    }
+  ]
+});
+
+---
+
+<BaseLayout title={title} description={translatedDescription} lang={lang} schema={toolSchemaStr}>
+  <meta name="robots" content="noindex, nofollow" slot="head" />
+  {isStaticPage ? (
+    slug === 'faq' ? (
+      <div class="flex-1 w-full bg-background animate-fade-in pb-12">
+        <FAQSection client:load initialLang={lang} />
+      </div>
+    ) : slug === 'sitemap' ? (
+      <div class="flex-1 w-full bg-background animate-fade-in py-12 px-4 md:px-8">
+        <div class="max-w-[900px] mx-auto">
+          <h1 class="text-3xl md:text-4xl font-black text-on-surface mb-2 tracking-tight">
+            {dict['footer.sitemap' as keyof typeof dict] || 'Sitemap'}
+          </h1>
+          <p class="text-on-surface-variant mb-10 text-sm">
+            {dict['footer.desc' as keyof typeof dict] || '© 2026 TacoPDF. Privacy-first PDF utility.'}
+          </p>
+
+          {/* PDF Tools by Category */}
+          <section class="mb-10">
+            <h2 class="text-lg font-bold text-primary-container border-b border-outline-variant/30 pb-2 mb-4 uppercase tracking-wide text-sm">
+              🔧 {dict['nav.tools' as keyof typeof dict] || 'PDF Tools'}
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              {TOOLS.map((tool) => {
+                const nameKey = `tool_name.${tool.id.replace(/-/g, '_')}`;
+                const name = dict[nameKey as keyof typeof dict] || tool.name;
+                const seoPath = getToolSeoPath(tool.id);
+                return (
+                  <a href={`/${lang}${seoPath}`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group">
+                    <span class="text-primary group-hover:scale-110 transition-transform">→</span>
+                    {name}
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Main Pages */}
+          <section class="mb-10">
+            <h2 class="text-lg font-bold text-primary-container border-b border-outline-variant/30 pb-2 mb-4 uppercase tracking-wide text-sm">
+              🏠 {dict['footer.company' as keyof typeof dict] || 'Company'}
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              <a href={lang === 'en' ? '/' : `/${lang}`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['nav.home' as keyof typeof dict] || 'Home'}</a>
+              <a href={lang === 'en' ? '/about' : `/${lang}/about`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.about' as keyof typeof dict] || 'About Us'}</a>
+              <a href={lang === 'en' ? '/how-it-works' : `/${lang}/how-it-works`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.works' as keyof typeof dict] || 'How It Works'}</a>
+              <a href={lang === 'en' ? '/contact' : `/${lang}/contact`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.contact' as keyof typeof dict] || 'Contact'}</a>
+              <a href={lang === 'en' ? '/faq' : `/${lang}/faq`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> FAQ</a>
+              <a href="/blog" class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['nav.blog' as keyof typeof dict] || 'Blog'}</a>
+            </div>
+          </section>
+
+          {/* Legal Pages */}
+          <section class="mb-10">
+            <h2 class="text-lg font-bold text-primary-container border-b border-outline-variant/30 pb-2 mb-4 uppercase tracking-wide text-sm">
+              📜 {dict['footer.legal' as keyof typeof dict] || 'Legal'}
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              <a href={lang === 'en' ? '/privacy' : `/${lang}/privacy`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.privacy' as keyof typeof dict] || 'Privacy Policy'}</a>
+              <a href={lang === 'en' ? '/terms' : `/${lang}/terms`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.terms' as keyof typeof dict] || 'Terms of Service'}</a>
+              <a href={lang === 'en' ? '/cookie' : `/${lang}/cookie`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.cookie' as keyof typeof dict] || 'Cookie Policy'}</a>
+              <a href={lang === 'en' ? '/disclaimer' : `/${lang}/disclaimer`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.disclaimer' as keyof typeof dict] || 'Disclaimer'}</a>
+              <a href={lang === 'en' ? '/retention' : `/${lang}/retention`} class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors py-1.5 px-3 rounded-lg hover:bg-surface-container group"><span class="text-primary group-hover:scale-110 transition-transform">→</span> {dict['footer.retention' as keyof typeof dict] || 'Data Retention Policy'}</a>
+            </div>
+          </section>
+
+          {/* XML Sitemap link for webmasters */}
+          <section class="mt-8 p-4 bg-surface-container border border-outline-variant/30 rounded-xl text-sm text-on-surface-variant">
+            <p>
+              📡 <strong class="text-on-surface">Webmaster / Google Search Console:</strong>
+              {' '}Submit XML Sitemap at:
+              <a href="https://tacopdf.com/sitemap-index.xml" class="text-primary hover:underline ml-1 font-mono" target="_blank" rel="noopener">
+                https://tacopdf.com/sitemap-index.xml
+              </a>
+            </p>
+          </section>
+        </div>
+      </div>
+    ) : (
+      <StaticPageClient pageType={pageType as any} client:load initialLang={lang} />
+    )
+  ) : (
+    <div class="flex flex-col w-full bg-background text-on-surface min-h-screen">
+      {!isStaticPage && <script type="application/ld+json" set:html={breadcrumbsSchema} />}
+      <div id="workspace-top" class="max-w-[1200px] mx-auto px-4 md:px-8 py-8 md:py-12 scroll-mt-24 w-full">
+        {/* Breadcrumbs */}
+        <nav class="flex items-center text-xs md:text-sm font-medium text-on-surface-variant mb-6 space-x-2" aria-label="Breadcrumb">
+          <a href={lang === 'en' ? '/' : `/${lang}`} class="hover:text-primary transition-colors flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="hidden sm:inline">{dict['nav.home' as keyof typeof dict] || 'Home'}</span>
+          </a>
+          <span class="text-outline-variant/60">/</span>
+          <a href={lang === 'en' ? '/beta' : `/${lang}/beta`} class="hover:text-primary transition-colors">
+            Beta Tools
+          </a>
+          <span class="text-outline-variant/60">/</span>
+          <span class="text-primary truncate" aria-current="page">
+            {translatedName}
+          </span>
+        </nav>
+
+        {/* Tool Header Card */}
+        <div class="mb-5 md:mb-8 p-4 md:p-6 lg:p-8 bg-surface-container border border-outline-variant/30 rounded-xl md:rounded-2xl shadow-sm flex flex-row gap-3 md:gap-8 items-start md:items-center">
+           <div class="bg-surface-container-high p-2 md:p-4 rounded-lg md:rounded-xl border border-outline-variant/50 shrink-0 shadow-inner mt-1 md:mt-0">
+             <div class="md:hidden flex">
+               <TacoIcon name={tool!.icon} size={32} className="text-primary-container" />
+             </div>
+             <div class="hidden md:flex">
+               <TacoIcon name={tool!.icon} size={56} className="text-primary-container" />
+             </div>
+           </div>
+           <div class="flex-1">
+             <h1 class="text-lg md:text-3xl lg:text-4xl font-black text-on-surface mb-0.5 md:mb-3 tracking-tight">
+               {translatedName}
+             </h1>
+             <p class="text-xs md:text-lg text-on-surface-variant leading-snug md:leading-relaxed max-w-3xl">
+               {translatedDescription}
+             </p>
+           </div>
+        </div>
+
+        <WorkspaceWrapper tool={tool!} lang={lang} client:only="react" />
+        
+        <div class="mt-12 border border-outline-variant bg-surface-container rounded-2xl p-6 md:p-8 space-y-6">
+          <h2 class="text-xl font-bold text-primary-container flex items-center gap-2 border-b border-outline-variant pb-3">
+            <TacoIcon name="help-circle" size={22} className="text-primary-container" />
+            {dict['workspace.how_to_use' as keyof typeof dict] || 'How to Use'} - {translatedName}
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface-variant text-sm leading-relaxed">
+            <div class="space-y-4">
+              <h3 class="font-bold text-on-surface text-base flex items-center gap-2">
+                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary text-xs font-mono font-bold">1</span>
+                {dict['workspace.how_to_title' as keyof typeof dict] || 'Instructions for'} {translatedName}
+              </h3>
+              <ol class="list-decimal pl-5 space-y-2.5">
+                {howToSteps.map((step, idx) => (
+                  <li class="marker:text-primary-container marker:font-bold">
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="font-bold text-on-surface text-base flex items-center gap-2">
+                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary text-xs font-mono font-bold">2</span>
+                {dict['workspace.tips_title' as keyof typeof dict] || 'Professional Tips'}
+              </h3>
+              <ul class="list-disc pl-5 space-y-2.5">
+                {tips.map((tip, idx) => (
+                  <li class="marker:text-primary-container">
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <ToolSeoArticle toolId={tool!.id} lang={lang} />
+      </div>
+    </div>
+  )}
+</BaseLayout>
