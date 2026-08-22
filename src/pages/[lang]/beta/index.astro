@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { TRANSLATIONS } from '../../../data/translations';
+import BetaPageClient from '../../../components/BetaPageClient';
+
+export async function getStaticPaths() {
+  const languages = ['id', 'es', 'fr', 'de', 'pt', 'ja'];
+  return languages.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const dict = TRANSLATIONS[lang as keyof typeof TRANSLATIONS] || TRANSLATIONS['en'];
+const title = 'Beta PDF Tools | TacoPDF';
+const description = 'Test out our experimental, in-browser PDF tools like OCR, Compress, and Organize. These tools are currently in Beta.';
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <meta name="robots" content="noindex, nofollow" slot="head" />
+  <BetaPageClient lang={lang} client:load />
+</BaseLayout>
