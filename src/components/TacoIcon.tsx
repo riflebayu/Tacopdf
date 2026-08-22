@@ -15,9 +15,11 @@ export default function TacoIcon({ name, className = '', size = 32 }: TacoIconPr
     return <LucideIcon name="HelpCircle" size={size} className={className} />;
   }
 
+  const srcName = name.includes('.') ? name : `${name}.webp`;
+
   return (
     <img 
-      src={`/images/tools/${name}.webp`} 
+      src={`/images/tools/${srcName}`} 
       alt={`${name.replace(/-/g, ' ')} PDF tool icon`}
       width={size}
       height={size}
