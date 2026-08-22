@@ -255,7 +255,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
       };
 
       if (file.type.startsWith('image/')) {
-        setStatusMsg('Loading image...');
+        setStatusMsg(t('tool.ocr.status.loading_image', 'Loading image...'));
         const imageUrl = URL.createObjectURL(file);
         
         const img = new Image();
@@ -287,7 +287,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-          setStatusMsg('Pre-processing image...');
+          setStatusMsg(t('tool.ocr.status.preprocessing', 'Pre-processing image...'));
           
           const imageDataCtx = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imageDataCtx.data;
@@ -328,7 +328,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           
           ctx.putImageData(imageDataCtx, 0, 0);
           
-          setStatusMsg('Running OCR on image...');
+          setStatusMsg(t('tool.ocr.status.running_ocr_image', 'Running OCR on image...'));
           const worker = await getWorker(true);
           const imageData = canvas.toDataURL('image/png');
           const { data: resultData } = await worker.recognize(imageData);
@@ -392,7 +392,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         
       } else {
         // PDF Processing Pipeline
-        setStatusMsg('Initializing PDF Engine...');
+        setStatusMsg(t('tool.ocr.status.init', 'Initializing Tesseract engine...'));
         const pdfjs = getPdfJs();
         const arrayBuffer = await file.arrayBuffer();
         
@@ -401,7 +401,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         const numPages = pdfDoc.numPages;
         
         for (let i = 1; i <= numPages; i++) {
-          setStatusMsg(`Processing page ${i} of ${numPages}...`);
+          setStatusMsg(`${t('tool.ocr.status.processing_page', 'Processing page')} ${i} ${t('workspace.split.of', 'of')} ${numPages}...`);
           const page = await pdfDoc.getPage(i);
           
           // 1. Direct Text Layer Extraction
@@ -538,7 +538,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
     } catch (err) {
       console.error(err);
       setStatus('error');
-      setStatusMsg('An error occurred during text extraction.');
+      setStatusMsg(t('tool.ocr.error', 'An error occurred during text extraction.'));
     }
   };
 
@@ -564,7 +564,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         {status === 'processing' ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low relative">
             <RefreshCw className="animate-spin text-primary mb-4" size={48} />
-            <h3 className="text-xl font-bold text-on-surface mb-2">Extracting Text...</h3>
+            <h3 className="text-xl font-bold text-on-surface mb-2">{t('tool.ocr.extracting', 'Extracting Text...')}</h3>
             <p className="text-on-surface-variant text-sm font-medium mb-4">{statusMsg}</p>
             <div className="w-64 h-3 bg-surface-container-high rounded-full overflow-hidden mb-4">
               <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }}></div>
@@ -573,7 +573,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           </div>
         ) : status === 'success' ? (
           <div className="flex-1 flex flex-col p-4 sm:p-8 pt-16 sm:pt-16 bg-surface-container-low">
-             <h3 className="text-xl font-bold text-on-surface mb-4">Extracted Text</h3>
+             <h3 className="text-xl font-bold text-on-surface mb-4">{t('tool.ocr.extracted', 'Extracted Text')}</h3>
              <textarea 
                className="flex-1 w-full p-4 rounded-xl border border-outline-variant bg-surface-container focus:outline-none focus:border-primary transition-colors resize-none mb-4 font-mono text-sm shadow-inner text-on-surface"
                value={extractedText}
@@ -584,13 +584,13 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                  onClick={downloadText}
                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-primary text-on-primary font-bold rounded-xl shadow-md hover:-translate-y-0.5 transition-all"
                >
-                 <FileDown size={20} /> Download as TXT
+                 <FileDown size={20} /> {t('tool.ocr.download_txt', 'Download as TXT')}
                </button>
                <button 
                  onClick={() => { setFile(null); setStatus('idle'); }}
                  className="flex items-center justify-center gap-2 px-6 py-4 bg-surface-container-high text-on-surface font-bold rounded-xl hover:bg-surface-variant transition-colors"
                >
-                 <RefreshCw size={20} /> Restart
+                 <RefreshCw size={20} /> {t('tool.ocr.restart', 'Restart')}
                </button>
              </div>
           </div>
@@ -605,7 +605,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
                onClick={() => setFile(null)}
                className="text-error font-medium text-sm hover:underline"
              >
-               Remove file
+               {t('workspace.file.remove', 'Remove file')}
              </button>
           </div>
         ) : (
@@ -614,9 +614,9 @@ export default function OCRWorkspace({ tool, onBack }: any) {
               <div className="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-md">
                 <Upload size={36} />
               </div>
-              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">Select PDF or Image</h3>
+              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">{t('tool.ocr.select', 'Select PDF or Image')}</h3>
               <p className="text-on-surface-variant text-center max-w-sm">
-                Drop your Scanned PDF here to extract text.
+                {t('tool.ocr.drop', 'Drop your Scanned PDF here to extract text.')}
               </p>
               <input type="file" accept=".pdf,image/*" className="hidden" onChange={handleFileUpload} />
             </label>

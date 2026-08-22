@@ -27,7 +27,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
     if (!file) return;
     setStatus('processing');
     setProgress(10);
-    setStatusText('Initializing...');
+    setStatusText(t('tool.compress.status.init', 'Initializing...'));
     
     // Smooth fake progress animator
     let currentProgress = 10;
@@ -39,14 +39,14 @@ export default function CompressWorkspace({ tool, onBack }: any) {
     try {
       // Import the huge PyMuPDF/Ghostscript WASM (lazy load so it doesn't freeze initial page load)
       setProgress(20);
-      setStatusText('Downloading compression engine (this may take a while on first run)...');
+      setStatusText(t('tool.compress.status.download', 'Downloading compression engine (this may take a while on first run)...'));
       
       // Let the UI render the text before blocking
       await new Promise(r => setTimeout(r, 100));
       
       const pymupdf = await loadPyMuPDF();
       setProgress(40);
-      setStatusText('Engine loaded. Optimizing PDF structure...');
+      setStatusText(t('tool.compress.status.engine_loaded', 'Engine loaded. Optimizing PDF structure...'));
       
       let dpiTarget = 96;
       let imgQuality = 75;
@@ -77,14 +77,14 @@ export default function CompressWorkspace({ tool, onBack }: any) {
       };
 
       setProgress(60);
-      setStatusText('Compressing images and subsetting fonts...');
+      setStatusText(t('tool.compress.status.compressing', 'Compressing images and subsetting fonts...'));
       
       // Perform compression using WASM
       const result = await pymupdf.compressPdf(file, options);
       
       clearInterval(progressInterval);
       setProgress(100);
-      setStatusText('Finalizing...');
+      setStatusText(t('tool.compress.status.finalizing', 'Finalizing...'));
       
       const blob = result.blob;
       const url = URL.createObjectURL(blob);
@@ -126,19 +126,19 @@ export default function CompressWorkspace({ tool, onBack }: any) {
         {status === 'processing' ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low relative">
             <RefreshCw className="animate-spin text-primary mb-4" size={48} />
-            <h3 className="text-xl font-bold text-on-surface mb-2">Compressing PDF...</h3>
+            <h3 className="text-xl font-bold text-on-surface mb-2">{t('tool.compress.compressing', 'Compressing PDF...')}</h3>
             <p className="text-on-surface-variant text-sm text-center mb-4 max-w-sm h-10">{statusText}</p>
             <div className="w-64 h-3 bg-surface-container-high rounded-full overflow-hidden mb-4">
               <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }}></div>
             </div>
-            <p className="text-on-surface-variant text-sm font-medium">{progress}% Complete</p>
+            <p className="text-on-surface-variant text-sm font-medium">{progress}% {t('tool.compress.complete', 'Complete')}</p>
           </div>
         ) : status === 'success' ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
              <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
                <Download size={40} />
              </div>
-             <h3 className="text-2xl font-bold text-on-surface mb-2">Compression Complete!</h3>
+             <h3 className="text-2xl font-bold text-on-surface mb-2">{t('tool.compress.complete', 'Compression Complete!')}</h3>
              <p className="text-on-surface-variant mb-6 text-center max-w-sm">
                {savings}
              </p>
@@ -147,13 +147,13 @@ export default function CompressWorkspace({ tool, onBack }: any) {
                download={`compressed_${file?.name || 'document.pdf'}`}
                className="flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full max-w-xs justify-center"
              >
-               <Download size={24} /> Download PDF
+               <Download size={24} /> {t('workspace.btn.save_download', 'Download PDF')}
              </a>
              <button 
                onClick={() => { setFile(null); setStatus('idle'); }}
                className="mt-6 text-primary font-semibold hover:underline"
              >
-               Compress another file
+               {t('tool.compress.another', 'Compress another file')}
              </button>
           </div>
         ) : status === 'error' ? (
@@ -161,7 +161,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
              <div className="w-20 h-20 bg-error/20 text-error rounded-full flex items-center justify-center mb-6 border border-error/30">
                <AlertCircle size={40} />
              </div>
-             <h3 className="text-2xl font-bold text-on-surface mb-2">Compression Failed</h3>
+             <h3 className="text-2xl font-bold text-on-surface mb-2">{t('tool.compress.failed', 'Compression Failed')}</h3>
              <p className="text-error mb-6 text-center max-w-md font-mono text-sm break-words bg-error/10 p-3 rounded-lg border border-error/20">
                {errorMessage}
              </p>
@@ -169,7 +169,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
                onClick={() => { setStatus('idle'); setErrorMessage(''); }}
                className="px-6 py-3 bg-surface-variant text-on-surface font-bold rounded-lg hover:bg-surface-container-highest transition-colors"
              >
-               Try Again
+               {t('tool.compress.try_again', 'Try Again')}
              </button>
           </div>
         ) : file ? (
@@ -183,7 +183,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
                onClick={() => setFile(null)}
                className="text-error font-medium text-sm hover:underline"
              >
-               Remove file
+               {t('workspace.file.remove', 'Remove file')}
              </button>
           </div>
         ) : (
@@ -192,9 +192,9 @@ export default function CompressWorkspace({ tool, onBack }: any) {
               <div className="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-md">
                 <Upload size={36} />
               </div>
-              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">Select PDF file</h3>
+              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">{t('tool.compress.select', 'Select PDF file')}</h3>
               <p className="text-on-surface-variant text-center max-w-sm">
-                Drop your PDF here or click to browse. Max file size: 50MB.
+                {t('tool.compress.drop', 'Drop your PDF here or click to browse. Max file size: 50MB.')}
               </p>
               <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
             </label>

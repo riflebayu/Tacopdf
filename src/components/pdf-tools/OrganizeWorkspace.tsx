@@ -175,26 +175,26 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
         {status === 'processing' || isGeneratingThumbs ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low relative">
             <RefreshCw className="animate-spin text-primary mb-4" size={48} />
-            <h3 className="text-xl font-bold text-on-surface mb-2">{isGeneratingThumbs ? 'Loading pages...' : 'Organizing PDF...'}</h3>
+            <h3 className="text-xl font-bold text-on-surface mb-2">{isGeneratingThumbs ? t('tool.organize.loading', 'Loading pages...') : t('tool.organize.organizing', 'Organizing PDF...')}</h3>
           </div>
         ) : status === 'success' ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
              <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
                <Download size={40} />
              </div>
-             <h3 className="text-2xl font-bold text-on-surface mb-2">PDF Organized Successfully!</h3>
+             <h3 className="text-2xl font-bold text-on-surface mb-2">{t('tool.organize.success', 'PDF Organized Successfully!')}</h3>
              <a
                href={downloadUrl}
                download={`organized_${file?.name || 'document.pdf'}`}
                className="mt-6 flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full max-w-xs justify-center"
              >
-               <Download size={24} /> Download PDF
+               <Download size={24} /> {t('tool.organize.download', 'Download PDF')}
              </a>
              <button 
                onClick={() => { setFile(null); setStatus('idle'); setPages([]); }}
                className="mt-6 text-primary font-semibold hover:underline"
              >
-               Organize another file
+               {t('tool.organize.another', 'Organize another file')}
              </button>
           </div>
         ) : file ? (
@@ -205,12 +205,12 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                  onClick={() => { setFile(null); setPages([]); }}
                  className="text-error font-medium text-sm hover:underline"
                >
-                 Remove file
+                 {t('workspace.file.remove', 'Remove file')}
                </button>
             </div>
             
             {pages.length === 0 ? (
-               <div className="text-center text-error mt-10 font-bold">All pages removed. Please upload again.</div>
+               <div className="text-center text-error mt-10 font-bold">{t('tool.organize.empty', 'All pages removed. Please upload again.')}</div>
             ) : (
                <div 
                  ref={scrollRef}
@@ -252,9 +252,9 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
               <div className="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-md">
                 <Upload size={36} />
               </div>
-              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">Select PDF file</h3>
+              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">{t('tool.organize.select', 'Select PDF file')}</h3>
               <p className="text-on-surface-variant text-center max-w-sm">
-                Drop your PDF here to reorder or remove pages.
+                {t('tool.organize.drop', 'Drop your PDF here to reorder or remove pages.')}
               </p>
               <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
             </label>
