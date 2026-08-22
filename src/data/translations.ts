@@ -1,6 +1,7 @@
 // @ts-nocheck
 export const TRANSLATIONS = {
   "en": {
+    "cat.optimization": "Optimization & Utility",
     "tool.badge.new": "NEW TOOL",
     "tool.ocr.status.loading_image": "Loading image...",
     "tool.ocr.status.preprocessing": "Pre-processing image...",
@@ -847,6 +848,7 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Extracting..."
 ,
   "id": {
+    "cat.optimization": "Optimasi & Utilitas",
     "tool.badge.new": "ALAT BARU",
     "tool.ocr.status.loading_image": "Memuat gambar...",
     "tool.ocr.status.preprocessing": "Memproses awal gambar...",
@@ -1662,6 +1664,7 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Mengekstrak..."
 ,
   "es": {
+    "cat.optimization": "Optimización y Utilidad",
     "tool.badge.new": "NUEVA HERRAMIENTA",
     "tool.ocr.status.loading_image": "Cargando imagen...",
     "tool.ocr.status.preprocessing": "Preprocesando imagen...",
@@ -2431,6 +2434,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "cat.optimization": "最適化＆ユーティリティ",
     "tool.badge.new": "新ツール",
     "tool.ocr.status.loading_image": "画像を読み込み中...",
     "tool.ocr.status.preprocessing": "画像の前処理中...",
@@ -3221,6 +3225,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "cat.optimization": "Otimização e Utilidade",
     "tool.badge.new": "NOVA FERRAMENTA",
     "tool.ocr.status.loading_image": "Carregando imagem...",
     "tool.ocr.status.preprocessing": "Pré-processando imagem...",
@@ -4007,6 +4012,7 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "cat.optimization": "Optimierung & Dienstprogramm",
     "tool.badge.new": "NEUES WERKZEUG",
     "tool.ocr.status.loading_image": "Bild wird geladen...",
     "tool.ocr.status.preprocessing": "Bild wird vorverarbeitet...",
@@ -4800,6 +4806,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "cat.optimization": "Optimisation & Utilité",
     "tool.badge.new": "NOUVEL OUTIL",
     "tool.ocr.status.loading_image": "Chargement de l'image...",
     "tool.ocr.status.preprocessing": "Prétraitement de l'image...",
