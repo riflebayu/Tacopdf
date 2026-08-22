@@ -18,6 +18,28 @@ interface ToolGridProps {
 export default function ToolGrid({ onSelectTool, toolSettings, showBeta = false }: ToolGridProps) {
   const { t } = useLanguage();
   
+  const [seenNewTools, setSeenNewTools] = useState<Record<string, boolean>>({});
+  
+  useEffect(() => {
+    const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const newSeenState: Record<string, boolean> = {};
+    
+    TOOLS.filter(t => t.isNew).forEach(tool => {
+       const key = `seen_new_tool_${tool.id}`;
+       const seenDate = localStorage.getItem(key);
+       if (!seenDate) {
+          localStorage.setItem(key, now.toString());
+          newSeenState[tool.id] = false;
+       } else if (now - parseInt(seenDate, 10) > THREE_DAYS) {
+          newSeenState[tool.id] = true;
+       } else {
+          newSeenState[tool.id] = false;
+       }
+    });
+    setSeenNewTools(newSeenState);
+  }, []);
+
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('tacopdf-favorites');
@@ -75,6 +97,10 @@ export default function ToolGrid({ onSelectTool, toolSettings, showBeta = false 
         ) : tool.isBeta ? (
           <span className="absolute -top-3 left-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full z-20 shadow-md flex items-center gap-1 tracking-widest border border-white/20">
             BETA
+          </span>
+        ) : tool.isNew && seenNewTools[tool.id] !== true ? (
+          <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
+            ✨ {t('tool.badge.new', 'NEW TOOL')}
           </span>
         ) : isPopular ? (
           <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
