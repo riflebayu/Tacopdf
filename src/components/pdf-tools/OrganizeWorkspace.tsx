@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight, Check, RotateCcw } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
@@ -178,7 +178,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
   return (
     <div className="w-full flex flex-col lg:flex-row items-stretch lg:items-start gap-6">
       <div className="lg:col-span-8 w-full lg:w-auto flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
-        <div className="absolute top-4 left-4 z-20 flex gap-2">
+        <div className="absolute top-4 left-4 z-20 hidden sm:flex gap-2">
            <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
              <ArrowLeft size={20} />
            </button>
@@ -190,24 +190,34 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             <h3 className="text-xl font-bold text-on-surface mb-2">{isGeneratingThumbs ? t('tool.organize.loading', 'Loading pages...') : t('tool.organize.organizing', 'Organizing PDF...')}</h3>
           </div>
         ) : status === 'success' ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
-             <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
-               <Download size={40} />
+          <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-surface-container-low">
+             <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
+               <Check size={32} />
              </div>
-             <h3 className="text-2xl font-bold text-on-surface mb-2">{t('tool.organize.success', 'PDF Organized Successfully!')}</h3>
-             <a
-               href={downloadUrl}
-               download={`organized_${file?.name || 'document.pdf'}`}
-               className="mt-6 flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full max-w-xs justify-center"
-             >
-               <Download size={24} /> {t('tool.organize.download', 'Download PDF')}
-             </a>
-             <button 
-               onClick={() => { setFile(null); setStatus('idle'); setPages([]); }}
-               className="mt-6 text-primary font-semibold hover:underline"
-             >
-               {t('tool.organize.another', 'Organize another file')}
-             </button>
+             <h3 className="text-xl sm:text-2xl font-bold text-on-surface mb-2 text-center">{t('tool.organize.success', 'PDF Organized Successfully!')}</h3>
+             
+             <div className="flex flex-col gap-2 sm:gap-3 mt-6 w-full max-w-sm">
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
+                  <a 
+                    href={downloadUrl}
+                    download={`organized_${file?.name || 'document.pdf'}`}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-lg text-sm font-bold shadow-md transition-colors flex-1 sm:flex-none min-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                  >
+                    <Download size={16} />
+                    {t('workspace.preview.blocked.download', 'Download')}
+                  </a>
+                </div>
+                
+                <div className="pt-3 mt-1 sm:pt-4 sm:mt-2 border-t border-outline-variant/30 flex justify-center w-full">
+                  <button
+                    onClick={() => { setFile(null); setStatus('idle'); setPages([]); }}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-container-high hover:bg-surface-variant border border-outline-variant/30 text-on-surface rounded-lg text-sm font-medium transition-colors w-full shadow-sm"
+                  >
+                    <RotateCcw size={16} />
+                    {t('workspace.btn.another', 'Process Another Document')}
+                  </button>
+                </div>
+             </div>
           </div>
         ) : file ? (
           <div className="flex-1 flex flex-col p-4 sm:p-6 pt-14 sm:pt-16">
@@ -230,7 +240,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                  onMouseLeave={handleMouseLeave}
                  onMouseUp={handleMouseUp}
                  onMouseMove={handleMouseMove}
-                 className="flex flex-row items-center gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar cursor-grab active:cursor-grabbing"
+                 className="grid grid-cols-3 sm:flex sm:flex-row sm:items-center gap-2 sm:gap-6 overflow-y-auto sm:overflow-y-visible sm:overflow-x-auto max-h-[55vh] sm:max-h-none pb-4 sm:pb-8 sm:snap-x sm:snap-mandatory pt-2 px-2 custom-scrollbar cursor-grab active:cursor-grabbing"
                >
                  {pages.map((page, index) => (
                    <div 
@@ -240,7 +250,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                      onDragOver={(e) => handleDragOver(e, index)}
                      onDrop={(e) => handleDrop(e, index)}
                      onDragEnd={() => setDraggedIndex(null)}
-                     className={`relative group bg-surface-container-high rounded-xl p-2 sm:p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-28 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
+                     className={`relative group bg-surface-container-high rounded-lg sm:rounded-xl p-1.5 sm:p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-full sm:w-56 sm:snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
                    >
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
                         {index + 1}
@@ -259,18 +269,73 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             )}
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8">
-            <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group">
-              <div className="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-md">
-                <Upload size={36} />
+          <>
+            <style>{`
+              @keyframes mobile-glow-yellow {
+                0%, 100% { box-shadow: 0 0 2px rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2); }
+                50% { box-shadow: 0 0 10px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.5); }
+              }
+              .mobile-glow {
+                animation: mobile-glow-yellow 3s infinite ease-in-out;
+              }
+              @media (min-width: 768px) {
+                .mobile-glow {
+                  animation: none;
+                }
+              }
+            `}</style>
+            <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
+              <div
+                onClick={() => document.getElementById('organize-upload')?.click()}
+                className="flex border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex-col items-center justify-center cursor-pointer transition-all mobile-glow border-primary-container bg-surface-container"
+              >
+                <input
+                  id="organize-upload"
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                {/* Mobile View: Horizontal Banner */}
+                <div className="flex md:hidden items-center justify-between w-full px-1">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary-container/10 p-2.5 rounded-lg shrink-0">
+                      <Upload size={24} className="text-primary-container" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-black text-on-surface leading-tight mb-0.5">
+                        {t('workspace.drop.title_mobile', 'Select file from device')}
+                      </p>
+                      <p className="text-[10px] text-on-surface-variant font-medium">
+                        {t('workspace.drop.support_pdf', 'Supports PDF up to 100MB')}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); document.getElementById('organize-upload')?.click(); }}
+                    className="ml-2 shrink-0 px-4 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-[10px]"
+                  >
+                    {t('workspace.drop.browse', 'Browse')}
+                  </button>
+                </div>
+
+                {/* Desktop View: Vertical Stack */}
+                <div className="hidden md:flex flex-col items-center justify-center text-center">
+                  <Upload size={48} className="text-primary-container mb-4" />
+                  <p className="text-lg font-bold text-on-surface mb-2">{t('tool.organize.select', 'Select PDF file')}</p>
+                  <p className="text-sm text-on-surface-variant mb-6">
+                    {t('tool.organize.drop', 'Drop your PDF here to reorder or remove pages.')}
+                  </p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); document.getElementById('organize-upload')?.click(); }}
+                    className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-xs"
+                  >
+                    {t('workspace.drop.browse', 'Browse files')}
+                  </button>
+                </div>
               </div>
-              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">{t('tool.organize.select', 'Select PDF file')}</h3>
-              <p className="text-on-surface-variant text-center max-w-sm">
-                {t('tool.organize.drop', 'Drop your PDF here to reorder or remove pages.')}
-              </p>
-              <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
-            </label>
-          </div>
+            </div>
+          </>
         )}
       </div>
 

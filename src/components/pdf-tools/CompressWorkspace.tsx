@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, FileText, Download, AlertCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, AlertCircle, RefreshCw, Check, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { loadPyMuPDF } from '../../utils/pymupdf-loader';
 
@@ -117,7 +117,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
   return (
     <div className="w-full flex flex-col lg:flex-row gap-6">
       <div className="lg:col-span-7 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl min-h-[320px] bg-surface-container-low flex flex-col relative overflow-hidden">
-        <div className="absolute top-4 left-4 z-20 flex gap-2">
+        <div className="absolute top-4 left-4 z-20 hidden sm:flex gap-2">
            <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
              <ArrowLeft size={20} />
            </button>
@@ -134,27 +134,37 @@ export default function CompressWorkspace({ tool, onBack }: any) {
             <p className="text-on-surface-variant text-sm font-medium">{progress}% {t('tool.compress.complete', 'Complete')}</p>
           </div>
         ) : status === 'success' ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
-             <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
-               <Download size={40} />
+          <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-surface-container-low">
+             <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-500/30">
+               <Check size={32} />
              </div>
-             <h3 className="text-2xl font-bold text-on-surface mb-2">{t('tool.compress.complete', 'Compression Complete!')}</h3>
-             <p className="text-on-surface-variant mb-6 text-center max-w-sm">
+             <h3 className="text-xl sm:text-2xl font-bold text-on-surface mb-2 text-center">{t('tool.compress.complete', 'Compression Complete!')}</h3>
+             <p className="text-green-500 font-bold mb-6 text-center max-w-sm">
                {savings}
              </p>
-             <a
-               href={downloadUrl}
-               download={`compressed_${file?.name || 'document.pdf'}`}
-               className="flex items-center gap-2 px-8 py-4 bg-primary text-on-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full max-w-xs justify-center"
-             >
-               <Download size={24} /> {t('workspace.btn.save_download', 'Download PDF')}
-             </a>
-             <button 
-               onClick={() => { setFile(null); setStatus('idle'); }}
-               className="mt-6 text-primary font-semibold hover:underline"
-             >
-               {t('tool.compress.another', 'Compress another file')}
-             </button>
+             
+             <div className="flex flex-col gap-2 sm:gap-3 mt-4 w-full max-w-sm">
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
+                  <a 
+                    href={downloadUrl}
+                    download={`compressed_${file?.name || 'document.pdf'}`}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-lg text-sm font-bold shadow-md transition-colors flex-1 sm:flex-none min-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                  >
+                    <Download size={16} />
+                    {t('workspace.btn.save_download', 'Download PDF')}
+                  </a>
+                </div>
+                
+                <div className="pt-3 mt-1 sm:pt-4 sm:mt-2 border-t border-outline-variant/30 flex justify-center w-full">
+                  <button
+                    onClick={() => { setFile(null); setStatus('idle'); }}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-container-high hover:bg-surface-variant border border-outline-variant/30 text-on-surface rounded-lg text-sm font-medium transition-colors w-full shadow-sm"
+                  >
+                    <RotateCcw size={16} />
+                    {t('tool.compress.another', 'Compress another file')}
+                  </button>
+                </div>
+             </div>
           </div>
         ) : status === 'error' ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low">
@@ -187,18 +197,73 @@ export default function CompressWorkspace({ tool, onBack }: any) {
              </button>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8">
-            <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group">
-              <div className="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:shadow-md">
-                <Upload size={36} />
+          <>
+            <style>{`
+              @keyframes mobile-glow-yellow {
+                0%, 100% { box-shadow: 0 0 2px rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2); }
+                50% { box-shadow: 0 0 10px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.5); }
+              }
+              .mobile-glow {
+                animation: mobile-glow-yellow 3s infinite ease-in-out;
+              }
+              @media (min-width: 768px) {
+                .mobile-glow {
+                  animation: none;
+                }
+              }
+            `}</style>
+            <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
+              <div
+                onClick={() => document.getElementById('compress-upload')?.click()}
+                className="flex border-2 border-dashed rounded-xl p-3 md:p-10 w-full flex-col items-center justify-center cursor-pointer transition-all mobile-glow border-primary-container bg-surface-container"
+              >
+                <input
+                  id="compress-upload"
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                {/* Mobile View: Horizontal Banner */}
+                <div className="flex md:hidden items-center justify-between w-full px-1">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary-container/10 p-2.5 rounded-lg shrink-0">
+                      <Upload size={24} className="text-primary-container" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-black text-on-surface leading-tight mb-0.5">
+                        {t('workspace.drop.title_mobile', 'Select file from device')}
+                      </p>
+                      <p className="text-[10px] text-on-surface-variant font-medium">
+                        {t('workspace.drop.support_pdf', 'Supports PDF up to 100MB')}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); document.getElementById('compress-upload')?.click(); }}
+                    className="ml-2 shrink-0 px-4 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-[10px]"
+                  >
+                    {t('workspace.drop.browse', 'Browse')}
+                  </button>
+                </div>
+
+                {/* Desktop View: Vertical Stack */}
+                <div className="hidden md:flex flex-col items-center justify-center text-center">
+                  <Upload size={48} className="text-primary-container mb-4" />
+                  <p className="text-lg font-bold text-on-surface mb-2">{t('tool.compress.select', 'Select PDF file')}</p>
+                  <p className="text-sm text-on-surface-variant mb-6">
+                    {t('tool.compress.drop', 'Drop your PDF here or click to browse. Max file size: 50MB.')}
+                  </p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); document.getElementById('compress-upload')?.click(); }}
+                    className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide text-xs"
+                  >
+                    {t('workspace.drop.browse', 'Browse files')}
+                  </button>
+                </div>
               </div>
-              <h3 className="text-2xl font-black text-on-surface mb-2 text-center group-hover:text-primary transition-colors">{t('tool.compress.select', 'Select PDF file')}</h3>
-              <p className="text-on-surface-variant text-center max-w-sm">
-                {t('tool.compress.drop', 'Drop your PDF here or click to browse. Max file size: 50MB.')}
-              </p>
-              <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
-            </label>
-          </div>
+            </div>
+          </>
         )}
       </div>
 
