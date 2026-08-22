@@ -179,11 +179,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
   return (
     <div className="w-full flex flex-col lg:flex-row items-stretch lg:items-start gap-6">
       <div className="lg:col-span-8 w-full lg:w-auto flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
-        <div className="absolute top-4 left-4 z-20 hidden sm:flex gap-2">
-           <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
-             <ArrowLeft size={20} />
-           </button>
-        </div>
+
 
         {status === 'processing' || isGeneratingThumbs ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low relative">
@@ -257,9 +253,9 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                         {index + 1}
                       </div>
                       
-                      <div className="absolute top-1 right-1 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <button onClick={() => removePage(index)} className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-md shadow-sm">
-                           <Trash2 size={12} />
+                      <div className="absolute top-1 right-1 flex gap-1 z-10 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                         <button onClick={() => removePage(index)} className="bg-red-500 hover:bg-red-600 text-white p-2 sm:p-1 rounded-md sm:rounded shadow-sm">
+                           <Trash2 size={14} className="sm:w-3 sm:h-3" />
                          </button>
                       </div>
 
