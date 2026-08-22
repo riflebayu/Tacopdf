@@ -210,7 +210,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
              </button>
           </div>
         ) : file ? (
-          <div className="flex-1 flex flex-col p-6 pt-16">
+          <div className="flex-1 flex flex-col p-4 sm:p-6 pt-14 sm:pt-16">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 bg-surface-container-low p-4 rounded-xl border border-outline-variant shadow-sm">
                <h3 className="text-base sm:text-lg font-bold text-on-surface truncate break-all max-w-full sm:max-w-[70%]">{file.name}</h3>
                <button 
@@ -230,7 +230,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                  onMouseLeave={handleMouseLeave}
                  onMouseUp={handleMouseUp}
                  onMouseMove={handleMouseMove}
-                 className="flex flex-row gap-6 overflow-x-auto pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar cursor-grab active:cursor-grabbing"
+                 className="flex flex-row items-center gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-8 snap-x snap-mandatory pt-2 px-2 custom-scrollbar cursor-grab active:cursor-grabbing"
                >
                  {pages.map((page, index) => (
                    <div 
@@ -240,7 +240,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                      onDragOver={(e) => handleDragOver(e, index)}
                      onDrop={(e) => handleDrop(e, index)}
                      onDragEnd={() => setDraggedIndex(null)}
-                     className={`relative group bg-surface-container-high rounded-xl p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-48 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
+                     className={`relative group bg-surface-container-high rounded-xl p-2 sm:p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-32 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
                    >
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
                         {index + 1}
