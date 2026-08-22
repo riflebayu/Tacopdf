@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight, Check, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight, Check, RotateCcw, Pencil } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
@@ -24,6 +24,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const [downloadUrl, setDownloadUrl] = useState<string>('');
+  const [outputFileName, setOutputFileName] = useState<string>('');
   
   // Array of page indices (0-indexed) representing current order
   const [pages, setPages] = useState<{ id: string, originalIndex: number, url: string }[]>([]);
@@ -43,7 +44,8 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
       const selected = e.target.files[0];
       setFile(selected);
       setStatus('idle');
-      setDownloadUrl('');
+      setOutputFileName(`organized_${selected.name}`);
+      setIsGeneratingThumbs(true);
       
       // Generate thumbnails
       setIsGeneratingThumbs(true);
@@ -195,10 +197,40 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
              <h3 className="text-xl sm:text-2xl font-bold text-on-surface mb-2 text-center">{t('tool.organize.success', 'PDF Organized Successfully!')}</h3>
              
              <div className="flex flex-col gap-2 sm:gap-3 mt-6 w-full max-w-sm">
+                <div className="mb-2 flex flex-col items-center gap-1.5 w-full max-w-sm min-w-0">
+                  <label className="text-xs text-on-surface-variant font-medium w-full text-center break-words">
+                    {t('workspace.rename.title', 'Rename Processed Output:')}
+                  </label>
+                  {(() => {
+                    const fileName = outputFileName || 'document.pdf';
+                    const lastDot = fileName.lastIndexOf('.');
+                    const baseName = lastDot > 0 ? fileName.substring(0, lastDot) : fileName;
+                    const ext = lastDot > 0 ? fileName.substring(lastDot) : '';
+                    return (
+                      <div className="flex items-center w-full bg-surface border border-outline-variant rounded-lg overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                        <input 
+                          type="text" 
+                          value={baseName}
+                          onChange={(e) => setOutputFileName(e.target.value + ext)}
+                          className="flex-1 bg-transparent px-3 py-2 text-sm text-on-surface focus:outline-none min-w-0"
+                          placeholder={t('workspace.rename.placeholder', 'Rename output file')}
+                        />
+                        <span className="text-sm text-on-surface-variant pr-2 select-none pointer-events-none shrink-0 hidden sm:inline-block">{ext}</span>
+                        <button 
+                          className="p-2 text-on-surface-variant hover:text-primary transition-colors shrink-0"
+                          title={t('workspace.rename.button', 'Rename')}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                      </div>
+                    )
+                  })()}
+                </div>
+
                 <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
                   <a 
                     href={downloadUrl}
-                    download={`organized_${file?.name || 'document.pdf'}`}
+                    download={outputFileName || `organized_${file?.name || 'document.pdf'}`}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-lg text-sm font-bold shadow-md transition-colors flex-1 sm:flex-none min-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
                   >
                     <Download size={16} />
