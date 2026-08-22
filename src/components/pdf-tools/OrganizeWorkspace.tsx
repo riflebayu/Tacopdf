@@ -163,9 +163,21 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
     setDraggedIndex(null);
   };
 
+  useEffect(() => {
+    // Enable touch drag and drop for mobile devices
+    if (typeof window !== 'undefined' && 'ontouchstart' in window) {
+      if (!document.getElementById('drag-drop-touch-polyfill')) {
+        const script = document.createElement('script');
+        script.id = 'drag-drop-touch-polyfill';
+        script.src = 'https://bernardo-castilho.github.io/DragDropTouch/DragDropTouch.js';
+        document.body.appendChild(script);
+      }
+    }
+  }, []);
+
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-6">
-      <div className="lg:col-span-8 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl min-h-[320px] bg-surface-container-low flex flex-col relative overflow-hidden">
+    <div className="w-full flex flex-col lg:flex-row items-start gap-6">
+      <div className="lg:col-span-8 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
         <div className="absolute top-4 left-4 z-20 flex gap-2">
            <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
              <ArrowLeft size={20} />
@@ -199,13 +211,13 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
           </div>
         ) : file ? (
           <div className="flex-1 flex flex-col p-6 pt-16">
-            <div className="flex justify-between items-center mb-4">
-               <h3 className="text-lg font-bold text-on-surface">{file.name}</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 bg-surface-container-low p-4 rounded-xl border border-outline-variant shadow-sm">
+               <h3 className="text-base sm:text-lg font-bold text-on-surface truncate break-all max-w-full sm:max-w-[70%]">{file.name}</h3>
                <button 
                  onClick={() => { setFile(null); setPages([]); }}
-                 className="text-error font-medium text-sm hover:underline"
+                 className="text-error font-bold text-sm hover:bg-error/20 bg-error/10 px-4 py-2 rounded-lg transition-colors shrink-0 flex items-center justify-center gap-2"
                >
-                 {t('workspace.file.remove', 'Remove file')}
+                 <Trash2 size={16} /> {t('workspace.file.remove', 'Remove file')}
                </button>
             </div>
             
