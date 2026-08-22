@@ -1,6 +1,7 @@
 // @ts-nocheck
 export const TRANSLATIONS = {
   "en": {
+    "tool.badge.new": "NEW TOOL",
     "tool.ocr.status.loading_image": "Loading image...",
     "tool.ocr.status.preprocessing": "Pre-processing image...",
     "tool.ocr.status.init": "Initializing OCR engine...",
@@ -260,7 +261,7 @@ export const TRANSLATIONS = {
     "workspace.html.letter": "Official Memo Letter",
     "workspace.html.placeholder": "Enter rich text...",
         "workspace.drop.add_more": "+ Add more files",
-    "badge.popular": "Popular Tools",
+    "badge.popular": "Popular Tool",
 "workspace.drop.title": "Drag and drop files here, or",
     "workspace.drop.title_mobile": "Select file from device",
     "workspace.drop.browse": "browse",
@@ -846,6 +847,7 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Extracting..."
 ,
   "id": {
+    "tool.badge.new": "ALAT BARU",
     "tool.ocr.status.loading_image": "Memuat gambar...",
     "tool.ocr.status.preprocessing": "Memproses awal gambar...",
     "tool.ocr.status.init": "Menginisialisasi mesin OCR...",
@@ -1660,6 +1662,7 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Mengekstrak..."
 ,
   "es": {
+    "tool.badge.new": "NUEVA HERRAMIENTA",
     "tool.ocr.status.loading_image": "Cargando imagen...",
     "tool.ocr.status.preprocessing": "Preprocesando imagen...",
     "tool.ocr.status.init": "Inicializando motor OCR...",
@@ -2428,6 +2431,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "tool.badge.new": "新ツール",
     "tool.ocr.status.loading_image": "画像を読み込み中...",
     "tool.ocr.status.preprocessing": "画像の前処理中...",
     "tool.ocr.status.init": "OCRエンジンを初期化中...",
@@ -3217,6 +3221,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "tool.badge.new": "NOVA FERRAMENTA",
     "tool.ocr.status.loading_image": "Carregando imagem...",
     "tool.ocr.status.preprocessing": "Pré-processando imagem...",
     "tool.ocr.status.init": "Inicializando motor OCR...",
@@ -4002,6 +4007,7 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "tool.badge.new": "NEUES WERKZEUG",
     "tool.ocr.status.loading_image": "Bild wird geladen...",
     "tool.ocr.status.preprocessing": "Bild wird vorverarbeitet...",
     "tool.ocr.status.init": "OCR-Engine wird initialisiert...",
@@ -4794,6 +4800,7 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "tool.badge.new": "NOUVEL OUTIL",
     "tool.ocr.status.loading_image": "Chargement de l'image...",
     "tool.ocr.status.preprocessing": "Prétraitement de l'image...",
     "tool.ocr.status.init": "Initialisation du moteur OCR...",

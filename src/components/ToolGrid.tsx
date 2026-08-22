@@ -104,7 +104,7 @@ export default function ToolGrid({ onSelectTool, toolSettings, showBeta = false 
           </span>
         ) : isPopular ? (
           <span className="absolute -top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-20 shadow-sm flex items-center gap-1 uppercase tracking-wide">
-            🔥 {t('badge.popular', 'Popular Tools')}
+            🔥 {t('badge.popular', 'Popular Tool')}
           </span>
         ) : null}
         
