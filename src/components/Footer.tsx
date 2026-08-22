@@ -72,6 +72,11 @@ function FooterContent(props: FooterProps) {
                 {t('cat.editing')}
               </LocalizedLink>
             </li>
+            <li>
+              <LocalizedLink to="/#optimization" onClick={() => {}} className="text-zinc-300 hover:text-white hover:underline transition-colors text-left py-1 inline-block cursor-pointer">
+                {t('cat.optimization', 'Optimization & Utility')}
+              </LocalizedLink>
+            </li>
           </ul>
         </div>
 
