@@ -106,7 +106,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
           <div className="space-y-2.5 md:space-y-4">
             <h3 className="text-base sm:text-lg md:text-xl font-bold text-on-surface">{t('seo.features.title')}</h3>
             <div className="relative">
-              <ul ref={toolsRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-3 pb-3 md:grid md:grid-cols-2 md:gap-3 md:pl-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+              <ul ref={toolsRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-3 pb-3 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-4 lg:gap-5 md:pl-0 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                 {TOOLS.map((tool) => (
                   <li key={tool.id} className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto md:bg-transparent md:border-transparent md:p-0 md:rounded-none flex flex-col md:flex-row items-start gap-2.5 md:gap-2">
                     <span className="hidden md:inline-block text-primary-container shrink-0 mt-0.5">✓</span>
@@ -121,14 +121,14 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
 
                       <a 
                         href={lang === 'en' ? `/${tool.id}` : `/${lang}/${tool.id}`}
-                        className="text-primary md:text-on-surface flex items-center gap-1.5 mb-1.5 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-sm md:text-base w-full"
+                        className="text-primary md:text-on-surface flex items-center gap-1.5 mb-1.5 md:mb-1 hover:text-primary-container transition-colors cursor-pointer text-left font-bold text-sm md:text-[13px] w-full"
                       >
                         <span className="hidden md:inline-block">
-                          <TacoIcon name={tool.icon} size={24} className="text-primary" />
+                          <TacoIcon name={tool.icon} size={20} className="text-primary" />
                         </span>
                         {t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}:
                       </a> 
-                      <p className="text-xs md:text-sm text-on-surface-variant md:text-on-surface leading-normal md:leading-relaxed">
+                      <p className="text-xs md:text-[11px] lg:text-xs text-on-surface-variant md:text-on-surface/80 leading-normal md:leading-relaxed">
                         {t(`seo.features.${tool.id.replace(/-/g, '_')}`)}
                       </p>
                     </div>
