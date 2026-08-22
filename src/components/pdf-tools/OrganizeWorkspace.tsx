@@ -6,6 +6,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
 import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 import { useLanguage } from '../../context/LanguageContext';
+import TacoIcon from '../TacoIcon';
 
 const getPdfJs = (() => {
   let initialized = false;
@@ -364,16 +365,19 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             </div>
          </div>
          
-         <div className="p-5 border-t border-outline-variant/30 bg-surface-container-low">
+         <div className={(file && status !== 'processing' && status !== 'success' && status !== 'error') ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe lg:relative lg:p-5 lg:bg-surface-container-low lg:border-t lg:border-outline-variant/30 lg:z-auto lg:shadow-none" : "p-5 border-t border-outline-variant/30 bg-surface-container-low"}>
             <button 
               onClick={handleOrganize}
               disabled={!file || status === 'processing' || pages.length === 0}
-              className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-primary text-on-primary hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {status === 'processing' ? <RefreshCw className="animate-spin" size={20} /> : <Layers size={20} />}
+              {status === 'processing' ? <RefreshCw className="animate-spin" size={32} /> : <TacoIcon name={tool.icon} size={32} />}
               {status === 'processing' ? t('tool.organize_pdf.btn_processing', 'Processing...') : t('tool.organize_pdf.btn_save', 'Save Changes')}
             </button>
          </div>
+         {(file && status !== 'processing' && status !== 'success' && status !== 'error') && (
+           <div className="h-24 w-full lg:hidden" />
+         )}
       </div>
     </div>
   );
