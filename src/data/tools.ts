@@ -26,7 +26,9 @@ export const TOOLS: PDFTool[] = [
   // Optimization & Utility (New)
   { id: 'compress', name: 'Compress PDF', description: "Reduce PDF file size significantly while maintaining good quality for web sharing and email.", category: 'optimization', icon: 'compress-pdf.png', active: true, isNew: true },
   { id: 'ocr', name: 'OCR PDF', description: "Extract text from scanned PDFs and images using Optical Character Recognition (OCR).", category: 'conversion', icon: 'ocr-pdf.png', active: true, isNew: true },
-  { id: 'organize', name: 'Organize PDF', description: "Reorder, delete, and manage PDF pages visually with an intuitive interface.", category: 'manipulation', icon: 'organize-pdf.png', active: true, isNew: true }
+  { id: 'organize', name: 'Organize PDF', description: "Reorder, delete, and manage PDF pages visually with an intuitive interface.", category: 'manipulation', icon: 'organize-pdf.png', active: true, isNew: true },
+  { id: 'pdf-to-word', name: 'PDF to Word', description: "Convert PDF to Word (DOCX) instantly and completely offline while preserving your layouts.", category: 'conversion', icon: 'file-text', active: true, isBeta: true, isNew: true },
+  { id: 'edit-pdf-text', name: 'Edit PDF Text', description: "Edit PDF text directly in the browser with live reflow.", category: 'editing', icon: 'edit-pdf-text', active: true, isBeta: true, isNew: true }
 ];
 
 export const CATEGORIES = [
@@ -56,7 +58,10 @@ export const TOOL_ALIASES: Record<string, string> = {
   'add-page-numbers': 'add-page-numbers',
   'compress-pdf': 'compress',
   'ocr-pdf': 'ocr',
-  'organize-pdf': 'organize'
+  'organize-pdf': 'organize',
+  'pdf-to-word': 'pdf-to-word',
+  'pdf-to-docx': 'pdf-to-word',
+  'edit-pdf-text': 'edit-pdf-text'
 };
 
 export const getToolSeoPath = (id: string) => {

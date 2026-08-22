@@ -3,6 +3,8 @@ import Workspace from '../Workspace';
 import CompressWorkspace from './CompressWorkspace';
 import OCRWorkspace from './OCRWorkspace';
 import OrganizeWorkspace from './OrganizeWorkspace';
+import PdfToWordWorkspace from './PdfToWordWorkspace';
+import EditPdfTextWorkspace from './EditPdfTextWorkspace';
 import { LanguageProvider } from '../../context/LanguageContext';
 
 export default function WorkspaceWrapper(props: any) {
@@ -22,6 +24,14 @@ export default function WorkspaceWrapper(props: any) {
       }>
         {props.tool.id === 'compress' ? (
           <CompressWorkspace tool={props.tool} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        ) : props.tool.id === 'pdf-to-word' ? (
+          <PdfToWordWorkspace tool={props.tool} onBack={() => {
+            if (typeof window !== 'undefined') window.location.href = '/';
+          }} />
+        ) : props.tool.id === 'edit-pdf-text' ? (
+          <EditPdfTextWorkspace tool={props.tool} onBack={() => {
             if (typeof window !== 'undefined') window.location.href = '/';
           }} />
         ) : props.tool.id === 'ocr' ? (
