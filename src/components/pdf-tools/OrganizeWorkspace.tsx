@@ -176,8 +176,8 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
   }, []);
 
   return (
-    <div className="w-full flex flex-col lg:flex-row items-start gap-6">
-      <div className="lg:col-span-8 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
+    <div className="w-full flex flex-col lg:flex-row items-stretch lg:items-start gap-6">
+      <div className="lg:col-span-8 w-full lg:w-auto flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
         <div className="absolute top-4 left-4 z-20 flex gap-2">
            <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
              <ArrowLeft size={20} />
@@ -240,7 +240,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                      onDragOver={(e) => handleDragOver(e, index)}
                      onDrop={(e) => handleDrop(e, index)}
                      onDragEnd={() => setDraggedIndex(null)}
-                     className={`relative group bg-surface-container-high rounded-xl p-2 sm:p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-32 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
+                     className={`relative group bg-surface-container-high rounded-xl p-2 sm:p-3 border border-outline-variant shadow-sm hover:border-primary/50 transition-colors shrink-0 w-28 sm:w-56 snap-center cursor-move ${draggedIndex === index ? 'opacity-50 border-primary border-dashed' : ''}`}
                    >
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-[12px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
                         {index + 1}
