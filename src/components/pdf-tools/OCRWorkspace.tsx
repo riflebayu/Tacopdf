@@ -563,7 +563,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
   return (
     <div className="w-full flex flex-col lg:flex-row items-stretch lg:items-start gap-6">
       <div className="lg:col-span-7 w-full lg:w-auto flex-1 flex flex-col gap-4">
-        <div className="w-full flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
+        <div className="w-full flex-1 border border-outline-variant/30 rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
 
 
         {status === 'processing' ? (
@@ -794,16 +794,18 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             </div>
          </div>
          
-         <div className={(file && status !== 'processing' && status !== 'success' && status !== 'error') ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe lg:hidden lg:relative lg:p-5 lg:bg-surface-container-low lg:border-t lg:border-outline-variant/30 lg:z-auto lg:shadow-none" : "p-5 border-t border-outline-variant/30 bg-surface-container-low"}>
-            <button 
-              onClick={handleOCR}
-              disabled={!file || status === 'processing'}
-              className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {status === 'processing' ? <RefreshCw className="animate-spin" size={32} /> : <TacoIcon name={tool.icon} size={32} />}
-              {status === 'processing' ? t('tool.ocr.btn_processing', 'Extracting...') : t('tool.ocr.btn_extract', 'Extract Text')}
-            </button>
-         </div>
+         {(status !== 'success' && status !== 'error') && (
+           <div className={(file && status !== 'processing') ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe lg:hidden lg:relative lg:p-5 lg:bg-surface-container-low lg:border-t lg:border-outline-variant/30 lg:z-auto lg:shadow-none" : "p-5 border-t border-outline-variant/30 bg-surface-container-low lg:hidden"}>
+              <button 
+                onClick={handleOCR}
+                disabled={!file || status === 'processing'}
+                className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-3.5 px-4 rounded-lg shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {status === 'processing' ? <RefreshCw className="animate-spin" size={32} /> : <TacoIcon name={tool.icon} size={32} />}
+                {status === 'processing' ? t('tool.ocr.btn_processing', 'Extracting...') : t('tool.ocr.btn_extract', 'Extract Text')}
+              </button>
+           </div>
+         )}
          {(file && status !== 'processing' && status !== 'success' && status !== 'error') && (
            <div className="h-24 w-full lg:hidden" />
          )}
