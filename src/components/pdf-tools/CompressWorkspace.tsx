@@ -103,7 +103,7 @@ export default function CompressWorkspace({ tool, onBack }: any) {
         const percent = Math.round((1 - (newSize / originalSize)) * 100);
         setSavings(t('tool.compress.reduced_by', 'Reduced by {percent}% ({size} MB)').replace('{percent}', percent.toString()).replace('{size}', (newSize / 1024 / 1024).toFixed(2)));
       } else {
-        setSavings(`No significant reduction (Output: ${(newSize / 1024 / 1024).toFixed(2)} MB)`);
+        setSavings(t('tool.compress.no_reduction', 'No significant reduction (Output: {size} MB)').replace('{size}', (newSize / 1024 / 1024).toFixed(2)));
       }
       
     } catch (err: any) {

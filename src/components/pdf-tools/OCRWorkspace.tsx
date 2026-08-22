@@ -393,7 +393,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         
       } else {
         // PDF Processing Pipeline
-        setStatusMsg(t('tool.ocr.status.init', 'Initializing Tesseract engine...'));
+        setStatusMsg(t('tool.ocr.status.init', 'Initializing OCR engine...'));
         const pdfjs = getPdfJs();
         const arrayBuffer = await file.arrayBuffer();
         
@@ -402,7 +402,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
         const numPages = pdfDoc.numPages;
         
         for (let i = 1; i <= numPages; i++) {
-          setStatusMsg(`${t('tool.ocr.status.processing_page', 'Processing page')} ${i} ${t('workspace.split.of', 'of')} ${numPages}...`);
+          setStatusMsg(t('tool.ocr.status.processing_page_of', 'Processing page {page} of {total}...').replace('{page}', i.toString()).replace('{total}', numPages.toString()));
           const page = await pdfDoc.getPage(i);
           
           // 1. Direct Text Layer Extraction

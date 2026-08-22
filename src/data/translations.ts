@@ -1,6 +1,11 @@
 // @ts-nocheck
 export const TRANSLATIONS = {
   "en": {
+    "tool.ocr.status.loading_image": "Loading image...",
+    "tool.ocr.status.preprocessing": "Pre-processing image...",
+    "tool.ocr.status.init": "Initializing OCR engine...",
+    "tool.ocr.status.processing_page_of": "Processing page {page} of {total}...",
+    "tool.compress.no_reduction": "No significant reduction (Output: {size} MB)",
     "tool.ocr.status.running_ocr_image": "Running OCR on image...",
     "tool.ocr.status.extracting_digital_page": "Extracting digital text from page {page}...",
     "tool.ocr.status.running_ocr_page": "Running OCR on scanned page {page}...",
@@ -841,6 +846,11 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Extracting..."
 ,
   "id": {
+    "tool.ocr.status.loading_image": "Memuat gambar...",
+    "tool.ocr.status.preprocessing": "Memproses awal gambar...",
+    "tool.ocr.status.init": "Menginisialisasi mesin OCR...",
+    "tool.ocr.status.processing_page_of": "Memproses halaman {page} dari {total}...",
+    "tool.compress.no_reduction": "Tidak ada pengurangan signifikan (Output: {size} MB)",
     "tool.ocr.status.running_ocr_image": "Menjalankan OCR pada gambar...",
     "tool.ocr.status.extracting_digital_page": "Mengekstrak teks digital dari halaman {page}...",
     "tool.ocr.status.running_ocr_page": "Menjalankan OCR pada halaman {page} hasil pindaian...",
@@ -1650,6 +1660,11 @@ export const TRANSLATIONS = {
     "tool.ocr.btn_processing": "Mengekstrak..."
 ,
   "es": {
+    "tool.ocr.status.loading_image": "Cargando imagen...",
+    "tool.ocr.status.preprocessing": "Preprocesando imagen...",
+    "tool.ocr.status.init": "Inicializando motor OCR...",
+    "tool.ocr.status.processing_page_of": "Procesando página {page} de {total}...",
+    "tool.compress.no_reduction": "Sin reducción significativa (Salida: {size} MB)",
     "tool.ocr.status.running_ocr_image": "Ejecutando OCR en imagen...",
     "tool.ocr.status.extracting_digital_page": "Extrayendo texto digital de la página {page}...",
     "tool.ocr.status.running_ocr_page": "Ejecutando OCR en la página escaneada {page}...",
@@ -2413,6 +2428,11 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Sirviendo a la comunidad global con todas mis fuerzas.",
   },
   "ja": {
+    "tool.ocr.status.loading_image": "画像を読み込み中...",
+    "tool.ocr.status.preprocessing": "画像の前処理中...",
+    "tool.ocr.status.init": "OCRエンジンを初期化中...",
+    "tool.ocr.status.processing_page_of": "ページ {page} / {total} を処理中...",
+    "tool.compress.no_reduction": "大幅な削減はありません (出力: {size} MB)",
     "tool.ocr.status.running_ocr_image": "画像上でOCRを実行中...",
     "tool.ocr.status.extracting_digital_page": "ページ{page}からデジタルテキストを抽出中...",
     "tool.ocr.status.running_ocr_page": "スキャンしたページ{page}でOCRを実行中...",
@@ -3197,6 +3217,11 @@ export const TRANSLATIONS = {
     "article.authorDesc": "全力で世界のコミュニティに奉仕する。",
   },
   "pt": {
+    "tool.ocr.status.loading_image": "Carregando imagem...",
+    "tool.ocr.status.preprocessing": "Pré-processando imagem...",
+    "tool.ocr.status.init": "Inicializando motor OCR...",
+    "tool.ocr.status.processing_page_of": "Processando página {page} de {total}...",
+    "tool.compress.no_reduction": "Nenhuma redução significativa (Saída: {size} MB)",
     "tool.ocr.status.running_ocr_image": "Executando OCR na imagem...",
     "tool.ocr.status.extracting_digital_page": "Extraindo texto digital da página {page}...",
     "tool.ocr.status.running_ocr_page": "Executando OCR na página digitalizada {page}...",
@@ -3977,6 +4002,11 @@ export const TRANSLATIONS = {
   },
 
   "de": {
+    "tool.ocr.status.loading_image": "Bild wird geladen...",
+    "tool.ocr.status.preprocessing": "Bild wird vorverarbeitet...",
+    "tool.ocr.status.init": "OCR-Engine wird initialisiert...",
+    "tool.ocr.status.processing_page_of": "Seite {page} von {total} wird verarbeitet...",
+    "tool.compress.no_reduction": "Keine wesentliche Reduzierung (Ausgabe: {size} MB)",
     "tool.ocr.status.running_ocr_image": "OCR wird auf Bild ausgeführt...",
     "tool.ocr.status.extracting_digital_page": "Digitaler Text wird aus Seite {page} extrahiert...",
     "tool.ocr.status.running_ocr_page": "OCR wird auf gescannter Seite {page} ausgeführt...",
@@ -4764,6 +4794,11 @@ export const TRANSLATIONS = {
     "article.authorDesc": "Der globalen Gemeinschaft mit all meiner Kraft dienen.",
   },
   "fr": {
+    "tool.ocr.status.loading_image": "Chargement de l'image...",
+    "tool.ocr.status.preprocessing": "Prétraitement de l'image...",
+    "tool.ocr.status.init": "Initialisation du moteur OCR...",
+    "tool.ocr.status.processing_page_of": "Traitement de la page {page} sur {total}...",
+    "tool.compress.no_reduction": "Pas de réduction significative (Sortie : {size} MB)",
     "tool.ocr.status.running_ocr_image": "Exécution de l'OCR sur l'image...",
     "tool.ocr.status.extracting_digital_page": "Extraction du texte numérique de la page {page}...",
     "tool.ocr.status.running_ocr_page": "Exécution de l'OCR sur la page numérisée {page}...",
