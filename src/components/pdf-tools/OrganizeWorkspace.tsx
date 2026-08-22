@@ -178,7 +178,8 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
 
   return (
     <div className="w-full flex flex-col lg:flex-row items-stretch lg:items-start gap-6">
-      <div className="lg:col-span-8 w-full lg:w-auto flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
+      <div className="lg:col-span-8 w-full lg:w-auto flex-1 flex flex-col gap-4">
+        <div className="w-full flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl h-fit min-h-[200px] bg-surface-container-low flex flex-col relative overflow-hidden">
 
 
         {status === 'processing' || isGeneratingThumbs ? (
@@ -334,6 +335,21 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             </div>
           </>
         )}
+        </div>
+        
+        {/* Desktop Action Button Under Upload Box */}
+        {(file && status !== 'processing' && status !== 'success' && status !== 'error') && (
+           <div className="hidden lg:block w-full">
+              <button 
+                onClick={handleOrganize}
+                disabled={!file || status === 'processing' || pages.length === 0}
+                className="w-full flex items-center justify-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container font-bold py-4 px-4 rounded-xl shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {status === 'processing' ? <RefreshCw className="animate-spin" size={32} /> : <TacoIcon name={tool.icon} size={32} />}
+                {status === 'processing' ? t('tool.organize_pdf.btn_processing', 'Processing...') : t('tool.organize_pdf.btn_save', 'Save Changes')}
+              </button>
+           </div>
+        )}
       </div>
 
       <div className="lg:col-span-4 w-full lg:w-72 h-fit bg-surface-container border border-outline-variant/30 rounded-2xl flex flex-col overflow-hidden shrink-0 shadow-sm sticky top-24">
@@ -359,7 +375,7 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             </div>
          </div>
          
-         <div className={(file && status !== 'processing' && status !== 'success' && status !== 'error') ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe lg:relative lg:p-5 lg:bg-surface-container-low lg:border-t lg:border-outline-variant/30 lg:z-auto lg:shadow-none" : "p-5 border-t border-outline-variant/30 bg-surface-container-low"}>
+         <div className={(file && status !== 'processing' && status !== 'success' && status !== 'error') ? "fixed bottom-0 left-0 right-0 p-4 bg-surface-container border-t border-outline-variant/30 z-[100] shadow-[0_-10px_30px_rgba(0,0,0,0.15)] pb-safe lg:hidden lg:relative lg:p-5 lg:bg-surface-container-low lg:border-t lg:border-outline-variant/30 lg:z-auto lg:shadow-none" : "p-5 border-t border-outline-variant/30 bg-surface-container-low"}>
             <button 
               onClick={handleOrganize}
               disabled={!file || status === 'processing' || pages.length === 0}
