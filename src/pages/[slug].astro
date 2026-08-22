@@ -276,8 +276,13 @@ const breadcrumbsSchema = JSON.stringify({
              </div>
            </div>
            <div class="flex-1">
-             <h1 class="text-lg md:text-3xl lg:text-4xl font-black text-on-surface mb-0.5 md:mb-3 tracking-tight">
+             <h1 class="text-lg md:text-3xl lg:text-4xl font-black text-on-surface mb-0.5 md:mb-3 tracking-tight flex items-center gap-3">
                {translatedName}
+               {tool!.isNew && (
+                 <span id="new-tool-badge" data-tool-id={tool!.id} class="inline-flex items-center px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-amber-500/20 text-amber-600 border border-amber-500/30 uppercase tracking-widest whitespace-nowrap">
+                   ✨ {dict['tool.badge.new' as keyof typeof dict] || 'NEW TOOL'}
+                 </span>
+               )}
              </h1>
              <p class="text-xs md:text-lg text-on-surface-variant leading-snug md:leading-relaxed max-w-3xl">
                {translatedDescription}
@@ -323,9 +328,26 @@ const breadcrumbsSchema = JSON.stringify({
             </div>
           </div>
         </div>
-
+        
         <ToolSeoArticle toolId={tool!.id} lang={lang} />
       </div>
     </div>
   )}
 </BaseLayout>
+
+<script>
+  const badge = document.getElementById('new-tool-badge');
+  if (badge) {
+     const toolId = badge.dataset.toolId;
+     const key = `seen_new_tool_${toolId}`;
+     const seenDate = localStorage.getItem(key);
+     const now = Date.now();
+     const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+     
+     if (!seenDate) {
+        localStorage.setItem(key, now.toString());
+     } else if (now - parseInt(seenDate, 10) > THREE_DAYS) {
+        badge.style.display = 'none';
+     }
+  }
+</script>

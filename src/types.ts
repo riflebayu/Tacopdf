@@ -10,6 +10,7 @@ export interface PDFTool {
   icon: string; // Map to Lucide icon name
   active: boolean;
   isBeta?: boolean;
+  isNew?: boolean;
 }
 
 export interface ProcessingState {

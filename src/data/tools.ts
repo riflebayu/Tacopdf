@@ -23,10 +23,10 @@ export const TOOLS: PDFTool[] = [
   { id: 'add-watermark', name: 'Add Watermark', description: "Add custom text or image watermarks to your PDF files to protect your documents.", category: 'editing', icon: 'add-watermark', active: true },
   { id: 'add-page-numbers', name: 'Add Page Numbers', description: "Add page numbers to PDF documents easily with customizable formatting and placement.", category: 'editing', icon: 'add-page-numbers', active: true },
 
-  // Optimization & Utility (Beta)
-  { id: 'compress', name: 'Compress PDF', description: "Reduce PDF file size significantly while maintaining good quality for web sharing and email.", category: 'optimization', icon: 'compress-pdf.png', active: true, isBeta: true },
-  { id: 'ocr', name: 'OCR PDF', description: "Extract text from scanned PDFs and images using Optical Character Recognition (OCR).", category: 'conversion', icon: 'ocr-pdf.png', active: true, isBeta: true },
-  { id: 'organize', name: 'Organize PDF', description: "Reorder, delete, and manage PDF pages visually with an intuitive interface.", category: 'manipulation', icon: 'organize-pdf.png', active: true, isBeta: true }
+  // Optimization & Utility (New)
+  { id: 'compress', name: 'Compress PDF', description: "Reduce PDF file size significantly while maintaining good quality for web sharing and email.", category: 'optimization', icon: 'compress-pdf.png', active: true, isNew: true },
+  { id: 'ocr', name: 'OCR PDF', description: "Extract text from scanned PDFs and images using Optical Character Recognition (OCR).", category: 'conversion', icon: 'ocr-pdf.png', active: true, isNew: true },
+  { id: 'organize', name: 'Organize PDF', description: "Reorder, delete, and manage PDF pages visually with an intuitive interface.", category: 'manipulation', icon: 'organize-pdf.png', active: true, isNew: true }
 ];
 
 export const CATEGORIES = [
