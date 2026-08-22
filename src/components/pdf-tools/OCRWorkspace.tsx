@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, FileText, FileDown, RefreshCw, AlertCircle, ScanText, Check, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, FileDown, RefreshCw, AlertCircle, ScanText, Check, RotateCcw, Copy } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
 import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
@@ -134,6 +134,13 @@ export default function OCRWorkspace({ tool, onBack }: any) {
   const [extractedText, setExtractedText] = useState<string>('');
   const [statusMsg, setStatusMsg] = useState<string>('');
   const [forceOcr, setForceOcr] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(extractedText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -575,11 +582,20 @@ export default function OCRWorkspace({ tool, onBack }: any) {
              </div>
              <h3 className="text-xl sm:text-2xl font-bold text-on-surface mb-2 text-center">{t('tool.ocr.extracted', 'Extracted Text')}</h3>
              
-             <textarea 
-               className="w-full max-w-xl p-4 rounded-xl border border-outline-variant bg-surface-container focus:outline-none focus:border-primary transition-colors resize-none mb-4 font-mono text-sm shadow-inner text-on-surface h-32 sm:h-48"
-               value={extractedText}
-               readOnly
-             />
+             <div className="relative w-full max-w-xl mb-4 group">
+               <textarea 
+                 className="w-full p-4 rounded-xl border border-outline-variant bg-surface-container focus:outline-none focus:border-primary transition-colors resize-none font-mono text-sm shadow-inner text-on-surface h-64 sm:h-80 custom-scrollbar pr-12"
+                 value={extractedText}
+                 readOnly
+               />
+               <button 
+                 onClick={handleCopy}
+                 className="absolute top-3 right-3 p-2 bg-surface-container-highest hover:bg-primary hover:text-on-primary text-on-surface-variant rounded-lg transition-colors shadow-sm z-10 opacity-80 sm:opacity-50 sm:group-hover:opacity-100 flex items-center justify-center border border-outline-variant/30"
+                 title="Copy text"
+               >
+                 {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+               </button>
+             </div>
 
              <div className="flex flex-col gap-2 sm:gap-3 mt-2 w-full max-w-sm">
                 <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
@@ -696,11 +712,9 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold text-on-surface">{t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}</h2>
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest border border-blue-400/30">
-                  BETA
-                </span>
+
               </div>
-              <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t('tool.ocr.beta_warning', 'Not stable for production')}</p>
+
             </div>
          </div>
          

@@ -344,11 +344,9 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold text-on-surface">{t(`tool_name.${tool.id.replace(/-/g, '_')}`, tool.name)}</h2>
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest border border-blue-400/30">
-                  BETA
-                </span>
+
               </div>
-              <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t('tool.organize_pdf.beta_warning', 'Not stable for production')}</p>
+
             </div>
          </div>
          
