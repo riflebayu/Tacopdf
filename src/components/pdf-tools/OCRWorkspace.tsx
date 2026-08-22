@@ -413,7 +413,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
           
           if (totalChars > 20 && !forceOcr) {
             // It's a digital PDF, reconstruct spatial layout
-            setStatusMsg(`Extracting digital text from page ${i}...`);
+            setStatusMsg(t('tool.ocr.status.extracting_digital_page', 'Extracting digital text from page {page}...').replace('{page}', i.toString()));
             
             const linesMap: { [y: number]: any[] } = {};
             textItems.forEach((item: any) => {
@@ -484,7 +484,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
             
           } else {
             // 2. Fallback OCR (High-Precision OCR Pipeline)
-            setStatusMsg(`Running OCR on scanned page ${i}...`);
+            setStatusMsg(t('tool.ocr.status.running_ocr_page', 'Running OCR on scanned page {page}...').replace('{page}', i.toString()));
             const worker = await getWorker();
             
             // Re-bind logger so progress scales by page
