@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight, Check, RotateCcw, Pencil } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Download, RefreshCw, Layers, Trash2, ChevronLeft, ChevronRight, Check, RotateCcw, Pencil, X } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
@@ -204,8 +204,8 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                   {(() => {
                     const fileName = outputFileName || 'document.pdf';
                     const lastDot = fileName.lastIndexOf('.');
-                    const baseName = lastDot > 0 ? fileName.substring(0, lastDot) : fileName;
-                    const ext = lastDot > 0 ? fileName.substring(lastDot) : '';
+                    const baseName = lastDot !== -1 ? fileName.substring(0, lastDot) : fileName;
+                    const ext = lastDot !== -1 ? fileName.substring(lastDot) : '';
                     return (
                       <div className="flex items-center w-full bg-surface border border-outline-variant rounded-lg overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
                         <input 
@@ -216,6 +216,15 @@ export default function OrganizeWorkspace({ tool, onBack }: any) {
                           placeholder={t('workspace.rename.placeholder', 'Rename output file')}
                         />
                         <span className="text-sm text-on-surface-variant pr-2 select-none pointer-events-none shrink-0 hidden sm:inline-block">{ext}</span>
+                        {baseName.length > 0 && (
+                          <button 
+                            onClick={() => setOutputFileName(ext)}
+                            className="p-2 text-on-surface-variant hover:text-error transition-colors shrink-0"
+                            title={t('workspace.rename.clear', 'Clear')}
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
                         <button 
                           className="p-2 text-on-surface-variant hover:text-primary transition-colors shrink-0"
                           title={t('workspace.rename.button', 'Rename')}
