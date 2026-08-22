@@ -554,7 +554,7 @@ export default function OCRWorkspace({ tool, onBack }: any) {
 
   return (
     <div className="w-full flex flex-col lg:flex-row gap-6">
-      <div className="lg:col-span-7 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl min-h-[320px] bg-surface-container-low flex flex-col relative overflow-hidden">
+      <div className="lg:col-span-7 flex-1 border-2 border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors rounded-2xl min-h-[240px] bg-surface-container-low flex flex-col relative overflow-hidden">
         <div className="absolute top-4 left-4 z-20 flex gap-2">
            <button onClick={onBack} className="p-2 bg-surface-container-high hover:bg-surface-variant text-on-surface rounded-lg shadow-sm border border-outline-variant transition-colors flex items-center justify-center">
              <ArrowLeft size={20} />
