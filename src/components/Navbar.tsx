@@ -159,7 +159,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
             }`}>
               <div className="grid grid-cols-2 gap-x-5 gap-y-4">
                 {CATEGORIES.map((cat) => {
-                  const catTools = TOOLS.filter((t) => t.category === cat.id);
+                  const catTools = TOOLS.filter((t) => t.category === cat.id && !t.isBeta);
                   return (
                     <div key={cat.id} className="space-y-1.5">
                       <h3 className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/35 pb-1">
@@ -340,7 +340,7 @@ function NavbarContent({ activeToolId, currentPath }: NavbarProps) {
                     {t('cat.' + cat.id, cat.name)}
                   </h4>
                   <div className="grid grid-cols-2 gap-1.5">
-                    {TOOLS.filter((t) => t.category === cat.id).map((tool) => (
+                    {TOOLS.filter((t) => t.category === cat.id && !t.isBeta).map((tool) => (
                       <LocalizedLink
                         key={tool.id}
                         to={getToolSeoPath(tool.id)}
