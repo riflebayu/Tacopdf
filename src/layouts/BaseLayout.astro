@@ -179,27 +179,5 @@ const finalSchema = schema || JSON.stringify({
       <Footer client:load initialLang={lang} currentPath={currentPath} />
       <MaintenancePopup client:idle initialLang={lang} />
     </div>
-
-    {/* Adsterra Social Bar — Interaction-Triggered for mobile compatibility */}
-    <script is:inline>
-      (function () {
-        var loaded = false;
-        function loadAd() {
-          if (loaded) return;
-          loaded = true;
-          var s = document.createElement('script');
-          s.src = 'https://pl30966008.profitableratecpmnetwork.com/d2/26/cb/d226cbb7d5a5e95295336bdbee88ed30.js';
-          s.async = true;
-          document.body.appendChild(s);
-        }
-        // Mobile: trigger on first touch or scroll
-        document.addEventListener('touchstart', loadAd, { once: true, passive: true });
-        document.addEventListener('scroll', loadAd, { once: true, passive: true });
-        // Desktop: trigger on first mouse move
-        document.addEventListener('mousemove', loadAd, { once: true });
-        // Fallback: load after 4 seconds regardless of interaction
-        setTimeout(loadAd, 4000);
-      })();
-    </script>
   </body>
 </html>
