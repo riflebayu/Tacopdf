@@ -37,8 +37,9 @@ interface SEOSectionProps {
 
 export default function SEOSection({ onSelectTool }: SEOSectionProps) {
   const { t, lang } = useLanguage();
+  const activeTools = TOOLS.filter(t => !t.isBeta);
   const { containerRef: bentoRef, activeIndex: bentoIndex } = useScrollIndicator(3);
-  const { containerRef: toolsRef, activeIndex: toolsIndex } = useScrollIndicator(TOOLS.length);
+  const { containerRef: toolsRef, activeIndex: toolsIndex } = useScrollIndicator(activeTools.length);
   
   return (
     <section className="bg-surface-container-low border-y border-outline-variant py-6 md:py-8 mt-4">
@@ -107,7 +108,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
             <h3 className="text-base sm:text-lg md:text-xl font-bold text-on-surface">{t('seo.features.title')}</h3>
             <div className="relative">
               <ul ref={toolsRef} className="flex overflow-x-auto scroll-smooth overscroll-x-contain snap-x snap-mandatory gap-3 pb-3 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-4 lg:gap-5 md:pl-0 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-                {TOOLS.map((tool) => (
+                {activeTools.map((tool) => (
                   <li key={tool.id} className="flex-none w-[75%] sm:w-[70%] snap-center snap-always bg-surface-container/50 p-3.5 md:p-5 rounded-xl md:rounded-2xl border border-outline-variant/60 md:w-auto md:bg-transparent md:border-transparent md:p-0 md:rounded-none flex flex-col md:flex-row items-start gap-2.5 md:gap-2">
                     <span className="hidden md:inline-block text-primary-container shrink-0 mt-0.5">✓</span>
                     <div className="flex flex-col md:block w-full">
@@ -137,7 +138,7 @@ export default function SEOSection({ onSelectTool }: SEOSectionProps) {
               </ul>
               {/* Dots Indicator for Tools */}
               <div className="flex justify-center gap-1.5 mt-1 md:hidden flex-wrap px-4">
-                {TOOLS.map((_, i) => (
+                {activeTools.map((_, i) => (
                   <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === toolsIndex ? 'w-4 bg-primary' : 'w-1.5 bg-outline-variant'}`} />
                 ))}
               </div>
