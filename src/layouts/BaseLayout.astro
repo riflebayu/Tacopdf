@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
-import MaintenancePopup from '../components/MaintenancePopup';
+import SiteSalePopup from '../components/SiteSalePopup';
 
 interface HreflangLink {
   lang: string;
@@ -177,7 +177,7 @@ const finalSchema = schema || JSON.stringify({
       </div>
 
       <Footer client:load initialLang={lang} currentPath={currentPath} />
-      <MaintenancePopup client:idle initialLang={lang} />
+      <SiteSalePopup client:idle initialLang={lang} />
     </div>
   </body>
 </html>
